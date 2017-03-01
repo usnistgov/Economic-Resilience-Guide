@@ -1,0 +1,26 @@
+Analysis Title,EconGuide Test 1,,,,,,,,,,,,,,
+Number of Plans,2,,,,,,,,,,,,,,
+Objective Function,,,,,,,,,,,,,,,
+Planning Horizon,60,,,,,,,,,,,,,,
+Constraints,,,,,,,,,,,,,,,
+Statistical Life,7500000,,,,,,,,,,,,,,
+Discount Rate,3,,,,,,,,,,,,,,
+Disaster Rate,35,,,,,,,,,,,,,,
+Disaster Magnitude,16,,,,,,,,,,,,,,
+Risk Preference,Averse,,,,,,,,,,,,,,
+-,Base,,,Plan 1,,,,,,Plan 2,,,,,
+Name of Plans,Base,,,Alt 1,,,,,,Alt 2,,,,,
+,Title,Dollar Amount,Description,Title,Dollar Amount,Description,Title,Dollar Amount,Description,Title,Dollar Amount,Description,Title,Dollar Amount,Description
+Costs,,,,,,,,,,,,,,,
+Direct Costs,,,,Alt 1 Direct,2250000,N/A,,,,Alt 2 Direct,2800000,N/A,,,
+Indirect Costs,,,,Alt 1 Indirect,425000,N/A,,,,Alt 2 Indirect,300000,N/A,,,
+OMR,,,,Alt 1 OMR One Time,75000,N/A,Alt 1 OMR Recurring,5000,N/A,Alt 2 OMR One Time,125000,N/A,Alt 2 OMR Recurring,5000,N/A
+OMRType,,,,OneTime,20,N/A,Recurring,5,5,OneTime,30,N/A,Recurring,2,2
+Externalities,,,,,,,,,,,,,,,
+Benefits,,,,,,,,,,,,,,,
+Direct Loss Reduction,,,,Alt 1 Direct Reduction,650000,N/A,,,,Alt 2 Direct Reduction,800000,N/A,,,
+Indirect Loss Reduction,,,,Alt 1 Indirect Reduction,450000,N/A,,,,Alt 2 Indirect Reduction,700000,N/A,,,
+Response/Recovery Costs,,,,Alt 1 R&R Reduction,250000,N/A,,,,Alt 2 R&R Reduction,200000,N/A,,,
+Non Disaster Related Benefits,,,,Alt 1 NDRB One Time,300000,N/A,Alt 1 NDRB Recurring,50000,N/A,Alt 2 NDRB One Time,250000,N/A,Alt 2 NDRB Recurring,55000,N/A
+NDRBType,,,,OneTime,3,,Recurring,1,1,OneTime,1,,Recurring,5,1
+Fatalities Averted,Fatalities,0,N/A,Fatalities,0.2,N/A,,,,Fatalities,0.25,N/A,,,

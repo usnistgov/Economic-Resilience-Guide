@@ -1,0 +1,26 @@
+Analysis Title,Test Project,,,,,,,,,,,,,,,,,,,,
+Number of Plans,6,,,,,,,,,,,,,,,,,,,,
+Objective Function,,,,,,,,,,,,,,,,,,,,,
+Planning Horizon,20,,,,,,,,,,,,,,,,,,,,
+Constraints,,,,,,,,,,,,,,,,,,,,,
+Statistical Life,0,,,,,,,,,,,,,,,,,,,,
+Discount Rate,5,,,,,,,,,,,,,,,,,,,,
+Disaster Rate,7.5,,,,,,,,,,,,,,,,,,,,
+Disaster Magnitude,50,,,,,,,,,,,,,,,,,,,,
+Risk Preference,Neutral,,,,,,,,,,,,,,,,,,,,
+-,Base,,,Plan 1,,,Plan 2,,,Plan 3,,,Plan 4,,,Plan 5,,,Plan 6,,
+Name of Plans,Base,,,111,,,222,,,333,,,444,,,555,,,666,,
+,Title,Dollar Amount,Description,Title,Dollar Amount,Description,Title,Dollar Amount,Description,Title,Dollar Amount,Description,Title,Dollar Amount,Description,Title,Dollar Amount,Description,Title,Dollar Amount,Description
+Costs,,,,,,,,,,,,,,,,,,,,,
+Direct Costs,Base Cost,1,N/A,,,,,,,,,,Fourth,444,N/A,,,,,,
+Indirect Costs,,,,First ,111,N/A,,,,,,,,,,Fifth,555,N/A,,,
+OMR,,,,,,,Second,222,N/A,Third,333,N/A,,,,,,,Sixth,666,N/A
+OMRType,,,,,,,OneTime,2,/,Recurring,3,3,,,,,,,OneTime,6,/
+Externalities,Ext0,2,N/A,One,111,N/A,Two,222,N/A,Three,333,N/A,Four,444,N/A,Five,555,N/A,Six,666,N/A
+Benefits,,,,,,,,,,,,,,,,,,,,,
+Direct Loss Reduction,Ben0,15,N/A,,,,,,,,,,,,,,,,,,
+Indirect Loss Reduction,,,,Ben1,111,N/A,,,,,,,,,,Ben5,555,N/A,,,
+Response/Recovery Costs,,,,,,,,,,Ben3,333,N/A,Ben4,444,N/A,,,,Ben6,666,N/A
+Non Disaster Related Benefits,BaseBen,42,N/A,1Ben,111,N/A,2Ben,222,N/A,3Ben,333,N/A,4Ben,444,N/A,5Ben,555,N/A,6Ben,666,N/A
+NDRBType,OneTime,0,,OneTime,0,,OneTime,0,,OneTime,0,,OneTime,0,,OneTime,0,,OneTime,0,
+Fatalities Averted,Fatalities,0, ,Fatalities,0.1,N/A,Fatalities,0.2,N/A,Fatalities,0.3,N/A,Fatalities,0.4,N/A,Fatalities,0.5,N/A,Fatalities,0.6,N/A
