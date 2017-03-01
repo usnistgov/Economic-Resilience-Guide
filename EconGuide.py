@@ -19,6 +19,7 @@ from DirectoryPage import DirectoryPage
 from CostPage import CostPage
 from ExternalitiesPage import ExternalitiesPage
 from BenefitsPage import BenefitsPage
+from BenefitsUncertainties import BenefitsUncertaintiesPage
 from FatalitiesPage import FatalitiesPage
 from NonDBensPage import NonDBensPage
 
@@ -68,7 +69,8 @@ class Application(tk.Tk):
         """ Brings to the forefront the frame described by cont_string."""
         frame_dict = {'StartPage': StartPage, 'DirectoryPage': DirectoryPage, 'InfoPage': InfoPage,
                       'CostPage': CostPage, 'ExternalitiesPage': ExternalitiesPage,
-                      'BenefitsPage': BenefitsPage, 'FatalitiesPage': FatalitiesPage,
+                      'BenefitsPage': BenefitsPage, 'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
+                      'FatalitiesPage': FatalitiesPage,
                       'NonDBensPage': NonDBensPage}
         cont = frame_dict[cont_string]
         frame = self.frames[cont]
@@ -113,8 +115,8 @@ class StartPage(tk.Frame):
             controller.data_cont = Data()
             controller.cont_list = [controller.data_cont]
 
-            for page in (DirectoryPage, InfoPage, CostPage,
-                         ExternalitiesPage, BenefitsPage, FatalitiesPage, NonDBensPage):
+            for page in (DirectoryPage, InfoPage, CostPage, ExternalitiesPage,
+                         BenefitsPage, BenefitsUncertaintiesPage, FatalitiesPage, NonDBensPage):
                 frame = page(controller.container.interior, controller, controller.cont_list)
                 controller.frames[page] = frame
                 frame.grid(row=0, column=0, sticky="nsew")
