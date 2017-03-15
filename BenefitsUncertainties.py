@@ -31,7 +31,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
         self.controller = controller
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="The prototype uncertainties page.\n "
-                                     "Need to add text here to explain uncertainties."
+                                     "Need to add text here to explain uncertainties.\n"
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         # TODO: Update Label text
         label.grid(padx=10, pady=10, sticky="new")
@@ -46,9 +46,55 @@ class BenefitsUncertaintiesPage(tk.Frame):
         """
         # TODO: Create a function iterable through all Benefits for the given input type
         # ===== Uncertainty selection Widgets
-        group1 = ttk.LabelFrame(self, text="Base Case")
-        group1.grid(row=3, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
+        group = []
+        labels_direct = []
+        labels_indirect = []
+        labels_resRec = []
+        for i in range(len(self.data_cont.plan_name)):
+            row_index = 0
+            group.append(ttk.LabelFrame(self, text=self.data_cont.plan_name[i]))
+            group[-1].grid(row=3+i, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+            for j in range(len(self.data_cont.DirectBen[i])):
+                if self.data_cont.DirectBen[i][j][0] == "":
+                    align = "w"
+                    print_text = "No direct benefits associated with this plan."
+                else:
+                    align = "w"
+                    print_text = self.data_cont.DirectBen[i][j][0] + " - $" + self.data_cont.DirectBen[i][j][1]
+                labels_direct.append(ttk.Label(group[-1], text=print_text,
+                                               font=SMALL_FONT))
+                labels_direct[-1].grid(row=row_index, column=0, sticky="w",
+                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                row_index += 1
+
+            for j in range(len(self.data_cont.IndirectBen[i])):
+                if self.data_cont.IndirectBen[i][j][0] == "":
+                    align = "w"
+                    print_text = "No indirect benefits associated with this plan."
+                else:
+                    align = "w"
+                    print_text = self.data_cont.IndirectBen[i][j][0] + " - $" + self.data_cont.IndirectBen[i][j][1]
+
+                labels_indirect.append(ttk.Label(group[-1], text=print_text,
+                                                 font=SMALL_FONT))
+                labels_indirect[-1].grid(row=row_index, column=0, sticky=align,
+                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                row_index += 1
+
+            for j in range(len(self.data_cont.ResRec[i])):
+                if self.data_cont.ResRec[i][j][0] == "":
+                    align = "w"
+                    print_text = "No response/recovery benefits associated with this plan."
+                else:
+                    align = "w"
+                    print_text = self.data_cont.ResRec[i][j][0] + " - $" + self.data_cont.ResRec[i][j][1]
+
+                labels_resRec.append(ttk.Label(group[-1], text=print_text,
+                                               font=SMALL_FONT))
+                labels_resRec[-1].grid(row=row_index, column=0, sticky=align,
+                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                row_index += 1
 
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.
@@ -72,13 +118,13 @@ class BenefitsUncertaintiesPage(tk.Frame):
                                  command=lambda: self.data_cont.save_info())
         save_button.grid(row=1, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Add Uncertainties", command=self.add_uncertainty)
-        self.add_button.grid(row=5, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.add_button.grid(row=12, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         did_info = ttk.Button(self, text="More Information", command=self.show_info)
         did_info.grid(row=2, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         back_button = ttk.Button(self, text="<<Back", command=save_and_back)
-        back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        back_button.grid(row=13, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
-        finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        finished_button.grid(row=13, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
     def hover(self, _event):
         """Updates prevList when mouse is hovered over the widget"""
