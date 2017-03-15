@@ -129,7 +129,8 @@ class StartPage(tk.Frame):
                 controller.data_cont = Data(file_name=filename)
                 controller.cont_list = [controller.data_cont]
                 for page in (DirectoryPage, InfoPage, CostPage,
-                             ExternalitiesPage, BenefitsPage, FatalitiesPage, NonDBensPage):
+                             ExternalitiesPage, BenefitsPage, BenefitsUncertaintiesPage,
+                             FatalitiesPage, NonDBensPage):
                     frame = page(controller.container.interior, controller, controller.cont_list)
                     controller.frames[page] = frame
                     frame.grid(row=0, column=0, sticky="nsew")

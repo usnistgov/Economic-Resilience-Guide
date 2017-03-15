@@ -53,13 +53,17 @@ class DirectoryPage(tk.Frame):
                                 command=lambda: controller.show_frame('BenefitsPage'))
         ben_button.grid(row=3, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
+        ben_button = ttk.Button(group, text="Benefits Uncertainties",
+                                command=lambda: controller.show_frame('BenefitsUncertaintiesPage'))
+        ben_button.grid(row=4, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
         fat_button = ttk.Button(group, text="Fatalities Averted",
                                 command=lambda: controller.show_frame('FatalitiesPage'))
-        fat_button.grid(row=4, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        fat_button.grid(row=5, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         non_d_ben_button = ttk.Button(group, text="Non-Disaster Related Benefits",
                                       command=lambda: controller.show_frame('NonDBensPage'))
-        non_d_ben_button.grid(row=5, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        non_d_ben_button.grid(row=6, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
         ana_button = ttk.Button(self, text="Show Analysis",
