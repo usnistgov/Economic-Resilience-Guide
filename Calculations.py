@@ -430,7 +430,7 @@ class Data():
         self.tot_costs = [0]*(self.num_plans + 1)
         self.tot_bens = [0]*(self.num_plans + 1)
         self.net = [0]*(self.num_plans + 1)
-        self.annual_non_disaster_cash_flows = [[0]*(self.horizon+1) for i in range(self.num_plans+1)]
+        self.annual_non_disaster_cash_flows = [[0]*(int(self.horizon)+1) for i in range(int(self.num_plans)+1)]
 
         for i in range(len(self.NonDBen)):
             for j in range(len(self.NonDBen[i])):

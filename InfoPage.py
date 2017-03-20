@@ -13,6 +13,14 @@ from tkinter import ttk     #for pretty buttons/labels
 from Constants import SMALL_FONT, ENTRY_WIDTH
 from Constants import BASE_PADDING, FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING
 
+from PlotsAndImages import none_dist, gauss_dist, tri_dist, rect_dist
+
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
+
+
 #
 #
 ###################################### Base Information Class ######################################
@@ -176,30 +184,78 @@ class InfoPage(tk.Frame):
         yrs_lbl = ttk.Label(group3, text="Year(s)", font=SMALL_FONT)
         yrs_lbl.grid(row=4, column=2, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
+        self.recur_choice = tk.StringVar()
+        self.recur_choice.set("1")
+        recur_rads = [tk.Radiobutton(group3, variable=self.recur_choice, value="None"),
+                      tk.Radiobutton(group3, variable=self.recur_choice, value="Gauss"),
+                      tk.Radiobutton(group3, variable=self.recur_choice, value="Tri"),
+                      tk.Radiobutton(group3, variable=self.recur_choice, value="Rect")]
+        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
+        figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
+        for col in range(len(recur_rads)):
+            fig_label = ttk.Label(group3)
+            fig_label.grid(row=5, column=col+2)
+            fig = figs[col]
+            canvas = FigureCanvasTkAgg(fig, master=fig_label)
+            canvas.get_tk_widget().grid(row=5, column=col+1)
+            canvas.show()
+            recur_rads[col].grid(row=6, column=col+2)
+            rad_label = ttk.Label(group3, text=rad_labels[col], font=SMALL_FONT)
+            rad_label.grid(row=7, column=col+2)
+        recur_range_label = tk.Label(group3, text="Range/Standard Deviation:")
+        recur_range_label.grid(row=5, column=0, sticky="e")
+        self.recur_range = tk.Entry(group3, width=int(ENTRY_WIDTH/2), font=SMALL_FONT)
+        self.recur_range.grid(row=5, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
+
         mag_lbl = ttk.Label(group3, text="Hazard Magnitude", font=SMALL_FONT)
-        mag_lbl.grid(row=5, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        mag_lbl.grid(row=9, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.mag_ent = tk.Entry(group3, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.mag_ent.insert(tk.END, "<enter % of replacement cost>")
-        self.mag_ent.grid(row=5, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.mag_ent.grid(row=9, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         percent_lbl2 = ttk.Label(group3, text="% of replacement cost", font=SMALL_FONT)
-        percent_lbl2.grid(row=5, column=2, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        percent_lbl2.grid(row=9, column=2, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
+        self.mag_choice = tk.StringVar()
+        self.mag_choice.set("1")
+        mag_rads = [tk.Radiobutton(group3, variable=self.mag_choice, value="None"),
+                      tk.Radiobutton(group3, variable=self.mag_choice, value="Gauss"),
+                      tk.Radiobutton(group3, variable=self.mag_choice, value="Tri"),
+                      tk.Radiobutton(group3, variable=self.mag_choice, value="Rect")]
+        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
+        figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
+        for col in range(len(mag_rads)):
+            fig_label = ttk.Label(group3)
+            fig_label.grid(row=10, column=col+2)
+            fig = figs[col]
+            canvas = FigureCanvasTkAgg(fig, master=fig_label)
+            canvas.get_tk_widget().grid(row=5, column=col+1)
+            canvas.show()
+            mag_rads[col].grid(row=11, column=col+2)
+            rad_label = ttk.Label(group3, text=rad_labels[col], font=SMALL_FONT)
+            rad_label.grid(row=12, column=col+2)
+        mag_range_label = tk.Label(group3, text="Range/Standard Deviation:")
+        mag_range_label.grid(row=10, column=0, sticky="e")
+        self.mag_range = tk.Entry(group3, width=int(ENTRY_WIDTH/2), font=SMALL_FONT)
+        self.mag_range.grid(row=10, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
 
         sep2 = ttk.Separator(group3, orient=tk.HORIZONTAL)
-        sep2.grid(row=6, sticky="ew", columnspan=90, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        sep2.grid(row=13, sticky="ew", columnspan=90, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         self.preference = tk.StringVar()
         self.preference.set("Risk Neutral")
         risk_lbl = ttk.Label(group3, text="Define Risk Preference", font=SMALL_FONT)
-        risk_lbl.grid(row=7, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        risk_lbl.grid(row=14, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.neutral = ttk.Radiobutton(group3, text="Risk Neutral",
                                        variable=self.preference, value="Neutral")
-        self.neutral.grid(row=8, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.neutral.grid(row=15, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.averse = ttk.Radiobutton(group3, text="Risk Averse",
                                       variable=self.preference, value="Averse")
-        self.averse.grid(row=9, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.averse.grid(row=16, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.accepting = ttk.Radiobutton(group3, text="Risk Accepting",
                                          variable=self.preference, value="Accepting")
-        self.accepting.grid(row=10, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.accepting.grid(row=17, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         # ===== Manueverability Buttons
         group4 = ttk.LabelFrame(self)
