@@ -10,12 +10,19 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk     #for pretty buttons/labels
 
-from InfoPage import InfoPage
-#from AnalysisPage import AutoScrollbar
+from BenefitsPage import BenefitsPage
+
+from PlotsAndImages import none_dist, gauss_dist, tri_dist, rect_dist
 
 from Constants import SMALL_FONT, LARGE_FONT, NORM_FONT
 from Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 from Constants import ENTRY_WIDTH
+
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
+
 
 #
 #
@@ -44,57 +51,12 @@ class BenefitsUncertaintiesPage(tk.Frame):
         """
             Creates the widgets for the GUI.
         """
-        # TODO: Create a function iterable through all Benefits for the given input type
         # ===== Uncertainty selection Widgets
 
-        group = []
-        labels_direct = []
-        labels_indirect = []
-        labels_resRec = []
-        for i in range(len(self.data_cont.plan_name)):
-            row_index = 0
-            group.append(ttk.LabelFrame(self, text=self.data_cont.plan_name[i]))
-            group[-1].grid(row=3+i, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
-            for j in range(len(self.data_cont.DirectBen[i])):
-                if self.data_cont.DirectBen[i][j][0] == "":
-                    align = "w"
-                    print_text = "No direct benefits associated with this plan."
-                else:
-                    align = "w"
-                    print_text = self.data_cont.DirectBen[i][j][0] + " - $" + self.data_cont.DirectBen[i][j][1]
-                labels_direct.append(ttk.Label(group[-1], text=print_text,
-                                               font=SMALL_FONT))
-                labels_direct[-1].grid(row=row_index, column=0, sticky="w",
-                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                row_index += 1
+        self.on_trace_change("name", "index", "mode")
 
-            for j in range(len(self.data_cont.IndirectBen[i])):
-                if self.data_cont.IndirectBen[i][j][0] == "":
-                    align = "w"
-                    print_text = "No indirect benefits associated with this plan."
-                else:
-                    align = "w"
-                    print_text = self.data_cont.IndirectBen[i][j][0] + " - $" + self.data_cont.IndirectBen[i][j][1]
+        controller.frames[BenefitsPage].choice.trace("w", self.on_trace_change)
 
-                labels_indirect.append(ttk.Label(group[-1], text=print_text,
-                                                 font=SMALL_FONT))
-                labels_indirect[-1].grid(row=row_index, column=0, sticky=align,
-                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                row_index += 1
-
-            for j in range(len(self.data_cont.ResRec[i])):
-                if self.data_cont.ResRec[i][j][0] == "":
-                    align = "w"
-                    print_text = "No response/recovery benefits associated with this plan."
-                else:
-                    align = "w"
-                    print_text = self.data_cont.ResRec[i][j][0] + " - $" + self.data_cont.ResRec[i][j][1]
-
-                labels_resRec.append(ttk.Label(group[-1], text=print_text,
-                                               font=SMALL_FONT))
-                labels_resRec[-1].grid(row=row_index, column=0, sticky=align,
-                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                row_index += 1
 
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.
@@ -117,7 +79,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
         save_button = ttk.Button(self, text="Save Analysis",
                                  command=lambda: self.data_cont.save_info())
         save_button.grid(row=1, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
-        self.add_button = ttk.Button(self, text="Add Uncertainties", command=self.add_uncertainty)
+        self.add_button = ttk.Button(self, text="Update Uncertainties", command=self.add_uncertainty)
         self.add_button.grid(row=12, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         did_info = ttk.Button(self, text="More Information", command=self.show_info)
         did_info.grid(row=2, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -174,7 +136,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
         if valid:
             # ===== Updates the page for the next cost
             self.update_prev_list()
-            messagebox.showinfo("Success", "Benefit has been successfully added!")
+            #messagebox.showinfo("Success", "Benefit has been successfully added!")
             return True
 
     def update_prev_list(self):
@@ -300,31 +262,150 @@ class BenefitsUncertaintiesPage(tk.Frame):
         """Updates checkbox fields if names are changed in 'InfoPage'"""
         # TODO: Ensure that this works as expected/desired.
 
-        #self.plan1.configure(text=self.controller.frames[InfoPage].name_1_ent.get()+" (Plan 1)")
-        # ===== Hides the widget until .grid() is called again
-        #self.plan2.grid_remove()
-        #self.plan3.grid_remove()
-        #self.plan4.grid_remove()
-        #self.plan5.grid_remove()
-        #self.plan6.grid_remove()
+        group = []
+        labels_direct = []
+        labels_indirect = []
+        labels_res_rec = []
 
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 1:
-            pass
-            #self.plan2.configure(text=self.controller.frames[InfoPage].name_2_ent.get()+" (Plan 2)")
-            #self.plan2.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 2:
-            pass
-            #self.plan3.configure(text=self.controller.frames[InfoPage].name_3_ent.get()+" (Plan 3)")
-            #self.plan3.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 3:
-            pass
-            #self.plan4.configure(text=self.controller.frames[InfoPage].name_4_ent.get()+" (Plan 4)")
-            #self.plan4.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 4:
-            pass
-            #self.plan5.configure(text=self.controller.frames[InfoPage].name_5_ent.get()+" (Plan 5)")
-            #self.plan5.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 5:
-            pass
-            #self.plan6.configure(text=self.controller.frames[InfoPage].name_6_ent.get()+" (Plan 6)")
-            #self.plan6.grid()
+        self.direct_choices = [[tk.StringVar() for x in range(len(self.data_cont.DirectBen[i]))] for i in range(len(self.data_cont.plan_name))]
+        for item in self.direct_choices:
+            for var in item:
+                var.set("1")
+        self.indirect_choices = [[tk.StringVar() for x in range(len(self.data_cont.IndirectBen[i]))] for i in range(len(self.data_cont.plan_name))]
+        for item in self.indirect_choices:
+            for var in item:
+                var.set("1")
+        self.res_rec_choices = [[tk.StringVar() for x in range(len(self.data_cont.ResRec[i]))] for i in range(len(self.data_cont.plan_name))]
+        for item in self.res_rec_choices:
+            for var in item:
+                var.set("1")
+
+        for i in range(len(self.data_cont.plan_name)):
+            row_index = 0
+            group.append(ttk.LabelFrame(self, text=self.data_cont.plan_name[i]))
+            group[-1].grid(row=3+i, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+            for j in range(len(self.data_cont.DirectBen[i])):
+                if self.data_cont.DirectBen[i][j][0] == "":
+                    align = "w"
+                    print_text = "No direct benefits associated with this plan."
+                    add_rad = False
+                else:
+                    align = "w"
+                    print_text = self.data_cont.DirectBen[i][j][0]
+                    print_text += " - $" + self.data_cont.DirectBen[i][j][1]
+                    add_rad = True
+                labels_direct.append(ttk.Label(group[-1], text=print_text,
+                                               font=SMALL_FONT))
+                labels_direct[-1].grid(row=row_index, column=0, sticky="w",
+                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                row_index += 1
+
+                if add_rad:
+                    rads = [tk.Radiobutton(group[-1],
+                                           variable=self.direct_choices[i][j], value="None"),
+                            tk.Radiobutton(group[-1],
+                                           variable=self.direct_choices[i][j], value="Gauss"),
+                            tk.Radiobutton(group[-1],
+                                           variable=self.direct_choices[i][j], value="Tri"),
+                            tk.Radiobutton(group[-1],
+                                           variable=self.direct_choices[i][j], value="Rect")]
+                    rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
+                    figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
+                    for col in range(len(rads)):
+                        fig_label = ttk.Label(group[-1])
+                        fig_label.grid(row=row_index, column=col+1)
+                        fig = figs[col]
+                        canvas = FigureCanvasTkAgg(fig, master=fig_label)
+                        canvas.get_tk_widget().grid(row=row_index, column=col+1)
+                        canvas.show()
+                        rads[col].grid(row=row_index+1, column=col+1)
+                        rad_label = ttk.Label(group[-1], text=rad_labels[col], font=SMALL_FONT)
+                        rad_label.grid(row=row_index+2, column=col+1)
+                    d_range_label = tk.Label(group[-1], text="Range/Standard Deviation:")
+                    d_range_label.grid(row=row_index+3, column=1, sticky="e")
+                    self.direct_range = tk.Entry(group[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT)
+                    self.direct_range.grid(row=row_index+3, column=2, sticky="w",
+                                           padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                    row_index += 4
+
+            for j in range(len(self.data_cont.IndirectBen[i])):
+                if self.data_cont.IndirectBen[i][j][0] == "":
+                    align = "w"
+                    print_text = "No indirect benefits associated with this plan."
+                    add_rad = False
+                else:
+                    align = "w"
+                    print_text = self.data_cont.IndirectBen[i][j][0] + " - $" + self.data_cont.IndirectBen[i][j][1]
+                    add_rad = True
+
+                labels_indirect.append(ttk.Label(group[-1], text=print_text,
+                                                 font=SMALL_FONT))
+                labels_indirect[-1].grid(row=row_index, column=0, sticky=align,
+                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                row_index += 1
+
+                if add_rad:
+                    rads = [tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j], value="None"),
+                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j], value="Gauss"),
+                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j], value="Tri"),
+                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j], value="Rect")]
+                    rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
+                    figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
+                    for col in range(len(rads)):
+                        fig_label = ttk.Label(group[-1])
+                        fig_label.grid(row=row_index, column=col+1)
+                        fig = figs[col]
+                        canvas = FigureCanvasTkAgg(fig, master=fig_label)
+                        canvas.get_tk_widget().grid(row=row_index, column=col+1)
+                        canvas.show()
+                        rads[col].grid(row=row_index+1, column=col+1)
+                        rad_label = ttk.Label(group[-1], text=rad_labels[col], font=SMALL_FONT)
+                        rad_label.grid(row=row_index+2, column=col+1)
+                    i_range_label = tk.Label(group[-1], text="Range/Standard Deviation:")
+                    i_range_label.grid(row=row_index+3, column=1, sticky="e")
+                    self.indirect_range = tk.Entry(group[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT)
+                    self.indirect_range.grid(row=row_index+3, column=2, sticky="w",
+                                           padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                    row_index += 4
+
+
+            for j in range(len(self.data_cont.ResRec[i])):
+                if self.data_cont.ResRec[i][j][0] == "":
+                    align = "w"
+                    print_text = "No response/recovery benefits associated with this plan."
+                    add_rad = False
+                else:
+                    align = "w"
+                    print_text = self.data_cont.ResRec[i][j][0] + " - $" + self.data_cont.ResRec[i][j][1]
+                    add_rad = True
+
+                labels_res_rec.append(ttk.Label(group[-1], text=print_text,
+                                               font=SMALL_FONT))
+                labels_res_rec[-1].grid(row=row_index, column=0, sticky=align,
+                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                row_index += 1
+
+                if add_rad:
+                    rads = [tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j], value="None"),
+                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j], value="Gauss"),
+                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j], value="Tri"),
+                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j], value="Rect")]
+                    rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
+                    figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
+                    for col in range(len(rads)):
+                        fig_label = ttk.Label(group[-1])
+                        fig_label.grid(row=row_index, column=col+1)
+                        fig = figs[col]
+                        canvas = FigureCanvasTkAgg(fig, master=fig_label)
+                        canvas.get_tk_widget().grid(row=row_index, column=col+1)
+                        canvas.show()
+                        rads[col].grid(row=row_index+1, column=col+1)
+                        rad_label = ttk.Label(group[-1], text=rad_labels[col], font=SMALL_FONT)
+                        rad_label.grid(row=row_index+2, column=col+1)
+                    rr_range_label = tk.Label(group[-1], text="Range/Standard Deviation:")
+                    rr_range_label.grid(row=row_index+3, column=1, sticky="e")
+                    self.res_rec_range = tk.Entry(group[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT)
+                    self.res_rec_range.grid(row=row_index+3, column=2, sticky="w",
+                                           padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                    row_index += 4
+

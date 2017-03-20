@@ -10,7 +10,6 @@ from tkinter import messagebox
 from tkinter import ttk     #for pretty buttons/labels
 
 from InfoPage import InfoPage
-#from AnalysisPage import AutoScrollbar
 
 from Constants import SMALL_FONT, LARGE_FONT, NORM_FONT
 from Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
