@@ -32,7 +32,7 @@ class BenefitsPage(tk.Frame):
                                      "title, dollar value, and description. \n"
                                      "Note: these are only disaster-related benefits "
                                      "and do not consider fatalities averted.\n"
-                                     "Fatalties averted will be recorded in a later page. "
+                                     "Fatalities averted will be recorded in a later page. "
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 
