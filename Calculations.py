@@ -380,16 +380,12 @@ class Data():
         try:
             the_irr = irr_for_all(cash_flows, self.horizon, self.disaster_rate, ben_list,
                                   self.stat_life, self.Fatalities[plan_num][1])
-            #calc_irr(irr_list)
-        #except ValueError:
-        #    print('ValueError')
-        #    return 'No Valid IRR'
-        except OverflowError:
-            print('OverflowError')
+        except ValueError:
+            print('ValueError')
             return 'No Valid IRR'
+        if the_irr == 0.5:
+            return "---"
 
-       # if str(calc_irr(irr_list)) == "nan":
-       #     return 'No Valid IRR'
         return the_irr * 100
 
 
@@ -1025,7 +1021,10 @@ class Data():
                 to_write_list[21].append('(${:.0f}'.format(self.net[i]) + ')')
             to_write_list[22].append(" ")
             to_write_list[23].append('{:.2f}'.format(self.sir(i)))
-            to_write_list[24].append('{:.1f}'.format(self.irr(i)) + '%')
+            if type(self.irr(i)) == type("string"):
+                to_write_list[24].append(self.irr(i))
+            else:
+                to_write_list[24].append('{:.1f}'.format(self.irr(i)) + '%')
             to_write_list[25].append('{:.1f}'.format(self.roi(i)) + '%')
             to_write_list[26].append('{:.1f}'.format(self.non_d_roi(i)) + '%')
 
