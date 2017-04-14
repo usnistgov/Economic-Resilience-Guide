@@ -276,24 +276,45 @@ class FatalitiesPage(tk.Frame):
 
         # === Fills non-mandatory description fields with filler if no description has been input
         blank_desc = "<enter a description for this fatality aversion>"
+        if "," in self.desc_b_ent.get("1.0", "end-1c"):
+            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+            valid = False
         get_b_desc = self.desc_b_ent.get("1.0", "end-1c")
         if get_b_desc == "" or get_b_desc == blank_desc:
             self.desc_b_ent.insert(tk.END, "N/A")
+        if "," in self.desc_1_ent.get("1.0", "end-1c"):
+            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+            valid = False
         if self.desc_1_ent.get("1.0", "end-1c") in ["", blank_desc]:
             self.desc_1_ent.insert(tk.END, "N/A")
         if num_plans > 1:
+            if "," in self.desc_2_ent.get("1.0", "end-1c"):
+                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+                valid = False
             if self.desc_2_ent.get("1.0", "end-1c") in ["", blank_desc]:
                 self.desc_2_ent.insert(tk.END, "N/A")
         if num_plans > 2:
+            if "," in self.desc_3_ent.get("1.0", "end-1c"):
+                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+                valid = False
             if self.desc_3_ent.get("1.0", "end-1c") in ["", blank_desc]:
                 self.desc_3_ent.insert(tk.END, "N/A")
         if num_plans > 3:
+            if "," in self.desc_4_ent.get("1.0", "end-1c"):
+                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+                valid = False
             if self.desc_4_ent.get("1.0", "end-1c") in ["", blank_desc]:
                 self.desc_4_ent.insert(tk.END, "N/A")
         if num_plans > 4:
+            if "," in self.desc_5_ent.get("1.0", "end-1c"):
+                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+                valid = False
             if self.desc_5_ent.get("1.0", "end-1c") in ["", blank_desc]:
                 self.desc_5_ent.insert(tk.END, "N/A")
         if num_plans > 5:
+            if "," in self.desc_6_ent.get("1.0", "end-1c"):
+                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+                valid = False
             if self.desc_6_ent.get("1.0", "end-1c") in ["", blank_desc]:
                 self.desc_6_ent.insert(tk.END, "N/A")
 
