@@ -7,22 +7,22 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-.Python
-env/
+#.Python
+#env/
 #build/
-develop-eggs/
+#develop-eggs/
 #dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-*.egg
+#downloads/
+#eggs/
+#.eggs/
+#lib/
+#lib64/
+#parts/
+#sdist/
+#var/
+#*.egg-info/
+#.installed.cfg
+#*.egg
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
