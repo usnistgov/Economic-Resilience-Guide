@@ -331,6 +331,9 @@ class BenefitsPage(tk.Frame):
             err_messages += "Title field has been left empty!\n\n"
             valid = False
         d_text = "<enter a description for this benefit>"
+        if "," in self.desc_ent.get("1.0", "end-1c"):
+            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+            valid = False
         if self.desc_ent.get("1.0", "end-1c") == "" or self.desc_ent.get("1.0", "end-1c") == d_text:
             self.desc_ent.delete('1.0', tk.END)
             self.desc_ent.insert(tk.END, "N/A")

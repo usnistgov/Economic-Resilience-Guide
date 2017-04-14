@@ -307,6 +307,9 @@ class NonDBensPage(tk.Frame):
             err_messages += "Title field has been left empty!\n\n"
             valid = False
         end = "end-1c"
+        if "," in self.desc_ent.get("1.0", "end-1c"):
+            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+            valid = False
         ben_desc = "<enter a description for this benefit>"
         if self.desc_ent.get("1.0", end) == "" or self.desc_ent.get("1.0", end) == ben_desc:
             self.desc_ent.delete('1.0', tk.END)

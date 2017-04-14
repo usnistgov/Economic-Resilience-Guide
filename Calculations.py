@@ -381,9 +381,9 @@ class Data():
             the_irr = irr_for_all(cash_flows, self.horizon, self.disaster_rate, ben_list,
                                   self.stat_life, self.Fatalities[plan_num][1])
             #calc_irr(irr_list)
-        #except ValueError:
-        #    print('ValueError')
-        #    return 'No Valid IRR'
+        except ValueError:
+            print('ValueError')
+            return 'No Valid IRR'
         except OverflowError:
             print('OverflowError')
             return 'No Valid IRR'
