@@ -2,7 +2,6 @@
     Does the irr calculation without the aid of numpy for ease of packaging
 """
 import math
-import numpy
 
 MAX_LOG_RATE = 1e3
 BASE_TOL = 1e-12
@@ -72,24 +71,24 @@ def check_sign(value):
 
 def zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert):
     """ Calculates the discounted values in the case of a discount of 0."""
-    sum = 0
+    my_sum = 0
     inv_lambda = float(inv_lambda)
     horizon = float(horizon)
     for benefit in ben_list:
-        sum += (1/inv_lambda) * horizon * benefit
-    sum += (1/inv_lambda) * horizon * value_stat_life * fat_avert
-    return sum
+        my_sum += (1/inv_lambda) * horizon * benefit
+    my_sum += (1/inv_lambda) * horizon * value_stat_life * fat_avert
+    return my_sum
 
 def discount(dr, horizon, inv_lambda, ben_list, value_stat_life, fat_avert):
     """ Calculates the discounted values."""
     if dr == 0:
-        sum = zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert)
+        my_sum = zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert)
     else:
-        sum = 0
+        my_sum = 0
         for benefit in ben_list:
-            sum += (1/inv_lambda) * (1-math.exp(-dr))**(-1) * (1-math.exp(-dr*horizon)) * benefit
-        sum += (1/inv_lambda) * (1-math.exp(-dr))**(-1) * (1-math.exp(-dr*horizon)) * value_stat_life * fat_avert
-    return sum
+            my_sum += (1/inv_lambda) * (1-math.exp(-dr))**(-1) * (1-math.exp(-dr*horizon)) * benefit
+        my_sum += (1/inv_lambda) * (1-math.exp(-dr))**(-1) * (1-math.exp(-dr*horizon)) * value_stat_life * fat_avert
+    return my_sum
 
 
 ##def irr(stream, tol=BASE_TOL):
