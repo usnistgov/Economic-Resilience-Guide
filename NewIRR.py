@@ -73,6 +73,8 @@ def check_sign(value):
 def zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert):
     """ Calculates the discounted values in the case of a discount of 0."""
     sum = 0
+    inv_lambda = float(inv_lambda)
+    horizon = float(horizon)
     for benefit in ben_list:
         sum += (1/inv_lambda) * horizon * benefit
     sum += (1/inv_lambda) * horizon * value_stat_life * fat_avert

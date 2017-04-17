@@ -242,8 +242,12 @@ def run_main_page(data):
                               font=BOLD_FONT).grid(row=3, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group3, text='{:,.2f}'.format(self.data_cont.sir(i)),
                           font=SMALL_FONT).grid(row=5, column=(i + 1), sticky="e", **pad_opts)
-                ttk.Label(group3, text='{:,.1f}'.format(self.data_cont.irr(i)) + '%',
-                          font=SMALL_FONT).grid(row=6, column=(i + 1), sticky="e", **pad_opts)
+                if type(self.data_cont.irr(i)) == type("string"):
+                    ttk.Label(group3, text=self.data_cont.irr(i),
+                              font=SMALL_FONT).grid(row=6, column=(i+1), sticky="e", **pad_opts)
+                else:
+                    ttk.Label(group3, text='{:,.1f}'.format(self.data_cont.irr(i)) + '%',
+                              font=SMALL_FONT).grid(row=6, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group3, text='{:,.1f}'.format(self.data_cont.roi(i)) + '%',
                           font=SMALL_FONT).grid(row=7, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group3, text='{:,.1f}'.format(self.data_cont.non_d_roi(i)) + '%',
