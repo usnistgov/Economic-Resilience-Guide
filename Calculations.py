@@ -16,7 +16,7 @@ from NewIRR import irr_for_all
 #import numpy
     # Allows for the calculation of Internal Rate of Return (IRR).
     # This must be downloaded from the internet
-import docx
+#import docx
 # Allows analysis to be exported to a .docx file.
 # This must be downloaded from the internet
 from Constants import TAB
