@@ -9,6 +9,8 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk     #for pretty buttons/labels
 
+import numpy as np
+
 from InfoPage import InfoPage
 
 from Constants import SMALL_FONT, LARGE_FONT, NORM_FONT
@@ -73,29 +75,24 @@ class BenefitsPage(tk.Frame):
         plan_lbl = ttk.Label(group2, text="Which plan(s) does this benefit pertain to?",
                              font=SMALL_FONT)
         plan_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
-        self.b_bool = tk.BooleanVar()
-        self.p1_bool = tk.BooleanVar()
-        self.p2_bool = tk.BooleanVar()
-        self.p3_bool = tk.BooleanVar()
-        self.p4_bool = tk.BooleanVar()
-        self.p5_bool = tk.BooleanVar()
-        self.p6_bool = tk.BooleanVar()
+        self.bools = [tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar(),
+                      tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar()]
 
 
         self.base = tk.Checkbutton(group2, text="Base scenario",
-                                   variable=self.b_bool, font=SMALL_FONT)
+                                   variable=self.bools[0], font=SMALL_FONT)
         self.base.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan1 = tk.Checkbutton(group2, text="Plan 1", variable=self.p1_bool, font=SMALL_FONT)
+        self.plan1 = tk.Checkbutton(group2, text="Plan 1", variable=self.bools[1], font=SMALL_FONT)
         self.plan1.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan2 = tk.Checkbutton(group2, text="Plan 2", variable=self.p2_bool, font=SMALL_FONT)
+        self.plan2 = tk.Checkbutton(group2, text="Plan 2", variable=self.bools[2], font=SMALL_FONT)
         self.plan2.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan3 = tk.Checkbutton(group2, text="Plan 3", variable=self.p3_bool, font=SMALL_FONT)
+        self.plan3 = tk.Checkbutton(group2, text="Plan 3", variable=self.bools[3], font=SMALL_FONT)
         self.plan3.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan4 = tk.Checkbutton(group2, text="Plan 4", variable=self.p4_bool, font=SMALL_FONT)
+        self.plan4 = tk.Checkbutton(group2, text="Plan 4", variable=self.bools[4], font=SMALL_FONT)
         self.plan4.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan5 = tk.Checkbutton(group2, text="Plan 5", variable=self.p5_bool, font=SMALL_FONT)
+        self.plan5 = tk.Checkbutton(group2, text="Plan 5", variable=self.bools[5], font=SMALL_FONT)
         self.plan5.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan6 = tk.Checkbutton(group2, text="Plan 6", variable=self.p6_bool, font=SMALL_FONT)
+        self.plan6 = tk.Checkbutton(group2, text="Plan 6", variable=self.bools[6], font=SMALL_FONT)
         self.plan6.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
 
         # ===== Detects if a change occurs in the name fields on 'InfoPage'
@@ -237,20 +234,9 @@ class BenefitsPage(tk.Frame):
             return False
 
         plan_num = []            # === List that contains all selected plans
-        if self.b_bool.get():
-            plan_num.append(0)
-        if self.p1_bool.get():
-            plan_num.append(1)
-        if self.p2_bool.get():
-            plan_num.append(2)
-        if self.p3_bool.get():
-            plan_num.append(3)
-        if self.p4_bool.get():
-            plan_num.append(4)
-        if self.p5_bool.get():
-            plan_num.append(5)
-        if self.p6_bool.get():
-            plan_num.append(6)
+        for i in range(len(self.bools)):
+            if self.bools[i].get():
+                plan_num.append(i)
 
         extend = [self.title_ent.get(), self.ben_ent.get(), self.desc_ent.get("1.0", "end-1c")]
         if self.choice.get() == "Direct":
@@ -331,14 +317,14 @@ class BenefitsPage(tk.Frame):
             valid = False
         d_text = "<enter a description for this benefit>"
         if "," in self.desc_ent.get("1.0", "end-1c"):
-            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+            err_messages += ("Description cannot have a comma \',\'."
+                             "Please change the decsription.\n\n")
             valid = False
         if self.desc_ent.get("1.0", "end-1c") == "" or self.desc_ent.get("1.0", "end-1c") == d_text:
             self.desc_ent.delete('1.0', tk.END)
             self.desc_ent.insert(tk.END, "N/A")
-        any_plan_1 = self.p1_bool.get() or self.p2_bool.get() or self.p3_bool.get()
-        any_plan_2 = self.p4_bool.get() or self.p5_bool.get() or self.p6_bool.get()
-        if not (self.b_bool.get() or any_plan_1 or any_plan_2):
+        bool_check = [self.bools[i].get() for i in range(len(self.bools))]
+        if not np.any(bool_check):
             err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
             valid = False
         if self.choice.get() not in ["Direct", "Indirect", "ResRec"]:
@@ -347,22 +333,14 @@ class BenefitsPage(tk.Frame):
 
         # ===== Benefit cannot have a duplicate title
         plan_num = []  # === List that contains all selected plans
-        if self.p1_bool.get():
-            plan_num.append(1)
-        if self.p2_bool.get():
-            plan_num.append(2)
-        if self.p3_bool.get():
-            plan_num.append(3)
-        if self.p4_bool.get():
-            plan_num.append(4)
-        if self.p5_bool.get():
-            plan_num.append(5)
-        if self.p6_bool.get():
-            plan_num.append(6)
+
+        for i in range(1, len(self.bools)):
+            if self.bools[i].get():
+                plan_num.append(i)
 
         for choice in self.choices:
             if (choice)[:len(self.title_ent.get())] == self.title_ent.get():
-                if self.b_bool.get() and (choice)[len(self.title_ent.get()):] == " - <Base Plan>":
+                if self.bools[0].get() and (choice)[len(self.title_ent.get()):] == " - <Base Plan>":
                     err_messages += ("\"" + self.title_ent.get())
                     err_messages += "\" is already used as a benefit title for the Base Plan. "
                     err_messages += "Please input a different title.\n\n"
