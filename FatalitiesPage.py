@@ -65,92 +65,132 @@ class FatalitiesPage(tk.Frame):
         desc_lbl = ttk.Label(group1, text="Description", font=NORM_FONT)
         desc_lbl.grid(row=0, column=2, **pad_opts)
 
-        fat_b_lbl = ttk.Label(group1, text="Base:", font=NORM_FONT)
-        fat_b_lbl.grid(row=1, column=0, sticky="ne", **pad_opts)
-        self.fat_b_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
-        self.fat_b_ent.insert(tk.END, "")
-        self.fat_b_ent.grid(row=1, column=1, sticky="nw", **pad_opts)
-        self.desc_b_ent = tk.Text(group1, width=40, height=3, font=SMALL_FONT)
-        self.desc_b_ent.insert(tk.END, "<enter a description for this fatality aversion>")
-        self.desc_b_ent.grid(row=1, column=2, sticky="ews", **pad_opts)
+        self.fat_plan_lbls = [ttk.Label(group1, text="Base:", font=NORM_FONT),
+                              ttk.Label(group1, text="Plan 1:", font=NORM_FONT),
+                              ttk.Label(group1, text="Plan 2:", font=NORM_FONT),
+                              ttk.Label(group1, text="Plan 3:", font=NORM_FONT),
+                              ttk.Label(group1, text="Plan 4:", font=NORM_FONT),
+                              ttk.Label(group1, text="Plan 5:", font=NORM_FONT),
+                              ttk.Label(group1, text="Plan 6:", font=NORM_FONT)]
+        for label in self.fat_plan_lbls:
+            my_row = self.fat_plan_lbls.index(label) + 1
+            label.grid(row=my_row, column=0, sticky="ne", **pad_opts)
 
-        self.fat_1_lbl = ttk.Label(group1, text="Plan 1:", font=NORM_FONT)
-        self.fat_1_lbl.grid(row=2, column=0, sticky="ne", **pad_opts)
-        self.fat_1_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
-        self.fat_1_ent.insert(tk.END, "")
-        self.fat_1_ent.grid(row=2, column=1, sticky="nw", **pad_opts)
-        self.desc_1_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
-        self.desc_1_ent.insert(tk.END, "<enter a description for this fatality aversion>")
-        self.desc_1_ent.grid(row=2, column=2, sticky="ews", **pad_opts)
+        self.fat_plan_ents = [tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT),
+                              tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT),
+                              tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT),
+                              tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT),
+                              tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT),
+                              tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT),
+                              tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)]
+        for entry in self.fat_plan_ents:
+            entry.insert(tk.END, "")
+            my_row = self.fat_plan_ents.index(entry) + 1
+            entry.grid(row=my_row, column=1, sticky="new", **pad_opts)
 
-        self.fat_1_lbl.grid_remove()
-        self.fat_1_ent.grid_remove()
-        self.desc_1_ent.grid_remove()
+        self.desc_plan_ents = [tk.Text(group1, width=40, height=3, font=SMALL_FONT),
+                              tk.Text(group1, width=40, height=3, font=SMALL_FONT),
+                              tk.Text(group1, width=40, height=3, font=SMALL_FONT),
+                              tk.Text(group1, width=40, height=3, font=SMALL_FONT),
+                              tk.Text(group1, width=40, height=3, font=SMALL_FONT),
+                              tk.Text(group1, width=40, height=3, font=SMALL_FONT),
+                              tk.Text(group1, width=40, height=3, font=SMALL_FONT)]
+        for text in self.desc_plan_ents:
+            text.insert(tk.END, "<enter a description for this fatality aversion>")
+            my_row = self.desc_plan_ents.index(text) + 1
+            text.grid(row=my_row, column=2, sticky = "ews", **pad_opts)
 
-        self.fat_2_lbl = ttk.Label(group1, text="Plan 2:", font=NORM_FONT)
-        self.fat_2_lbl.grid(row=3, column=0, sticky="ne", **pad_opts)
-        self.fat_2_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
-        self.fat_2_ent.insert(tk.END, "")
-        self.fat_2_ent.grid(row=3, column=1, sticky="nw", **pad_opts)
-        self.desc_2_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
-        self.desc_2_ent.insert(tk.END, "<enter a description for this fatality aversion>")
-        self.desc_2_ent.grid(row=3, column=2, sticky="ews", **pad_opts)
+        for i in range(1, 7):
+            self.fat_plan_lbls[i].grid_remove()
+            self.fat_plan_ents[i].grid_remove()
+            self.desc_plan_ents[i].grid_remove()
 
-        self.fat_2_lbl.grid_remove()
-        self.fat_2_ent.grid_remove()
-        self.desc_2_ent.grid_remove()
+        #fat_b_lbl = ttk.Label(group1, text="Base:", font=NORM_FONT)
+        #fat_b_lbl.grid(row=1, column=0, sticky="ne", **pad_opts)
+        #self.fat_b_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
+        #self.fat_b_ent.insert(tk.END, "")
+        #self.fat_b_ent.grid(row=1, column=1, sticky="nw", **pad_opts)
+        #self.desc_b_ent = tk.Text(group1, width=40, height=3, font=SMALL_FONT)
+        #self.desc_b_ent.insert(tk.END, "<enter a description for this fatality aversion>")
+        #self.desc_b_ent.grid(row=1, column=2, sticky="ews", **pad_opts)
 
-        self.fat_3_lbl = ttk.Label(group1, text="Plan 3:", font=NORM_FONT)
-        self.fat_3_lbl.grid(row=4, column=0, sticky="ne", **pad_opts)
-        self.fat_3_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
-        self.fat_3_ent.insert(tk.END, "")
-        self.fat_3_ent.grid(row=4, column=1, sticky="nw", **pad_opts)
-        self.desc_3_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
-        self.desc_3_ent.insert(tk.END, "<enter a description for this fatality aversion>")
-        self.desc_3_ent.grid(row=4, column=2, sticky="ews", **pad_opts)
+        #self.fat_1_lbl = ttk.Label(group1, text="Plan 1:", font=NORM_FONT)
+        #self.fat_1_lbl.grid(row=2, column=0, sticky="ne", **pad_opts)
+        #self.fat_1_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
+        #self.fat_1_ent.insert(tk.END, "")
+        #self.fat_1_ent.grid(row=2, column=1, sticky="nw", **pad_opts)
+        #self.desc_1_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
+        #self.desc_1_ent.insert(tk.END, "<enter a description for this fatality aversion>")
+        #self.desc_1_ent.grid(row=2, column=2, sticky="ews", **pad_opts)
 
-        self.fat_3_lbl.grid_remove()
-        self.fat_3_ent.grid_remove()
-        self.desc_3_ent.grid_remove()
+        #self.fat_1_lbl.grid_remove()
+        #self.fat_1_ent.grid_remove()
+        #self.desc_1_ent.grid_remove()
 
-        self.fat_4_lbl = ttk.Label(group1, text="Plan 4:", font=NORM_FONT)
-        self.fat_4_lbl.grid(row=5, column=0, sticky="ne", **pad_opts)
-        self.fat_4_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
-        self.fat_4_ent.insert(tk.END, "")
-        self.fat_4_ent.grid(row=5, column=1, sticky="nw", **pad_opts)
-        self.desc_4_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
-        self.desc_4_ent.insert(tk.END, "<enter a description for this fatality aversion>")
-        self.desc_4_ent.grid(row=5, column=2, sticky="ews", **pad_opts)
+        #self.fat_2_lbl = ttk.Label(group1, text="Plan 2:", font=NORM_FONT)
+        #self.fat_2_lbl.grid(row=3, column=0, sticky="ne", **pad_opts)
+        #self.fat_2_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
+        #self.fat_2_ent.insert(tk.END, "")
+        #self.fat_2_ent.grid(row=3, column=1, sticky="nw", **pad_opts)
+        #self.desc_2_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
+        #self.desc_2_ent.insert(tk.END, "<enter a description for this fatality aversion>")
+        #self.desc_2_ent.grid(row=3, column=2, sticky="ews", **pad_opts)
 
-        self.fat_4_lbl.grid_remove()
-        self.fat_4_ent.grid_remove()
-        self.desc_4_ent.grid_remove()
+        #self.fat_2_lbl.grid_remove()
+        #self.fat_2_ent.grid_remove()
+        #self.desc_2_ent.grid_remove()
 
-        self.fat_5_lbl = ttk.Label(group1, text="Plan 5:", font=NORM_FONT)
-        self.fat_5_lbl.grid(row=6, column=0, sticky="ne", **pad_opts)
-        self.fat_5_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
-        self.fat_5_ent.insert(tk.END, "")
-        self.fat_5_ent.grid(row=6, column=1, sticky="nw", **pad_opts)
-        self.desc_5_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
-        self.desc_5_ent.insert(tk.END, "<enter a description for this fatality aversion>")
-        self.desc_5_ent.grid(row=6, column=2, sticky="ews", **pad_opts)
+        #self.fat_3_lbl = ttk.Label(group1, text="Plan 3:", font=NORM_FONT)
+        #self.fat_3_lbl.grid(row=4, column=0, sticky="ne", **pad_opts)
+        #self.fat_3_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
+        #self.fat_3_ent.insert(tk.END, "")
+        #self.fat_3_ent.grid(row=4, column=1, sticky="nw", **pad_opts)
+        #self.desc_3_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
+        #self.desc_3_ent.insert(tk.END, "<enter a description for this fatality aversion>")
+        #self.desc_3_ent.grid(row=4, column=2, sticky="ews", **pad_opts)
 
-        self.fat_5_lbl.grid_remove()
-        self.fat_5_ent.grid_remove()
-        self.desc_5_ent.grid_remove()
+        #self.fat_3_lbl.grid_remove()
+        #self.fat_3_ent.grid_remove()
+        #self.desc_3_ent.grid_remove()
 
-        self.fat_6_lbl = ttk.Label(group1, text="Plan 6:", font=NORM_FONT)
-        self.fat_6_lbl.grid(row=7, column=0, sticky="ne", **pad_opts)
-        self.fat_6_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
-        self.fat_6_ent.insert(tk.END, "")
-        self.fat_6_ent.grid(row=7, column=1, sticky="nw", **pad_opts)
-        self.desc_6_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
-        self.desc_6_ent.insert(tk.END, "<enter a description for this fatality aversion>")
-        self.desc_6_ent.grid(row=7, column=2, sticky="ews", **pad_opts)
+        #self.fat_4_lbl = ttk.Label(group1, text="Plan 4:", font=NORM_FONT)
+        #self.fat_4_lbl.grid(row=5, column=0, sticky="ne", **pad_opts)
+        #self.fat_4_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
+        #self.fat_4_ent.insert(tk.END, "")
+        #self.fat_4_ent.grid(row=5, column=1, sticky="nw", **pad_opts)
+        #self.desc_4_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
+        #self.desc_4_ent.insert(tk.END, "<enter a description for this fatality aversion>")
+        #self.desc_4_ent.grid(row=5, column=2, sticky="ews", **pad_opts)
 
-        self.fat_6_lbl.grid_remove()
-        self.fat_6_ent.grid_remove()
-        self.desc_6_ent.grid_remove()
+        #self.fat_4_lbl.grid_remove()
+        #self.fat_4_ent.grid_remove()
+        #self.desc_4_ent.grid_remove()
+
+        #self.fat_5_lbl = ttk.Label(group1, text="Plan 5:", font=NORM_FONT)
+        #self.fat_5_lbl.grid(row=6, column=0, sticky="ne", **pad_opts)
+        #self.fat_5_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
+        #self.fat_5_ent.insert(tk.END, "")
+        #self.fat_5_ent.grid(row=6, column=1, sticky="nw", **pad_opts)
+        #self.desc_5_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
+        #self.desc_5_ent.insert(tk.END, "<enter a description for this fatality aversion>")
+        #self.desc_5_ent.grid(row=6, column=2, sticky="ews", **pad_opts)
+
+        #self.fat_5_lbl.grid_remove()
+        #self.fat_5_ent.grid_remove()
+        #self.desc_5_ent.grid_remove()
+
+        #self.fat_6_lbl = ttk.Label(group1, text="Plan 6:", font=NORM_FONT)
+        #self.fat_6_lbl.grid(row=7, column=0, sticky="ne", **pad_opts)
+        #self.fat_6_ent = tk.Entry(group1, width=int(ENTRY_WIDTH / 5), font=SMALL_FONT)
+        #self.fat_6_ent.insert(tk.END, "")
+        #self.fat_6_ent.grid(row=7, column=1, sticky="nw", **pad_opts)
+        #self.desc_6_ent = tk.Text(group1, width=30, height=3, font=SMALL_FONT)
+        #self.desc_6_ent.insert(tk.END, "<enter a description for this fatality aversion>")
+        #self.desc_6_ent.grid(row=7, column=2, sticky="ews", **pad_opts)
+
+        #self.fat_6_lbl.grid_remove()
+        #self.fat_6_ent.grid_remove()
+        #self.desc_6_ent.grid_remove()
 
 
         # ===== Detects if a change occurs in the name fields on 'InfoPage'
@@ -237,27 +277,31 @@ class FatalitiesPage(tk.Frame):
 
         self.data_cont.stat_life = self.life_ent.get()
 
-        self.data_cont.Fatalities[0][1] = self.fat_b_ent.get()
-        self.data_cont.Fatalities[0][2] = self.desc_b_ent.get("1.0", "end-1c")
+        for i in range(0, num_plans + 1):
+            self.data_cont.Fatalities[i][1] = self.fat_plan_ents[i].get()
+            self.data_cont.Fatalities[i][2] = self.desc_plan_ents[i].get("1.0", "end-1c")
 
-        self.data_cont.Fatalities[1][1] = self.fat_1_ent.get()
-        self.data_cont.Fatalities[1][2] = self.desc_1_ent.get("1.0", "end-1c")
+        #self.data_cont.Fatalities[0][1] = self.fat_b_ent.get()
+        #self.data_cont.Fatalities[0][2] = self.desc_b_ent.get("1.0", "end-1c")
 
-        if num_plans > 1:
-            self.data_cont.Fatalities[2][1] = self.fat_2_ent.get()
-            self.data_cont.Fatalities[2][2] = self.desc_2_ent.get("1.0", "end-1c")
-        if num_plans > 2:
-            self.data_cont.Fatalities[3][1] = self.fat_3_ent.get()
-            self.data_cont.Fatalities[3][2] = self.desc_3_ent.get("1.0", "end-1c")
-        if num_plans > 3:
-            self.data_cont.Fatalities[4][1] = self.fat_4_ent.get()
-            self.data_cont.Fatalities[4][2] = self.desc_4_ent.get("1.0", "end-1c")
-        if num_plans > 4:
-            self.data_cont.Fatalities[5][1] = self.fat_5_ent.get()
-            self.data_cont.Fatalities[5][2] = self.desc_5_ent.get("1.0", "end-1c")
-        if num_plans > 5:
-            self.data_cont.Fatalities[6][1] = self.fat_6_ent.get()
-            self.data_cont.Fatalities[6][2] = self.desc_6_ent.get("1.0", "end-1c")
+        #self.data_cont.Fatalities[1][1] = self.fat_1_ent.get()
+        #self.data_cont.Fatalities[1][2] = self.desc_1_ent.get("1.0", "end-1c")
+
+        #if num_plans > 1:
+        #    self.data_cont.Fatalities[2][1] = self.fat_2_ent.get()
+        #    self.data_cont.Fatalities[2][2] = self.desc_2_ent.get("1.0", "end-1c")
+        #if num_plans > 2:
+        #    self.data_cont.Fatalities[3][1] = self.fat_3_ent.get()
+        #    self.data_cont.Fatalities[3][2] = self.desc_3_ent.get("1.0", "end-1c")
+        #if num_plans > 3:
+        #    self.data_cont.Fatalities[4][1] = self.fat_4_ent.get()
+        #    self.data_cont.Fatalities[4][2] = self.desc_4_ent.get("1.0", "end-1c")
+        #if num_plans > 4:
+        #    self.data_cont.Fatalities[5][1] = self.fat_5_ent.get()
+        #    self.data_cont.Fatalities[5][2] = self.desc_5_ent.get("1.0", "end-1c")
+        #if num_plans > 5:
+        #    self.data_cont.Fatalities[6][1] = self.fat_6_ent.get()
+        #    self.data_cont.Fatalities[6][2] = self.desc_6_ent.get("1.0", "end-1c")
 
         if valid:
             messagebox.showinfo("Success",
@@ -276,117 +320,29 @@ class FatalitiesPage(tk.Frame):
 
         # === Fills non-mandatory description fields with filler if no description has been input
         blank_desc = "<enter a description for this fatality aversion>"
-        if "," in self.desc_b_ent.get("1.0", "end-1c"):
-            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
-            valid = False
-        get_b_desc = self.desc_b_ent.get("1.0", "end-1c")
-        if get_b_desc == "" or get_b_desc == blank_desc:
-            self.desc_b_ent.insert(tk.END, "N/A")
-        if "," in self.desc_1_ent.get("1.0", "end-1c"):
-            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
-            valid = False
-        if self.desc_1_ent.get("1.0", "end-1c") in ["", blank_desc]:
-            self.desc_1_ent.insert(tk.END, "N/A")
-        if num_plans > 1:
-            if "," in self.desc_2_ent.get("1.0", "end-1c"):
-                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
+        for entry in self.desc_plan_ents:
+            if "," in entry.get("1.0", "end-1c"):
+                err_messages += ("Description cannot have a comma \',\'. "
+                                 "Please change the description.\n\n")
                 valid = False
-            if self.desc_2_ent.get("1.0", "end-1c") in ["", blank_desc]:
-                self.desc_2_ent.insert(tk.END, "N/A")
-        if num_plans > 2:
-            if "," in self.desc_3_ent.get("1.0", "end-1c"):
-                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
-                valid = False
-            if self.desc_3_ent.get("1.0", "end-1c") in ["", blank_desc]:
-                self.desc_3_ent.insert(tk.END, "N/A")
-        if num_plans > 3:
-            if "," in self.desc_4_ent.get("1.0", "end-1c"):
-                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
-                valid = False
-            if self.desc_4_ent.get("1.0", "end-1c") in ["", blank_desc]:
-                self.desc_4_ent.insert(tk.END, "N/A")
-        if num_plans > 4:
-            if "," in self.desc_5_ent.get("1.0", "end-1c"):
-                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
-                valid = False
-            if self.desc_5_ent.get("1.0", "end-1c") in ["", blank_desc]:
-                self.desc_5_ent.insert(tk.END, "N/A")
-        if num_plans > 5:
-            if "," in self.desc_6_ent.get("1.0", "end-1c"):
-                err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
-                valid = False
-            if self.desc_6_ent.get("1.0", "end-1c") in ["", blank_desc]:
-                self.desc_6_ent.insert(tk.END, "N/A")
 
         # ===== Check for empty entries
-        if self.fat_b_ent.get() == "":
-            self.fat_b_ent.insert(tk.END, "0")
-        if self.fat_1_ent.get() == "":
-            self.fat_1_ent.insert(tk.END, "0")
-        if num_plans > 1:
-            if self.fat_2_ent.get() == "":
-                self.fat_2_ent.insert(tk.END, "0")
-        if num_plans > 2:
-            if self.fat_3_ent.get() == "":
-                self.fat_3_ent.insert(tk.END, "0")
-        if num_plans > 3:
-            if self.fat_4_ent.get() == "":
-                self.fat_4_ent.insert(tk.END, "0")
-        if num_plans > 4:
-            if self.fat_5_ent.get() == "":
-                self.fat_5_ent.insert(tk.END, "0")
-        if num_plans > 5:
-            if self.fat_6_ent.get() == "":
-                self.fat_6_ent.insert(tk.END, "0")
-
-
+        for entry in self.fat_plan_ents:
+            if entry.get() == "":
+                entry.insert(tk.END, "0")
 
         # ===== Fatalities Averted must be a positive number
-        try:
-            float(self.fat_b_ent.get())
-            float(self.fat_1_ent.get())
-            if num_plans > 1:
-                float(self.fat_2_ent.get())
-            if num_plans > 2:
-                float(self.fat_3_ent.get())
-            if num_plans > 3:
-                float(self.fat_4_ent.get())
-            if num_plans > 4:
-                float(self.fat_5_ent.get())
-            if num_plans > 5:
-                float(self.fat_6_ent.get())
-        except ValueError:
-            err_messages += "Fatalities Averted must be a number (can be a decimal). "
-            err_messages += "Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.fat_b_ent.get():
-            err_messages += "Fatalities Averted must be a positive number. "
-            err_messages += "Please enter a positive amount for the Base Case.\n\n"
-            valid = False
-        if "-" in self.fat_1_ent.get():
-            err_messages += "Fatalities Averted must be a positive number. "
-            err_messages += "Please enter a positive amount for Plan 1.\n\n"
-            valid = False
-        if "-" in self.fat_2_ent.get():
-            err_messages += "Fatalities Averted must be a positive number. "
-            err_messages += "Please enter a positive amount for Plan 2.\n\n"
-            valid = False
-        if "-" in self.fat_3_ent.get():
-            err_messages += "Fatalities Averted must be a positive number. "
-            err_messages += "Please enter a positive amount for Plan 3.\n\n"
-            valid = False
-        if "-" in self.fat_4_ent.get():
-            err_messages += "Fatalities Averted must be a positive number. "
-            err_messages += "Please enter a positive amount for Plan 4.\n\n"
-            valid = False
-        if "-" in self.fat_5_ent.get():
-            err_messages += "Fatalities Averted must be a positive number. "
-            err_messages += "Please enter a positive amount for Plan 5.\n\n"
-            valid = False
-        if "-" in self.fat_6_ent.get():
-            err_messages += "Fatalities Averted must be a positive number. "
-            err_messages += "Please enter a positive amount for Plan 6.\n\n"
-            valid = False
+        for entry in self.fat_plan_ents:
+            try:
+                float(entry.get())
+            except ValueError:
+                err_messages += "Fatalaties Averted must be a number (can by a decimal). "
+                err_messages += "Please enter an amount.\n\n"
+                valid = False
+            if "-" in entry.get():
+                err_messages += "Fatalities Averted must be a positive number. "
+                err_messages += "Please enter a positive amount.\n\n"
+                valid = False
 
         try:
             self.data_cont.stat_life = float(self.life_ent.get())
@@ -407,103 +363,21 @@ class FatalitiesPage(tk.Frame):
     def on_trace_change(self, _name, _index, _mode):
         """Updates description fields if numbers of plans are changed in 'InfoPage'"""
 
-        self.fat_1_lbl.grid_remove()
-        self.fat_1_ent.grid_remove()
-        self.desc_1_ent.grid_remove()
-        self.fat_2_lbl.grid_remove()
-        self.fat_2_ent.grid_remove()
-        self.desc_2_ent.grid_remove()
-        self.fat_3_lbl.grid_remove()
-        self.fat_3_ent.grid_remove()
-        self.desc_3_ent.grid_remove()
-        self.fat_4_lbl.grid_remove()
-        self.fat_4_ent.grid_remove()
-        self.desc_4_ent.grid_remove()
-        self.fat_5_lbl.grid_remove()
-        self.fat_5_ent.grid_remove()
-        self.desc_5_ent.grid_remove()
-        self.fat_6_lbl.grid_remove()
-        self.fat_6_ent.grid_remove()
-        self.desc_6_ent.grid_remove()
+        for i in range(1,7):
+            self.fat_plan_ents[i].grid_remove()
+            self.fat_plan_lbls[i].grid_remove()
+            self.desc_plan_ents[i].grid_remove()
 
         # === Try is used here in case of a new analaysis being started
-        try:
-            self.fat_b_ent.delete(0, tk.END)
-            self.fat_b_ent.insert(tk.END, self.data_cont.Fatalities[0][1])
-            self.desc_b_ent.delete('1.0', tk.END)
-            self.desc_b_ent.insert(tk.END, self.data_cont.Fatalities[0][2])
-        except IndexError:
-            self.do_nothing()
-
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 0:
-            self.fat_1_lbl.grid()
-            self.fat_1_ent.grid()
-            self.desc_1_ent.grid()
-
+        num_plans = int(self.controller.frames[InfoPage].num_plans_ent.get())
+        for i in range(0, num_plans+1):
+            self.fat_plan_lbls[i].grid()
+            self.fat_plan_ents[i].grid()
+            self.desc_plan_ents[i].grid()
             try:
-                self.fat_1_ent.delete(0, tk.END)
-                self.fat_1_ent.insert(tk.END, self.data_cont.Fatalities[1][1])
-                self.desc_1_ent.delete('1.0', tk.END)
-                self.desc_1_ent.insert(tk.END, self.data_cont.Fatalities[1][2])
-            except IndexError:
-                self.do_nothing()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 1:
-            self.fat_2_lbl.grid()
-            self.fat_2_ent.grid()
-            self.desc_2_ent.grid()
-
-            try:
-                self.fat_2_ent.delete(0, tk.END)
-                self.fat_2_ent.insert(tk.END, self.data_cont.Fatalities[2][1])
-                self.desc_2_ent.delete('1.0', tk.END)
-                self.desc_2_ent.insert(tk.END, self.data_cont.Fatalities[2][2])
-            except IndexError:
-                self.do_nothing()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 2:
-            self.fat_3_lbl.grid()
-            self.fat_3_ent.grid()
-            self.desc_3_ent.grid()
-
-            try:
-                self.fat_3_ent.delete(0, tk.END)
-                self.fat_3_ent.insert(tk.END, self.data_cont.Fatalities[3][1])
-                self.desc_3_ent.delete('1.0', tk.END)
-                self.desc_3_ent.insert(tk.END, self.data_cont.Fatalities[3][2])
-            except IndexError:
-                self.do_nothing()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 3:
-            self.fat_4_lbl.grid()
-            self.fat_4_ent.grid()
-            self.desc_4_ent.grid()
-
-            try:
-                self.fat_4_ent.delete(0, tk.END)
-                self.fat_4_ent.insert(tk.END, self.data_cont.Fatalities[4][1])
-                self.desc_4_ent.delete('1.0', tk.END)
-                self.desc_4_ent.insert(tk.END, self.data_cont.Fatalities[4][2])
-            except IndexError:
-                self.do_nothing()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 4:
-            self.fat_5_lbl.grid()
-            self.fat_5_ent.grid()
-            self.desc_5_ent.grid()
-
-            try:
-                self.fat_5_ent.delete(0, tk.END)
-                self.fat_5_ent.insert(tk.END, self.data_cont.Fatalities[5][1])
-                self.desc_5_ent.delete('1.0', tk.END)
-                self.desc_5_ent.insert(tk.END, self.data_cont.Fatalities[5][2])
-            except IndexError:
-                self.do_nothing()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 5:
-            self.fat_6_lbl.grid()
-            self.fat_6_ent.grid()
-            self.desc_6_ent.grid()
-
-            try:
-                self.fat_6_ent.delete(0, tk.END)
-                self.fat_6_ent.insert(tk.END, self.data_cont.Fatalities[6][1])
-                self.desc_6_ent.delete('1.0', tk.END)
-                self.desc_6_ent.insert(tk.END, self.data_cont.Fatalities[6][2])
+                self.fat_plan_ents[i].delete(0, tk.END)
+                self.fat_plan_ents[i].insert(tk.END, self.data_cont.Fatalities[i][1])
+                self.desc_plan_ents[i].delete('1.0', tk.END)
+                self.desc_plan_ents[i].insert(tk.END, self.data_cont.Fatalities[i][2])
             except IndexError:
                 self.do_nothing()
