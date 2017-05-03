@@ -38,14 +38,15 @@ class BenefitsUncertaintiesPage(tk.Frame):
         self.controller = controller
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="There is often uncertainty surrounding the exact benefits.\n"
-                                     "The benefits associated with each alternative are listed below. "
-                                     "The type of benefit and the dollar amount associated with the benefit is indicated.\n"
-                                     "For each benefit, please select the associated uncertainty description. "
-                                     "Each type of uncertainty distribution requires key information. \n"
-                                     "Please provide this information in the boxes below the distribution type you select. "
-                                     "Further information is available in the “more information” section for this page.\n"
+                                     "The benefits associated with each alternative are listed "
+                                     "below. The type of benefit and the dollar amount associated "
+                                     "with the benefit is indicated.\nFor each benefit, please "
+                                     "select the associated uncertainty description. Each type of "
+                                     "uncertainty distribution requires key information. \n"
+                                     "Please provide this information in the boxes below the "
+                                     "distribution type you select. Further information is "
+                                     "available in the “more information” section for this page.\n"
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
-        # TODO: Update Label text
         label.grid(padx=10, pady=10, sticky="new")
 
         ben_lbl = tk.Label(self, text="Benefits Uncertainties", font=LARGE_FONT)

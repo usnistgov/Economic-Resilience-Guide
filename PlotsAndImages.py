@@ -4,9 +4,16 @@ import numpy as np
 import matplotlib
 from matplotlib.figure import Figure
 
+from tempfile import mkdtemp
+from joblib import Memory
+
+CACHEDIR = mkdtemp()
+mem = Memory(cachedir=CACHEDIR, verbose=0)
+
+
 matplotlib.use("TkAgg")
 
-
+@mem.cache
 def none_dist():
     fig = Figure(figsize=(0.5, 0.5), dpi=100)
     sub = fig.add_subplot(111)
@@ -16,6 +23,7 @@ def none_dist():
 
     return fig
 
+@mem.cache
 def gauss_dist():
     fig = Figure(figsize=(0.5, 0.5), dpi=100)
     sub = fig.add_subplot(111)
@@ -24,6 +32,7 @@ def gauss_dist():
     sub.plot(x, y)
     return fig
 
+@mem.cache
 def tri_dist():
     fig = Figure(figsize=(0.5, 0.5), dpi=100)
     sub = fig.add_subplot(111)
@@ -33,6 +42,7 @@ def tri_dist():
     sub.plot(x, y)
     return fig
 
+@mem.cache
 def rect_dist():
     fig = Figure(figsize=(0.5, 0.5), dpi=100)
     sub = fig.add_subplot(111)
