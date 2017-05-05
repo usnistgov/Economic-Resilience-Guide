@@ -184,14 +184,14 @@ def run_main_page(data):
 
 
             for i in range(self.data_cont.num_plans + 1):
-                num_spaces = int(48 - (len('${:,.0f}'.format(self.data_cont.res_rec_sum[i])) * .8))
-                text_1 = self.data_cont.on_dis_occ(self.data_cont.res_rec_sum[i])
+                num_spaces = int(48 - (len('${:,.0f}'.format(self.data_cont.ben.r_sum[i])) * .8))
+                text_1 = self.data_cont.on_dis_occ(self.data_cont.ben.r_sum[i])
                 ttk.Label(group1, text=(" "*num_spaces) + '${:,.0f}'.format(text_1),
                           font=SMALL_FONT).grid(row=1, column=(i+1), sticky="e", **pad_opts)
-                text_2 = self.data_cont.on_dis_occ(self.data_cont.direct_ben_sum[i])
+                text_2 = self.data_cont.on_dis_occ(self.data_cont.ben.d_sum[i])
                 ttk.Label(group1, text='${:,.0f}'.format(text_2),
                           font=SMALL_FONT).grid(row=2, column=(i+1), sticky="e", **pad_opts)
-                text_3 = self.data_cont.on_dis_occ(self.data_cont.indirect_ben_sum[i])
+                text_3 = self.data_cont.on_dis_occ(self.data_cont.ben.i_sum[i])
                 ttk.Label(group1, text='${:,.0f}'.format(text_3),
                           font=SMALL_FONT).grid(row=3, column=(i + 1), sticky="e", **pad_opts)
                 text_4 = self.data_cont.calc_fatalities(self.data_cont.Fatalities[i][1])

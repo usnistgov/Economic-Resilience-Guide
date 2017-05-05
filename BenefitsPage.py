@@ -242,21 +242,21 @@ class BenefitsPage(tk.Frame):
         if self.choice.get() == "Direct":
             for plan in plan_num:
                 # ===== Removes the filler spaces previously placed
-                if self.data_cont.DirectBen[plan][0] == ["", "", ""]:
-                    self.data_cont.DirectBen[plan].remove(["", "", ""])
-                self.data_cont.DirectBen[plan].extend([extend])
+                if self.data_cont.ben.direct[plan][0] == ["", "", ""]:
+                    self.data_cont.ben.direct[plan].remove(["", "", ""])
+                self.data_cont.ben.direct[plan].extend([extend])
 
         elif self.choice.get() == "Indirect":
             for plan in plan_num:
-                if self.data_cont.IndirectBen[plan][0] == ["", "", ""]:
-                    self.data_cont.IndirectBen[plan].remove(["", "", ""])
-                self.data_cont.IndirectBen[plan].extend([extend])
+                if self.data_cont.ben.indirect[plan][0] == ["", "", ""]:
+                    self.data_cont.ben.indirect[plan].remove(["", "", ""])
+                self.data_cont.ben.indirect[plan].extend([extend])
 
         elif self.choice.get() == "ResRec":
             for plan in plan_num:
-                if self.data_cont.ResRec[plan][0] == ["", "", ""]:
-                    self.data_cont.ResRec[plan].remove(["", "", ""])
-                self.data_cont.ResRec[plan].extend([extend])
+                if self.data_cont.ben.res_rec[plan][0] == ["", "", ""]:
+                    self.data_cont.ben.res_rec[plan].remove(["", "", ""])
+                self.data_cont.ben.res_rec[plan].extend([extend])
 
         if valid:
             # ===== Updates the page for the next cost
@@ -270,33 +270,33 @@ class BenefitsPage(tk.Frame):
         del self.choices[:]
 
         # === Prevents field duplication
-        for i in range(len(self.data_cont.DirectBen)):
-            for j in range(len(self.data_cont.DirectBen[i])):
-                if self.data_cont.DirectBen[i][j][0] != "":
+        for i in range(len(self.data_cont.ben.direct)):
+            for j in range(len(self.data_cont.ben.direct[i])):
+                if self.data_cont.ben.direct[i][j][0] != "":
                     if i == 0:
-                        plan_text = self.data_cont.DirectBen[i][j][0] + " - <Base Plan>"
+                        plan_text = self.data_cont.ben.direct[i][j][0] + " - <Base Plan>"
                     else:
-                        plan_text = self.data_cont.DirectBen[i][j][0] + " - <Plan " + str(i) + ">"
+                        plan_text = self.data_cont.ben.direct[i][j][0] + " - <Plan " + str(i) + ">"
                     if plan_text not in self.choices:
                         self.choices.append(plan_text)
 
-        for i in range(len(self.data_cont.IndirectBen)):
-            for j in range(len(self.data_cont.IndirectBen[i])):
-                if self.data_cont.IndirectBen[i][j][0] != "":
+        for i in range(len(self.data_cont.ben.indirect)):
+            for j in range(len(self.data_cont.ben.indirect[i])):
+                if self.data_cont.ben.indirect[i][j][0] != "":
                     if i == 0:
-                        plan_text = self.data_cont.IndirectBen[i][j][0] + " - <Base Plan>"
+                        plan_text = self.data_cont.ben.indirect[i][j][0] + " - <Base Plan>"
                     else:
-                        plan_text = self.data_cont.IndirectBen[i][j][0] + " - <Plan " + str(i) + ">"
+                        plan_text = self.data_cont.ben.indirect[i][j][0]+" - <Plan "+str(i)+">"
                     if plan_text not in self.choices:
                         self.choices.append(plan_text)
 
-        for i in range(len(self.data_cont.ResRec)):
-            for j in range(len(self.data_cont.ResRec[i])):
-                if self.data_cont.ResRec[i][j][0] != "":
+        for i in range(len(self.data_cont.ben.res_rec)):
+            for j in range(len(self.data_cont.ben.res_rec[i])):
+                if self.data_cont.ben.res_rec[i][j][0] != "":
                     if i == 0:
-                        plan_text = self.data_cont.ResRec[i][j][0] + " - <Base Plan>"
+                        plan_text = self.data_cont.ben.res_rec[i][j][0] + " - <Base Plan>"
                     else:
-                        plan_text = self.data_cont.ResRec[i][j][0] + " - <Plan " + str(i) + ">"
+                        plan_text = self.data_cont.ben.res_rec[i][j][0] + " - <Plan " + str(i) + ">"
                     if plan_text not in self.choices:
                         self.choices.append(plan_text)
 
@@ -390,22 +390,22 @@ class BenefitsPage(tk.Frame):
         chosen_ben[1] = chosen_ben[1].replace("<", '').replace(">", '').replace(" ", '')
         chosen_ben[1] = int(chosen_ben[1].replace("Base", '0'))
 
-        for i in range(len(self.data_cont.DirectBen[chosen_ben[1]])):
-            if self.data_cont.DirectBen[chosen_ben[1]][i][0] == chosen_ben[0]:
-                ben_amount = self.data_cont.DirectBen[chosen_ben[1]][i][1]
-                ben_desc = self.data_cont.DirectBen[chosen_ben[1]][i][2]
+        for i in range(len(self.data_cont.ben.direct[chosen_ben[1]])):
+            if self.data_cont.ben.direct[chosen_ben[1]][i][0] == chosen_ben[0]:
+                ben_amount = self.data_cont.ben.direct[chosen_ben[1]][i][1]
+                ben_desc = self.data_cont.ben.direct[chosen_ben[1]][i][2]
                 ben_type = "Direct"
 
-        for i in range(len(self.data_cont.IndirectBen[chosen_ben[1]])):
-            if self.data_cont.IndirectBen[chosen_ben[1]][i][0] == chosen_ben[0]:
-                ben_amount = self.data_cont.IndirectBen[chosen_ben[1]][i][1]
-                ben_desc = self.data_cont.IndirectBen[chosen_ben[1]][i][2]
+        for i in range(len(self.data_cont.ben.indirect[chosen_ben[1]])):
+            if self.data_cont.ben.indirect[chosen_ben[1]][i][0] == chosen_ben[0]:
+                ben_amount = self.data_cont.ben.indirect[chosen_ben[1]][i][1]
+                ben_desc = self.data_cont.ben.indirect[chosen_ben[1]][i][2]
                 ben_type = "Indirect"
 
-        for i in range(len(self.data_cont.ResRec[chosen_ben[1]])):
-            if self.data_cont.ResRec[chosen_ben[1]][i][0] == chosen_ben[0]:
-                ben_amount = self.data_cont.ResRec[chosen_ben[1]][i][1]
-                ben_desc = self.data_cont.ResRec[chosen_ben[1]][i][2]
+        for i in range(len(self.data_cont.ben.res_rec[chosen_ben[1]])):
+            if self.data_cont.ben.res_rec[chosen_ben[1]][i][0] == chosen_ben[0]:
+                ben_amount = self.data_cont.ben.res_rec[chosen_ben[1]][i][1]
+                ben_desc = self.data_cont.ben.res_rec[chosen_ben[1]][i][2]
                 ben_type = "ResRec"
 
         self.title_ent.delete(0, tk.END)
@@ -488,23 +488,23 @@ class BenefitsPage(tk.Frame):
                 """ Checks delete is confirmed and performs the deletion. """
                 # ===== Removes the benefit from the list
                 # === Places filler fields so that code operates properly
-                for i in range(len(self.data_cont.DirectBen[chosen_ben[1]])):
-                    if self.data_cont.DirectBen[chosen_ben[1]][i][0] == chosen_ben[0]:
-                        del self.data_cont.DirectBen[chosen_ben[1]][i]
-                        if len(self.data_cont.DirectBen[chosen_ben[1]]) == 0:
-                            self.data_cont.DirectBen[chosen_ben[1]].extend([["", "", ""]])
+                for i in range(len(self.data_cont.ben.direct[chosen_ben[1]])):
+                    if self.data_cont.ben.direct[chosen_ben[1]][i][0] == chosen_ben[0]:
+                        del self.data_cont.ben.direct[chosen_ben[1]][i]
+                        if len(self.data_cont.ben.direct[chosen_ben[1]]) == 0:
+                            self.data_cont.ben.direct[chosen_ben[1]].extend([["", "", ""]])
 
-                for i in range(len(self.data_cont.IndirectBen[chosen_ben[1]])):
-                    if self.data_cont.IndirectBen[chosen_ben[1]][i][0] == chosen_ben[0]:
-                        del self.data_cont.IndirectBen[chosen_ben[1]][i]
-                        if len(self.data_cont.IndirectBen[chosen_ben[1]]) == 0:
-                            self.data_cont.IndirectBen[chosen_ben[1]].extend([["", "", ""]])
+                for i in range(len(self.data_cont.ben.indirect[chosen_ben[1]])):
+                    if self.data_cont.ben.indirect[chosen_ben[1]][i][0] == chosen_ben[0]:
+                        del self.data_cont.ben.indirect[chosen_ben[1]][i]
+                        if len(self.data_cont.ben.indirect[chosen_ben[1]]) == 0:
+                            self.data_cont.ben.indirect[chosen_ben[1]].extend([["", "", ""]])
 
-                for i in range(len(self.data_cont.ResRec[chosen_ben[1]])):
-                    if self.data_cont.ResRec[chosen_ben[1]][i][0] == chosen_ben[0]:
-                        del self.data_cont.ResRec[chosen_ben[1]][i]
-                        if len(self.data_cont.ResRec[chosen_ben[1]]) == 0:
-                            self.data_cont.ResRec[chosen_ben[1]].extend([["", "", ""]])
+                for i in range(len(self.data_cont.ben.res_rec[chosen_ben[1]])):
+                    if self.data_cont.ben.res_rec[chosen_ben[1]][i][0] == chosen_ben[0]:
+                        del self.data_cont.ben.res_rec[chosen_ben[1]][i]
+                        if len(self.data_cont.ben.res_rec[chosen_ben[1]]) == 0:
+                            self.data_cont.ben.res_rec[chosen_ben[1]].extend([["", "", ""]])
 
                 self.update_prev_list()
                 popup.destroy()
@@ -513,20 +513,20 @@ class BenefitsPage(tk.Frame):
                 """ Cancels the delete call."""
                 popup.destroy()
 
-            for i in range(len(self.data_cont.DirectBen[chosen_ben[1]])):
-                if self.data_cont.DirectBen[chosen_ben[1]][i][0] == chosen_ben[0]:
-                    ben_amount = self.data_cont.DirectBen[chosen_ben[1]][i][1]
-                    ben_desc = self.data_cont.DirectBen[chosen_ben[1]][i][2]
+            for i in range(len(self.data_cont.ben.direct[chosen_ben[1]])):
+                if self.data_cont.ben.direct[chosen_ben[1]][i][0] == chosen_ben[0]:
+                    ben_amount = self.data_cont.ben.direct[chosen_ben[1]][i][1]
+                    ben_desc = self.data_cont.ben.direct[chosen_ben[1]][i][2]
 
-            for i in range(len(self.data_cont.IndirectBen[chosen_ben[1]])):
-                if self.data_cont.IndirectBen[chosen_ben[1]][i][0] == chosen_ben[0]:
-                    ben_amount = self.data_cont.IndirectBen[chosen_ben[1]][i][1]
-                    ben_desc = self.data_cont.IndirectBen[chosen_ben[1]][i][2]
+            for i in range(len(self.data_cont.ben.indirect[chosen_ben[1]])):
+                if self.data_cont.ben.indirect[chosen_ben[1]][i][0] == chosen_ben[0]:
+                    ben_amount = self.data_cont.ben.indirect[chosen_ben[1]][i][1]
+                    ben_desc = self.data_cont.ben.indirect[chosen_ben[1]][i][2]
 
-            for i in range(len(self.data_cont.ResRec[chosen_ben[1]])):
-                if self.data_cont.ResRec[chosen_ben[1]][i][0] == chosen_ben[0]:
-                    ben_amount = self.data_cont.ResRec[chosen_ben[1]][i][1]
-                    ben_desc = self.data_cont.ResRec[chosen_ben[1]][i][2]
+            for i in range(len(self.data_cont.ben.res_rec[chosen_ben[1]])):
+                if self.data_cont.ben.res_rec[chosen_ben[1]][i][0] == chosen_ben[0]:
+                    ben_amount = self.data_cont.ben.res_rec[chosen_ben[1]][i][1]
+                    ben_desc = self.data_cont.ben.res_rec[chosen_ben[1]][i][2]
 
             popup.wm_title("Confirmation")
             ben_text = "Delete \'" + chosen_ben[0] + "\'?\n\nAmount: "
@@ -547,24 +547,24 @@ class BenefitsPage(tk.Frame):
         else:
             # ===== Removes the cost from the list
             # ===== REPEATED CODE => find a way that won't require repetition
-            for i in range(len(self.data_cont.DirectBen[chosen_ben[1]])):
-                if self.data_cont.DirectBen[chosen_ben[1]][i][0] == chosen_ben[0]:
-                    del self.data_cont.DirectBen[chosen_ben[1]][i]
-                    if len(self.data_cont.DirectBen[chosen_ben[1]]) == 0:
+            for i in range(len(self.data_cont.ben.direct[chosen_ben[1]])):
+                if self.data_cont.ben.direct[chosen_ben[1]][i][0] == chosen_ben[0]:
+                    del self.data_cont.ben.direct[chosen_ben[1]][i]
+                    if len(self.data_cont.ben.direct[chosen_ben[1]]) == 0:
                         # === Places filler fields so that code operates properly
-                        self.data_cont.DirectBen[chosen_ben[1]].extend([["", "", ""]])
+                        self.data_cont.ben.direct[chosen_ben[1]].extend([["", "", ""]])
 
-            for i in range(len(self.data_cont.IndirectBen[chosen_ben[1]])):
-                if self.data_cont.IndirectBen[chosen_ben[1]][i][0] == chosen_ben[0]:
-                    del self.data_cont.IndirectBen[chosen_ben[1]][i]
-                    if len(self.data_cont.IndirectBen[chosen_ben[1]]) == 0:
-                        self.data_cont.IndirectBen[chosen_ben[1]].extend([["", "", ""]])
+            for i in range(len(self.data_cont.ben.indirect[chosen_ben[1]])):
+                if self.data_cont.ben.indirect[chosen_ben[1]][i][0] == chosen_ben[0]:
+                    del self.data_cont.ben.indirect[chosen_ben[1]][i]
+                    if len(self.data_cont.ben.indirect[chosen_ben[1]]) == 0:
+                        self.data_cont.ben.indirect[chosen_ben[1]].extend([["", "", ""]])
 
-            for i in range(len(self.data_cont.ResRec[chosen_ben[1]])):
-                if self.data_cont.ResRec[chosen_ben[1]][i][0] == chosen_ben[0]:
-                    del self.data_cont.ResRec[chosen_ben[1]][i]
-                    if len(self.data_cont.ResRec[chosen_ben[1]]) == 0:
-                        self.data_cont.ResRec[chosen_ben[1]].extend([["", "", ""]])
+            for i in range(len(self.data_cont.ben.res_rec[chosen_ben[1]])):
+                if self.data_cont.ben.res_rec[chosen_ben[1]][i][0] == chosen_ben[0]:
+                    del self.data_cont.ben.res_rec[chosen_ben[1]][i]
+                    if len(self.data_cont.ben.res_rec[chosen_ben[1]]) == 0:
+                        self.data_cont.ben.res_rec[chosen_ben[1]].extend([["", "", ""]])
 
             self.update_prev_list()
 

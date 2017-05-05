@@ -16,10 +16,12 @@ from NewIRR import irr_for_all
 #import numpy
     # Allows for the calculation of Internal Rate of Return (IRR).
     # This must be downloaded from the internet
-#import docx
+import docx
 # Allows analysis to be exported to a .docx file.
 # This must be downloaded from the internet
 from Constants import TAB
+
+from BenefitsClass import Benefits
 
 class Data():
     """ Contains all of the data for the simulations and does a bulk of the calculations.    """
@@ -30,16 +32,12 @@ class Data():
     Externalities = []
     Omr = []
     OmrType = []
-    DirectBen = []
-    IndirectBen = []
-    ResRec = []
     NonDBen = []
     Fatalities = []
     FIELDS_PER_VALUE = 3
 
-    res_rec_sum = [0]
-    direct_ben_sum = [0]
-    indirect_ben_sum = [0]
+    ben = Benefits()
+
     fatalities_sum = [0]
     direct_cost_sum = [0]
     indirect_cost_sum = [0]
@@ -201,7 +199,7 @@ class Data():
 
                 elif line[0] == "Direct Loss Reduction":
                     for index in plan_index_list:
-                        self.DirectBen.append([])
+                        self.ben.direct.append([])
                         start_value = index
                         try:
                             end_value = plan_index_list[plan_index_list.index(index)+1]
@@ -210,16 +208,16 @@ class Data():
                         for j in range(start_value, end_value):
                             if line[j] != "":
                                 if (j - 1) % self.FIELDS_PER_VALUE == 0:
-                                    self.DirectBen[-1].append([line[j]])
-                                    self.DirectBen[-1][count].append(line[j+1])
-                                    self.DirectBen[-1][count].append(line[j+2])
+                                    self.ben.direct[-1].append([line[j]])
+                                    self.ben.direct[-1][count].append(line[j+1])
+                                    self.ben.direct[-1][count].append(line[j+2])
                                     j = j+3
                                     count += 1
                         count = 0
 
                 elif line[0] == "Indirect Loss Reduction":
                     for index in plan_index_list:
-                        self.IndirectBen.append([])
+                        self.ben.indirect.append([])
                         start_value = index
                         try:
                             end_value = plan_index_list[plan_index_list.index(index)+1]
@@ -228,16 +226,16 @@ class Data():
                         for j in range(start_value, end_value):
                             if line[j] != "":
                                 if (j - 1) % self.FIELDS_PER_VALUE == 0:
-                                    self.IndirectBen[-1].append([line[j]])
-                                    self.IndirectBen[-1][count].append(line[j+1])
-                                    self.IndirectBen[-1][count].append(line[j+2])
+                                    self.ben.indirect[-1].append([line[j]])
+                                    self.ben.indirect[-1][count].append(line[j+1])
+                                    self.ben.indirect[-1][count].append(line[j+2])
                                     j = j+3
                                     count += 1
                         count = 0
 
                 elif line[0] == "Response/Recovery Costs":
                     for index in plan_index_list:
-                        self.ResRec.append([])
+                        self.ben.res_rec.append([])
                         start_value = index
                         try:
                             end_value = plan_index_list[plan_index_list.index(index)+1]
@@ -246,9 +244,9 @@ class Data():
                         for j in range(start_value, end_value):
                             if line[j] != "":
                                 if (j - 1) % self.FIELDS_PER_VALUE == 0:
-                                    self.ResRec[-1].append([line[j]])
-                                    self.ResRec[-1][count].append(line[j+1])
-                                    self.ResRec[-1][count].append(line[j+2])
+                                    self.ben.res_rec[-1].append([line[j]])
+                                    self.ben.res_rec[-1][count].append(line[j+1])
+                                    self.ben.res_rec[-1][count].append(line[j+2])
                                     j = j+3
                                     count += 1
                         count = 0
@@ -310,12 +308,12 @@ class Data():
                 if len(self.Omr[i]) == 0:
                     self.Omr[i].append(["", "", ""])
                     self.OmrType[i].append(["", "", ""])
-                if len(self.DirectBen[i]) == 0:
-                    self.DirectBen[i].append(["", "", ""])
-                if len(self.IndirectBen[i]) == 0:
-                    self.IndirectBen[i].append(["", "", ""])
-                if len(self.ResRec[i]) == 0:
-                    self.ResRec[i].append(["", "", ""])
+                if len(self.ben.direct[i]) == 0:
+                    self.ben.direct[i].append(["", "", ""])
+                if len(self.ben.indirect[i]) == 0:
+                    self.ben.indirect[i].append(["", "", ""])
+                if len(self.ben.res_rec[i]) == 0:
+                    self.ben.res_rec[i].append(["", "", ""])
                 if len(self.Externalities[i]) == 0:
                     self.Externalities[i].append(["", "", ""])
                 if len(self.NonDBen[i]) == 0:
@@ -374,8 +372,8 @@ class Data():
         #irr_list[0] = -(self.up_front[plan_num])
 
         cash_flows = self.annual_non_disaster_cash_flows[plan_num]
-        ben_list = [self.direct_ben_sum[plan_num], self.indirect_ben_sum[plan_num],
-                    self.res_rec_sum[plan_num]]
+        ben_list = [self.ben.d_sum[plan_num], self.ben.i_sum[plan_num],
+                    self.ben.r_sum[plan_num]]
 
         try:
             the_irr = irr_for_all(cash_flows, self.horizon, self.disaster_rate, ben_list,
@@ -416,9 +414,9 @@ class Data():
 
     def summer(self):
         """ Sums up all of the values."""
-        self.res_rec_sum = [0]*(self.num_plans + 1)
-        self.direct_ben_sum = [0]*(self.num_plans + 1)
-        self.indirect_ben_sum = [0]*(self.num_plans + 1)
+        self.ben.r_sum = [0]*(self.num_plans + 1)
+        self.ben.d_sum = [0]*(self.num_plans + 1)
+        self.ben.i_sum = [0]*(self.num_plans + 1)
         self.fatalities_sum = [0]*(self.num_plans + 1)
         self.direct_cost_sum = [0]*(self.num_plans + 1)
         self.indirect_cost_sum = [0]*(self.num_plans + 1)
@@ -439,22 +437,22 @@ class Data():
 
         for i in range(self.num_plans + 1):
             # === Response/Recovery Costs Reduction
-            for j in range(len(self.ResRec[i])):
-                if self.ResRec[i][j][1] == "":
-                    self.ResRec[i][j][1] = 0
-                self.res_rec_sum[i] += float(self.ResRec[i][j][1])
+            for j in range(len(self.ben.res_rec[i])):
+                if self.ben.res_rec[i][j][1] == "":
+                    self.ben.res_rec[i][j][1] = 0
+                self.ben.r_sum[i] += float(self.ben.res_rec[i][j][1])
 
             # === Direct Costs Reduction
-            for j in range(len(self.DirectBen[i])):
-                if self.DirectBen[i][j][1] == "":
-                    self.DirectBen[i][j][1] = 0
-                self.direct_ben_sum[i] += float(self.DirectBen[i][j][1])
+            for j in range(len(self.ben.direct[i])):
+                if self.ben.direct[i][j][1] == "":
+                    self.ben.direct[i][j][1] = 0
+                self.ben.d_sum[i] += float(self.ben.direct[i][j][1])
 
             # === Indirect Costs Reduction
-            for j in range(len(self.IndirectBen[i])):
-                if self.IndirectBen[i][j][1] == "":
-                    self.IndirectBen[i][j][1] = 0
-                self.indirect_ben_sum[i] += float(self.IndirectBen[i][j][1])
+            for j in range(len(self.ben.indirect[i])):
+                if self.ben.indirect[i][j][1] == "":
+                    self.ben.indirect[i][j][1] = 0
+                self.ben.i_sum[i] += float(self.ben.indirect[i][j][1])
 
             # === Fatalities Aversion
             self.fatalities_sum[i] = self.calc_fatalities(self.Fatalities[i][1])
@@ -512,9 +510,9 @@ class Data():
 
         # === Totals
         for i in range(self.num_plans + 1):
-            self.tot_bens[i] += self.on_dis_occ(self.res_rec_sum[i])
-            self.tot_bens[i] += self.on_dis_occ(self.direct_ben_sum[i])
-            self.tot_bens[i] += self.on_dis_occ(self.indirect_ben_sum[i])
+            self.tot_bens[i] += self.on_dis_occ(self.ben.r_sum[i])
+            self.tot_bens[i] += self.on_dis_occ(self.ben.d_sum[i])
+            self.tot_bens[i] += self.on_dis_occ(self.ben.i_sum[i])
             self.tot_bens[i] += self.fatalities_sum[i]
             self.tot_bens[i] += self.one_time_non_d_ben_sum[i] + float(self.recur_non_d_ben_sum[i])
             self.tot_costs[i] += float(self.direct_cost_sum[i]) + float(self.indirect_cost_sum[i])
@@ -533,8 +531,8 @@ class Data():
         max_lengths = []
         for i in range(self.num_plans + 1):
             max_1 = max([len(self.DirectCost[i]), len(self.IndirectCost[i]), len(self.Omr[i])])
-            max_2 = max([len(self.Externalities[i]), len(self.DirectBen[i])])
-            max_3 = max([len(self.IndirectBen[i]), len(self.ResRec[i]), len(self.NonDBen[i])])
+            max_2 = max([len(self.Externalities[i]), len(self.ben.direct[i])])
+            max_3 = max([len(self.ben.indirect[i]), len(self.ben.res_rec[i]), len(self.NonDBen[i])])
             max_lengths.append(max([max_1, max_2, max_3]))
 
         to_write_list = [["Analysis Title", self.analysis_title],   #0
@@ -629,29 +627,29 @@ class Data():
 
         # ===== Direct Loss Reductions
         for i in range(self.num_plans + 1):
-            for j in range(len(self.DirectBen[i])):
+            for j in range(len(self.ben.direct[i])):
                 for k in range(self.FIELDS_PER_VALUE):
-                    to_write_list[20].append(self.DirectBen[i][j][k])
+                    to_write_list[20].append(self.ben.direct[i][j][k])
 
-            for j in range(max_lengths[i] - len(self.DirectBen[i])):
+            for j in range(max_lengths[i] - len(self.ben.direct[i])):
                 to_write_list[20].extend([""]*self.FIELDS_PER_VALUE)
 
         # ===== Indirect Loss Reductions
         for i in range(self.num_plans + 1):
-            for j in range(len(self.IndirectBen[i])):
+            for j in range(len(self.ben.indirect[i])):
                 for k in range(self.FIELDS_PER_VALUE):
-                    to_write_list[21].append(self.IndirectBen[i][j][k])
+                    to_write_list[21].append(self.ben.indirect[i][j][k])
 
-            for j in range(max_lengths[i] - len(self.IndirectBen[i])):
+            for j in range(max_lengths[i] - len(self.ben.indirect[i])):
                 to_write_list[21].extend([""]*self.FIELDS_PER_VALUE)
 
         # ===== Response/Recovery Cost Reductions
         for i in range(self.num_plans + 1):
-            for j in range(len(self.ResRec[i])):
+            for j in range(len(self.ben.res_rec[i])):
                 for k in range(self.FIELDS_PER_VALUE):
-                    to_write_list[22].append(self.ResRec[i][j][k])
+                    to_write_list[22].append(self.ben.res_rec[i][j][k])
 
-            for j in range(max_lengths[i] - len(self.ResRec[i])):
+            for j in range(max_lengths[i] - len(self.ben.res_rec[i])):
                 to_write_list[22].extend([""]*self.FIELDS_PER_VALUE)
 
         # ===== Non Disaster Related Benefits
@@ -766,45 +764,45 @@ class Data():
 
             doc.add_heading('Disaster-Related Benefits\n', 2)
             # === Makes sure the field isn't blank
-            if self.ResRec[i][0][0] != "":
+            if self.ben.res_rec[i][0][0] != "":
                 paragraph = doc.add_paragraph()
                 run = paragraph.add_run(TAB + 'Response and Recovery Cost Reductions\n')
                 # === Allows the text to be bolded
                 run.bold = True
-                for j in range(len(self.ResRec[i])):
-                    doc.add_paragraph(TAB + str(j+1) + ") " + self.ResRec[i][j][0])
-                    dollar_amount = str('${:,.0f}'.format(float(self.ResRec[i][j][1])))
+                for j in range(len(self.ben.res_rec[i])):
+                    doc.add_paragraph(TAB + str(j+1) + ") " + self.ben.res_rec[i][j][0])
+                    dollar_amount = str('${:,.0f}'.format(float(self.ben.res_rec[i][j][1])))
                     doc.add_paragraph(TAB + 'Dollar Amount: ' + dollar_amount)
-                    present_value = self.on_dis_occ(float(self.ResRec[i][j][1]))
+                    present_value = self.on_dis_occ(float(self.ben.res_rec[i][j][1]))
                     form_present_value = '${:,.0f}'.format(present_value)
                     doc.add_paragraph(TAB + 'Effective Present Value: ' + form_present_value)
-                    doc.add_paragraph(TAB + 'Description: ' + str(self.ResRec[i][j][2]) + "\n")
+                    doc.add_paragraph(TAB + 'Description: ' + str(self.ben.res_rec[i][j][2]) + "\n")
 
-            if self.DirectBen[i][0][0] != "":
+            if self.ben.direct[i][0][0] != "":
                 paragraph = doc.add_paragraph()
                 run = paragraph.add_run(TAB + 'Direct Losses Prevented\n')
                 run.bold = True
-                for j in range(len(self.DirectBen[i])):
-                    doc.add_paragraph(TAB + str(j+1) + ") " + self.DirectBen[i][j][0])
-                    dollar_amount = str('${:,.0f}'.format(float(self.DirectBen[i][j][1])))
+                for j in range(len(self.ben.direct[i])):
+                    doc.add_paragraph(TAB + str(j+1) + ") " + self.ben.direct[i][j][0])
+                    dollar_amount = str('${:,.0f}'.format(float(self.ben.direct[i][j][1])))
                     doc.add_paragraph(TAB + 'Dollar Amount: ' + dollar_amount)
-                    present_value = self.on_dis_occ(float(self.DirectBen[i][j][1]))
+                    present_value = self.on_dis_occ(float(self.ben.direct[i][j][1]))
                     form_present_value = '${:,.0f}'.format(present_value)
                     doc.add_paragraph(TAB + 'Effective Present Value: ' + form_present_value)
-                    doc.add_paragraph(TAB + 'Description: ' + str(self.DirectBen[i][j][2]) + "\n")
+                    doc.add_paragraph(TAB + 'Description: ' + str(self.ben.direct[i][j][2]) + "\n")
 
-            if self.IndirectBen[i][0][0] != "":
+            if self.ben.indirect[i][0][0] != "":
                 paragraph = doc.add_paragraph()
                 run = paragraph.add_run(TAB + 'Indirect Losses Prevented\n')
                 run.bold = True
-                for j in range(len(self.IndirectBen[i])):
-                    doc.add_paragraph(TAB + str(j + 1) + ") " + self.IndirectBen[i][j][0])
+                for j in range(len(self.ben.indirect[i])):
+                    doc.add_paragraph(TAB + str(j + 1) + ") " + self.ben.indirect[i][j][0])
                     doc.add_paragraph(TAB + 'Dollar Amount: '
-                                      + str('${:,.0f}'.format(float(self.IndirectBen[i][j][1]))))
-                    new_text = self.on_dis_occ(float(self.IndirectBen[i][j][1]))
+                                      + str('${:,.0f}'.format(float(self.ben.indirect[i][j][1]))))
+                    new_text = self.on_dis_occ(float(self.ben.indirect[i][j][1]))
                     doc.add_paragraph(TAB + 'Effective Present Value: '
                                       + '${:,.0f}'.format(new_text))
-                    doc.add_paragraph(TAB + 'Description: ' + str(self.IndirectBen[i][j][2]) + "\n")
+                    doc.add_paragraph(TAB + 'Description: ' + str(self.ben.indirect[i][j][2]) + "\n")
 
             if float(self.Fatalities[i][1]) != 0:
                 paragraph = doc.add_paragraph()
@@ -992,9 +990,9 @@ class Data():
             to_write_list[2].append(self.plan_name[i])
             to_write_list[3].append(" ")
             to_write_list[4].append(" ")
-            to_write_list[5].append('${:.0f}'.format(self.on_dis_occ(self.res_rec_sum[i])))
-            to_write_list[6].append('${:.0f}'.format(self.on_dis_occ(self.direct_ben_sum[i])))
-            to_write_list[7].append('${:.0f}'.format(self.on_dis_occ(self.indirect_ben_sum[i])))
+            to_write_list[5].append('${:.0f}'.format(self.on_dis_occ(self.ben.r_sum[i])))
+            to_write_list[6].append('${:.0f}'.format(self.on_dis_occ(self.ben.d_sum[i])))
+            to_write_list[7].append('${:.0f}'.format(self.on_dis_occ(self.ben.i_sum[i])))
             to_write_list[8].append(" ")
             to_write_list[9].append('${:.0f}'.format(self.calc_fatalities(self.Fatalities[i][1])))
             # == Calculation NDRB sum

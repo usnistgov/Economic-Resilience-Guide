@@ -406,12 +406,12 @@ class InfoPage(tk.Frame):
         while len(self.controller.data_cont.Omr) < (num_plans + 1):
             self.controller.data_cont.Omr.append([["", "", ""]])
             self.controller.data_cont.OmrType.append([["", "", ""]])
-        while len(self.controller.data_cont.DirectBen) < (num_plans + 1):
-            self.controller.data_cont.DirectBen.append([["", "", ""]])
-        while len(self.controller.data_cont.IndirectBen) < (num_plans + 1):
-            self.controller.data_cont.IndirectBen.append([["", "", ""]])
-        while len(self.controller.data_cont.ResRec) < (num_plans + 1):
-            self.controller.data_cont.ResRec.append([["", "", ""]])
+        while len(self.controller.data_cont.ben.direct) < (num_plans + 1):
+            self.controller.data_cont.ben.direct.append([["", "", ""]])
+        while len(self.controller.data_cont.ben.indirect) < (num_plans + 1):
+            self.controller.data_cont.ben.indirect.append([["", "", ""]])
+        while len(self.controller.data_cont.ben.res_rec) < (num_plans + 1):
+            self.controller.data_cont.ben.res_rec.append([["", "", ""]])
         while len(self.controller.data_cont.Fatalities) < (num_plans + 1):
             self.controller.data_cont.Fatalities.append(["Fatalities", "0", " "])
         while len(self.controller.data_cont.Externalities) < (num_plans + 1):
