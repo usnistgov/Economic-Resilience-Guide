@@ -16,10 +16,10 @@ from Constants import BASE_PADDING, FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDIN
 from PlotsAndImages import none_dist, gauss_dist, tri_dist, rect_dist
 
 import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg#, NavigationToolbar2TkAgg
+#from matplotlib.figure import Figure
 
+matplotlib.use("TkAgg")
 
 #
 #
@@ -104,59 +104,33 @@ class InfoPage(tk.Frame):
                                font=SMALL_FONT)
         base_2_lbl.grid(row=1, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        self.name_1_lbl = ttk.Label(group2, text="Alternative 1", font=SMALL_FONT)
-        self.name_1_lbl.grid(row=2, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_1_ent = tk.Entry(group2, textvariable=self.p1_trace,
-                                   width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.name_1_ent.insert(tk.END, "<enter plan name>")
-        self.name_1_ent.grid(row=2, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_1_lbl.configure(state="disabled")
-        self.name_1_ent.configure(state="disabled")
-
-        self.name_2_lbl = ttk.Label(group2, text="Alternative 2", font=SMALL_FONT)
-        self.name_2_lbl.grid(row=3, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_2_ent = tk.Entry(group2, textvariable=self.p2_trace,
-                                   width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.name_2_ent.insert(tk.END, "<enter plan name>")
-        self.name_2_ent.grid(row=3, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_2_lbl.configure(state="disabled")
-        self.name_2_ent.configure(state="disabled")
-
-        self.name_3_lbl = ttk.Label(group2, text="Alternative 3", font=SMALL_FONT)
-        self.name_3_lbl.grid(row=4, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_3_ent = tk.Entry(group2, textvariable=self.p3_trace,
-                                   width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.name_3_ent.insert(tk.END, "<enter plan name>")
-        self.name_3_ent.grid(row=4, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_3_lbl.configure(state="disabled")
-        self.name_3_ent.configure(state="disabled")
-
-        self.name_4_lbl = ttk.Label(group2, text="Alternative 4", font=SMALL_FONT)
-        self.name_4_lbl.grid(row=5, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_4_ent = tk.Entry(group2, textvariable=self.p4_trace,
-                                   width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.name_4_ent.insert(tk.END, "<enter plan name>")
-        self.name_4_ent.grid(row=5, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_4_lbl.configure(state="disabled")
-        self.name_4_ent.configure(state="disabled")
-
-        self.name_5_lbl = ttk.Label(group2, text="Alternative 5", font=SMALL_FONT)
-        self.name_5_lbl.grid(row=6, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_5_ent = tk.Entry(group2, textvariable=self.p5_trace,
-                                   width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.name_5_ent.insert(tk.END, "<enter plan name>")
-        self.name_5_ent.grid(row=6, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_5_lbl.configure(state="disabled")
-        self.name_5_ent.configure(state="disabled")
-
-        self.name_6_lbl = ttk.Label(group2, text="Alternative 6", font=SMALL_FONT)
-        self.name_6_lbl.grid(row=7, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_6_ent = tk.Entry(group2, textvariable=self.p6_trace,
-                                   width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.name_6_ent.insert(tk.END, "<enter plan name>")
-        self.name_6_ent.grid(row=7, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.name_6_lbl.configure(state="disabled")
-        self.name_6_ent.configure(state="disabled")
+        self.name_lbls = [ttk.Label(group2, text="Alternative 1", font=SMALL_FONT),
+                          ttk.Label(group2, text="Alternative 2", font=SMALL_FONT),
+                          ttk.Label(group2, text="Alternative 3", font=SMALL_FONT),
+                          ttk.Label(group2, text="Alternative 4", font=SMALL_FONT),
+                          ttk.Label(group2, text="Alternative 5", font=SMALL_FONT),
+                          ttk.Label(group2, text="Alternative 6", font=SMALL_FONT)]
+        for lbl in self.name_lbls:
+            my_row = self.name_lbls.index(lbl) + 2
+            lbl.grid(row=my_row, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            lbl.configure(state="disabled")
+        self.name_ents = [tk.Entry(group2, textvariable=self.p1_trace,
+                                   width=ENTRY_WIDTH, font=SMALL_FONT),
+                          tk.Entry(group2, textvariable=self.p2_trace,
+                                   width=ENTRY_WIDTH, font=SMALL_FONT),
+                          tk.Entry(group2, textvariable=self.p2_trace,
+                                   width=ENTRY_WIDTH, font=SMALL_FONT),
+                          tk.Entry(group2, textvariable=self.p2_trace,
+                                   width=ENTRY_WIDTH, font=SMALL_FONT),
+                          tk.Entry(group2, textvariable=self.p2_trace,
+                                   width=ENTRY_WIDTH, font=SMALL_FONT),
+                          tk.Entry(group2, textvariable=self.p2_trace,
+                                   width=ENTRY_WIDTH, font=SMALL_FONT)]
+        for ent in self.name_ents:
+            my_row = self.name_ents.index(ent) + 2
+            ent.insert(tk.END, "<enter plan name>")
+            ent.grid(row=my_row, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            ent.configure(state="disabled")
 
         # ===== Discount Rate and Hazard Specifics
         group3 = ttk.LabelFrame(self, text="Discount Rate/Hazard Specifics")
@@ -219,9 +193,9 @@ class InfoPage(tk.Frame):
         self.mag_choice = tk.StringVar()
         self.mag_choice.set("1")
         mag_rads = [tk.Radiobutton(group3, variable=self.mag_choice, value="None"),
-                      tk.Radiobutton(group3, variable=self.mag_choice, value="Gauss"),
-                      tk.Radiobutton(group3, variable=self.mag_choice, value="Tri"),
-                      tk.Radiobutton(group3, variable=self.mag_choice, value="Rect")]
+                    tk.Radiobutton(group3, variable=self.mag_choice, value="Gauss"),
+                    tk.Radiobutton(group3, variable=self.mag_choice, value="Tri"),
+                    tk.Radiobutton(group3, variable=self.mag_choice, value="Rect")]
         rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
         figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
         for col in range(len(mag_rads)):
@@ -286,29 +260,9 @@ class InfoPage(tk.Frame):
             err_messages += "Project name field has been left empty!\n\n"
             valid = False
 
-        if int(self.num_plans_ent.get()) > 0:
-            if self.name_1_ent.get() == "" or self.name_1_ent.get() == "<enter plan name>":
-                err_messages += "Name for Alternative 1 hasn't been given\n\n"
-                valid = False
-        if int(self.num_plans_ent.get()) > 1:
-            if self.name_2_ent.get() == "" or self.name_2_ent.get() == "<enter plan name>":
-                err_messages += "Name for Alternative 2 hasn't been given\n\n"
-                valid = False
-        if int(self.num_plans_ent.get()) > 2:
-            if self.name_3_ent.get() == "" or self.name_3_ent.get() == "<enter plan name>":
-                err_messages += "Name for Alternative 3 hasn't been given\n\n"
-                valid = False
-        if int(self.num_plans_ent.get()) > 3:
-            if self.name_4_ent.get() == "" or self.name_4_ent.get() == "<enter plan name>":
-                err_messages += "Name for Alternative 4 hasn't been given\n\n"
-                valid = False
-        if int(self.num_plans_ent.get()) > 4:
-            if self.name_5_ent.get() == "" or self.name_5_ent.get() == "<enter plan name>":
-                err_messages += "Name for Alternative 5 hasn't been given\n\n"
-                valid = False
-        if int(self.num_plans_ent.get()) > 5:
-            if self.name_6_ent.get() == "" or self.name_6_ent.get() == "<enter plan name>":
-                err_messages += "Name for Alternative 6 hasn't been given\n\n"
+        for i in range(int(self.num_plans_ent.get())):
+            if self.name_ents[i].get() == "" or self.name_ents[i].get() == "<enter plan name>":
+                err_messages += "Name for Alternative " + str(i) + " hasn't been given \n\n"
                 valid = False
 
         not_neutral = self.preference.get() != "Neutral"
@@ -382,17 +336,8 @@ class InfoPage(tk.Frame):
 
         self.controller.data_cont.plan_name = []
         self.controller.data_cont.plan_name.append("Base")
-        self.controller.data_cont.plan_name.append(self.name_1_ent.get())
-        if self.controller.data_cont.num_plans > 1:
-            self.controller.data_cont.plan_name.append(self.name_2_ent.get())
-        if self.controller.data_cont.num_plans > 2:
-            self.controller.data_cont.plan_name.append(self.name_3_ent.get())
-        if self.controller.data_cont.num_plans > 3:
-            self.controller.data_cont.plan_name.append(self.name_4_ent.get())
-        if self.controller.data_cont.num_plans > 4:
-            self.controller.data_cont.plan_name.append(self.name_5_ent.get())
-        if self.controller.data_cont.num_plans > 5:
-            self.controller.data_cont.plan_name.append(self.name_6_ent.get())
+        for i in range(self.controller.data_cont.num_plans):
+            self.controller.data_cont.plan_name.append(self.name_ents[i].get())
 
         # ====== Fills each with default values so that the file can be saved
         self.controller.data_cont.objective, self.controller.data_cont.constraints = "", ""
@@ -463,31 +408,9 @@ class InfoPage(tk.Frame):
         """Triggers refresh when combobox changes"""
 
         choice = int(self.num_plans_ent.get())
-        self.name_1_lbl.configure(state="active")
-        self.name_1_ent.configure(state="normal")
-        self.name_2_lbl.configure(state="disabled")
-        self.name_2_ent.configure(state="disabled")
-        self.name_3_lbl.configure(state="disabled")
-        self.name_3_ent.configure(state="disabled")
-        self.name_4_lbl.configure(state="disabled")
-        self.name_4_ent.configure(state="disabled")
-        self.name_5_lbl.configure(state="disabled")
-        self.name_5_ent.configure(state="disabled")
-        self.name_6_lbl.configure(state="disabled")
-        self.name_6_ent.configure(state="disabled")
-
-        if choice > 1:
-            self.name_2_lbl.configure(state="active")
-            self.name_2_ent.configure(state="normal")
-        if choice > 2:
-            self.name_3_lbl.configure(state="active")
-            self.name_3_ent.configure(state="normal")
-        if choice > 3:
-            self.name_4_lbl.configure(state="active")
-            self.name_4_ent.configure(state="normal")
-        if choice > 4:
-            self.name_5_lbl.configure(state="active")
-            self.name_5_ent.configure(state="normal")
-        if choice > 5:
-            self.name_6_lbl.configure(state="active")
-            self.name_6_ent.configure(state="normal")
+        for i in range(choice + 1):
+            self.name_lbls[i].configure(state="active")
+            self.name_ents[i].configure(state="normal")
+        for i in range(choice + 1, 6):
+            self.name_lbls[i].configure(state="disabled")
+            self.name_ents[i].configure(state="disabled")

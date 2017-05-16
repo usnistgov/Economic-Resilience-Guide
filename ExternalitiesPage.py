@@ -512,7 +512,7 @@ class ExternalitiesPage(tk.Frame):
     def on_trace_change(self, _name, _index, _mode):
         """Updates checkbox fields if names are changed in 'InfoPage'"""
 
-        self.plan1.configure(text=self.controller.frames[InfoPage].name_1_ent.get()+" (Plan 1)")
+        self.plan1.configure(text=self.controller.frames[InfoPage].name_ents[0].get()+" (Plan 1)")
         self.plan2.grid_remove()  # ===== Hides the widget until .grid() is called again
         self.plan3.grid_remove()
         self.plan4.grid_remove()
@@ -520,17 +520,22 @@ class ExternalitiesPage(tk.Frame):
         self.plan6.grid_remove()
 
         if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 1:
-            self.plan2.configure(text=self.controller.frames[InfoPage].name_2_ent.get()+" (Plan 2)")
+            self.plan2.configure(text=self.controller.frames[InfoPage].name_ents[1].get()
+                                 +" (Plan 2)")
             self.plan2.grid()
         if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 2:
-            self.plan3.configure(text=self.controller.frames[InfoPage].name_3_ent.get()+" (Plan 3)")
+            self.plan3.configure(text=self.controller.frames[InfoPage].name_ents[2].get()
+                                 +" (Plan 3)")
             self.plan3.grid()
         if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 3:
-            self.plan4.configure(text=self.controller.frames[InfoPage].name_4_ent.get()+" (Plan 4)")
+            self.plan4.configure(text=self.controller.frames[InfoPage].name_ents[3].get()
+                                 +" (Plan 4)")
             self.plan4.grid()
         if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 4:
-            self.plan5.configure(text=self.controller.frames[InfoPage].name_5_ent.get()+" (Plan 5)")
+            self.plan5.configure(text=self.controller.frames[InfoPage].name_ents[4].get()
+                                 +" (Plan 5)")
             self.plan5.grid()
         if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 5:
-            self.plan6.configure(text=self.controller.frames[InfoPage].name_6_ent.get()+" (Plan 6)")
+            self.plan6.configure(text=self.controller.frames[InfoPage].name_ents[5].get()
+                                 +" (Plan 6)")
             self.plan6.grid()

@@ -6,6 +6,10 @@
     * NOTE: This page is a prototype uncertainties page.
 """
 
+import matplotlib
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg#, NavigationToolbar2TkAgg
+#from matplotlib.figure import Figure
+
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk     #for pretty buttons/labels
@@ -19,10 +23,7 @@ from Constants import SMALL_FONT, LARGE_FONT
 from Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 from Constants import ENTRY_WIDTH
 
-import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.figure import Figure
 
 
 #
@@ -149,7 +150,6 @@ class BenefitsUncertaintiesPage(tk.Frame):
         if valid:
             # ===== Updates the page for the next cost
             self.update_prev_list()
-            #messagebox.showinfo("Success", "Benefit has been successfully added!")
             return True
 
     def update_prev_list(self):
@@ -179,15 +179,19 @@ class BenefitsUncertaintiesPage(tk.Frame):
         labels_indirect = []
         labels_res_rec = []
 
-        self.direct_choices = [[tk.StringVar() for x in range(len(self.data_cont.ben.direct[i]))] for i in range(len(self.data_cont.plan_name))]
+        self.direct_choices = [[tk.StringVar() for x in range(len(self.data_cont.ben.direct[i]))]
+                               for i in range(len(self.data_cont.plan_name))]
         for item in self.direct_choices:
             for var in item:
                 var.set("1")
-        self.indirect_choices = [[tk.StringVar() for x in range(len(self.data_cont.ben.indirect[i]))] for i in range(len(self.data_cont.plan_name))]
+        self.indirect_choices = [[tk.StringVar()
+                                  for x in range(len(self.data_cont.ben.indirect[i]))]
+                                 for i in range(len(self.data_cont.plan_name))]
         for item in self.indirect_choices:
             for var in item:
                 var.set("1")
-        self.res_rec_choices = [[tk.StringVar() for x in range(len(self.data_cont.ben.res_rec[i]))] for i in range(len(self.data_cont.plan_name))]
+        self.res_rec_choices = [[tk.StringVar() for x in range(len(self.data_cont.ben.res_rec[i]))]
+                                for i in range(len(self.data_cont.plan_name))]
         for item in self.res_rec_choices:
             for var in item:
                 var.set("1")
@@ -210,9 +214,9 @@ class BenefitsUncertaintiesPage(tk.Frame):
                     print_text += " - $" + self.data_cont.ben.direct[i][j][1]
                     add_rad = True
                 self.labels_direct.append(ttk.Label(group[-1], text=print_text,
-                                               font=SMALL_FONT))
+                                                    font=SMALL_FONT))
                 self.labels_direct[-1].grid(row=row_index, column=0, sticky="w",
-                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                                            padx=FIELDX_PADDING, pady=FIELDY_PADDING)
                 row_index += 1
 
                 if add_rad:
@@ -261,10 +265,14 @@ class BenefitsUncertaintiesPage(tk.Frame):
                 row_index += 1
 
                 if add_rad:
-                    rads = [tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j], value="None"),
-                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j], value="Gauss"),
-                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j], value="Tri"),
-                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j], value="Rect")]
+                    rads = [tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j],
+                                           value="None"),
+                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j],
+                                           value="Gauss"),
+                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j],
+                                           value="Tri"),
+                            tk.Radiobutton(group[-1], variable=self.indirect_choices[i][j],
+                                           value="Rect")]
                     rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
                     figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
                     for col in range(len(rads)):
@@ -279,7 +287,9 @@ class BenefitsUncertaintiesPage(tk.Frame):
                         rad_label.grid(row=row_index+2, column=col+1)
                     i_range_label = tk.Label(group[-1], text="Range/Standard Deviation:")
                     i_range_label.grid(row=row_index+3, column=1, sticky="e")
-                    self.indirect_range[i].append(tk.Entry(group[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT))
+                    self.indirect_range[i].append(tk.Entry(group[-1],
+                                                           width=int(ENTRY_WIDTH/2),
+                                                           font=SMALL_FONT))
                     self.indirect_range[i][j].grid(row=row_index+3, column=2, sticky="w",
                                                    padx=FIELDX_PADDING, pady=FIELDY_PADDING)
                     row_index += 4
@@ -296,16 +306,20 @@ class BenefitsUncertaintiesPage(tk.Frame):
                     add_rad = True
 
                 labels_res_rec.append(ttk.Label(group[-1], text=print_text,
-                                               font=SMALL_FONT))
+                                                font=SMALL_FONT))
                 labels_res_rec[-1].grid(row=row_index, column=0, sticky=align,
-                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
                 row_index += 1
 
                 if add_rad:
-                    rads = [tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j], value="None"),
-                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j], value="Gauss"),
-                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j], value="Tri"),
-                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j], value="Rect")]
+                    rads = [tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j],
+                                           value="None"),
+                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j],
+                                           value="Gauss"),
+                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j],
+                                           value="Tri"),
+                            tk.Radiobutton(group[-1], variable=self.res_rec_choices[i][j],
+                                           value="Rect")]
                     rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
                     figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
                     for col in range(len(rads)):
@@ -320,8 +334,9 @@ class BenefitsUncertaintiesPage(tk.Frame):
                         rad_label.grid(row=row_index+2, column=col+1)
                     rr_range_label = tk.Label(group[-1], text="Range/Standard Deviation:")
                     rr_range_label.grid(row=row_index+3, column=1, sticky="e")
-                    self.res_rec_range[i].append(tk.Entry(group[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT))
+                    self.res_rec_range[i].append(tk.Entry(group[-1],
+                                                          width=int(ENTRY_WIDTH/2),
+                                                          font=SMALL_FONT))
                     self.res_rec_range[i][j].grid(row=row_index+3, column=2, sticky="w",
-                                           padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                                                  padx=FIELDX_PADDING, pady=FIELDY_PADDING)
                     row_index += 4
-

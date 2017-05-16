@@ -34,20 +34,13 @@ class Application(tk.Tk):
         #args = arguments, kwargs = key word args
 
         tk.Tk.__init__(self, *args, **kwargs)
-        #self.container = tk.Frame(self)
-        #self.container = ScrolledWindow(self)
-        #self.container.master.maxsize(height=600)
         self.container = VerticalScrolledFrame(self)#.interior
 
         self.container.grid(sticky="nsew")
 
         tk.Tk.wm_title(self, "NIST Economic Decision Guide")
 
-        #self.container.grid()
-
-        #self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_rowconfigure(0, weight=1, minsize=700)
-        #self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1, minsize=1000)
 
         self.frames = {}
@@ -57,11 +50,9 @@ class Application(tk.Tk):
         frame = StartPage(self.container.interior, self)
         self.frames[StartPage] = frame
         frame.grid()
-#        frame.grid(row=0, column=0, stick="nsew")
 
         # ====== Has any text boxes select all when clicked on for ease of entering new information
         self.bind_class("Text", "<FocusIn>", self.selectall)
-        #self.bind_class("Entry", "<FocusIn>", self.selectall)
 
         self.show_frame('StartPage')
 
@@ -69,7 +60,8 @@ class Application(tk.Tk):
         """ Brings to the forefront the frame described by cont_string."""
         frame_dict = {'StartPage': StartPage, 'DirectoryPage': DirectoryPage, 'InfoPage': InfoPage,
                       'CostPage': CostPage, 'ExternalitiesPage': ExternalitiesPage,
-                      'BenefitsPage': BenefitsPage, 'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
+                      'BenefitsPage': BenefitsPage,
+                      'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
                       'FatalitiesPage': FatalitiesPage,
                       'NonDBensPage': NonDBensPage}
         cont = frame_dict[cont_string]
@@ -139,30 +131,10 @@ class StartPage(tk.Frame):
                 # ===  and the respective widgets are altered
                 controller.frames[InfoPage].num_plans_ent.insert(tk.END,
                                                                  controller.data_cont.num_plans)
-                if controller.data_cont.num_plans > 0:
-                    controller.frames[InfoPage].name_1_ent.delete(0, tk.END)
-                    controller.frames[InfoPage].name_1_ent.insert(tk.END,
-                                                                  controller.data_cont.plan_name[1])
-                if controller.data_cont.num_plans > 1:
-                    controller.frames[InfoPage].name_2_ent.delete(0, tk.END)
-                    controller.frames[InfoPage].name_2_ent.insert(tk.END,
-                                                                  controller.data_cont.plan_name[2])
-                if controller.data_cont.num_plans > 2:
-                    controller.frames[InfoPage].name_3_ent.delete(0, tk.END)
-                    controller.frames[InfoPage].name_3_ent.insert(tk.END,
-                                                                  controller.data_cont.plan_name[3])
-                if controller.data_cont.num_plans > 3:
-                    controller.frames[InfoPage].name_4_ent.delete(0, tk.END)
-                    controller.frames[InfoPage].name_4_ent.insert(tk.END,
-                                                                  controller.data_cont.plan_name[4])
-                if controller.data_cont.num_plans > 4:
-                    controller.frames[InfoPage].name_5_ent.delete(0, tk.END)
-                    controller.frames[InfoPage].name_5_ent.insert(tk.END,
-                                                                  controller.data_cont.plan_name[5])
-                if controller.data_cont.num_plans > 5:
-                    controller.frames[InfoPage].name_6_ent.delete(0, tk.END)
-                    controller.frames[InfoPage].name_6_ent.insert(tk.END,
-                                                                  controller.data_cont.plan_name[6])
+                for i in range(controller.data_cont.num_plans):
+                    controller.frames[InfoPage].name_ents[i].delete(0, tk.END)
+                    controller.frames[InfoPage].name_ents[i].insert(tk.END,
+                                                                    controller.data_cont.plan_name[i+1])
 
                 # ===== Global variables part of infopage
                 controller.frames[InfoPage].name_ent.delete(0, tk.END)
