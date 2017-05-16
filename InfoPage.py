@@ -118,13 +118,13 @@ class InfoPage(tk.Frame):
                                    width=ENTRY_WIDTH, font=SMALL_FONT),
                           tk.Entry(group2, textvariable=self.p2_trace,
                                    width=ENTRY_WIDTH, font=SMALL_FONT),
-                          tk.Entry(group2, textvariable=self.p2_trace,
+                          tk.Entry(group2, textvariable=self.p3_trace,
                                    width=ENTRY_WIDTH, font=SMALL_FONT),
-                          tk.Entry(group2, textvariable=self.p2_trace,
+                          tk.Entry(group2, textvariable=self.p4_trace,
                                    width=ENTRY_WIDTH, font=SMALL_FONT),
-                          tk.Entry(group2, textvariable=self.p2_trace,
+                          tk.Entry(group2, textvariable=self.p5_trace,
                                    width=ENTRY_WIDTH, font=SMALL_FONT),
-                          tk.Entry(group2, textvariable=self.p2_trace,
+                          tk.Entry(group2, textvariable=self.p6_trace,
                                    width=ENTRY_WIDTH, font=SMALL_FONT)]
         for ent in self.name_ents:
             my_row = self.name_ents.index(ent) + 2
@@ -408,9 +408,9 @@ class InfoPage(tk.Frame):
         """Triggers refresh when combobox changes"""
 
         choice = int(self.num_plans_ent.get())
-        for i in range(choice + 1):
+        for i in range(choice):
             self.name_lbls[i].configure(state="active")
             self.name_ents[i].configure(state="normal")
-        for i in range(choice + 1, 6):
+        for i in range(choice, 6):
             self.name_lbls[i].configure(state="disabled")
-            self.name_ents[i].configure(state="disabled")
+            self.name_ents[i].configure(text="", state="disabled")

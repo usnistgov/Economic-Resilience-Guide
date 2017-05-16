@@ -285,42 +285,42 @@ class CostPage(tk.Frame):
 
         if self.choice.get() == "Direct":
             for index in plan_num:
-                if self.data_cont.DirectCost[index][0] == ["", "", ""]:
+                if self.data_cont.cost.direct[index][0] == ["", "", ""]:
                     # ===== Removes the filler spaces previously placed
-                    self.data_cont.DirectCost[index].remove(["", "", ""])
+                    self.data_cont.cost.direct[index].remove(["", "", ""])
                 extend_by = [[self.title_ent.get(), self.cost_ent.get(),
                               self.desc_ent.get("1.0", "end-1c")]]
-                self.data_cont.DirectCost[index].extend(extend_by)
+                self.data_cont.cost.direct[index].extend(extend_by)
 
         elif self.choice.get() == "Indirect":
             for index in plan_num:
-                if self.data_cont.IndirectCost[index][0] == ["", "", ""]:
-                    self.data_cont.IndirectCost[index].remove(["", "", ""])
+                if self.data_cont.cost.indirect[index][0] == ["", "", ""]:
+                    self.data_cont.cost.indirect[index].remove(["", "", ""])
                 extend_by = [[self.title_ent.get(), self.cost_ent.get(),
                               self.desc_ent.get("1.0", "end-1c")]]
-                self.data_cont.IndirectCost[index].extend(extend_by)
+                self.data_cont.cost.indirect[index].extend(extend_by)
 
         elif self.choice.get() == "Omr":
             for index in plan_num:
-                if self.data_cont.Omr[index][0] == ["", "", ""]:
-                    self.data_cont.Omr[index].remove(["", "", ""])
+                if self.data_cont.cost.omr[index][0] == ["", "", ""]:
+                    self.data_cont.cost.omr[index].remove(["", "", ""])
                 extend_by = [[self.title_ent.get(), self.cost_ent.get(),
                               self.desc_ent.get("1.0", "end-1c")]]
-                self.data_cont.Omr[index].extend(extend_by)
+                self.data_cont.cost.omr[index].extend(extend_by)
 
             if self.omr_selection.get() == "OneTime":
                 for index in plan_num:
-                    if self.data_cont.OmrType[index][0] == ["", "", ""]:
-                        self.data_cont.OmrType[index].remove(["", "", ""])
+                    if self.data_cont.cost.omr_type[index][0] == ["", "", ""]:
+                        self.data_cont.cost.omr_type[index].remove(["", "", ""])
                     extend_by = [["OneTime", self.year_start_ent.get(), "N/A"]]
-                    self.data_cont.OmrType[index].extend(extend_by)
+                    self.data_cont.cost.omr_type[index].extend(extend_by)
 
             elif self.omr_selection.get() == "Recurring":
                 for index in plan_num:
-                    if self.data_cont.OmrType[index][0] == ["", "", ""]:
-                        self.data_cont.OmrType[index].remove(["", "", ""])
+                    if self.data_cont.cost.omr_type[index][0] == ["", "", ""]:
+                        self.data_cont.cost.omr_type[index].remove(["", "", ""])
                     extend_by = [["Recurring", self.year_start_ent.get(), self.year_rate_ent.get()]]
-                    self.data_cont.OmrType[index].extend(extend_by)
+                    self.data_cont.cost.omr_type[index].extend(extend_by)
 
         if valid:
             # ===== Updates the page for the next cost
@@ -333,31 +333,31 @@ class CostPage(tk.Frame):
         """Updates 'Previously Inputted Costs' Section"""
         del self.choices[:]
 
-        for i in range(len(self.data_cont.DirectCost)):
-            for j in range(len(self.data_cont.DirectCost[i])):
-                if self.data_cont.DirectCost[i][j][0] != "":
+        for i in range(len(self.data_cont.cost.direct)):
+            for j in range(len(self.data_cont.cost.direct[i])):
+                if self.data_cont.cost.direct[i][j][0] != "":
                     # === Prevents field duplication
-                    choice_check = self.data_cont.DirectCost[i][j][0]
+                    choice_check = self.data_cont.cost.direct[i][j][0]
                     if i == 0 and ((choice_check + " - <Base Plan>") not in self.choices):
                         self.choices.append(choice_check + " - <Base Plan>")
 
                     elif i != 0 and ((choice_check+" - <Plan "+str(i)+">") not in self.choices):
                         self.choices.append(choice_check + " - <Plan " + str(i) + ">")
 
-        for i in range(len(self.data_cont.IndirectCost)):
-            for j in range(len(self.data_cont.IndirectCost[i])):
-                if self.data_cont.IndirectCost[i][j][0] != "":
-                    choice_check = self.data_cont.IndirectCost[i][j][0]
+        for i in range(len(self.data_cont.cost.indirect)):
+            for j in range(len(self.data_cont.cost.indirect[i])):
+                if self.data_cont.cost.indirect[i][j][0] != "":
+                    choice_check = self.data_cont.cost.indirect[i][j][0]
                     if i == 0 and ((choice_check + " - <Base Plan>") not in self.choices):
                         self.choices.append(choice_check + " - <Base Plan>")
 
                     elif i != 0 and ((choice_check+" - <Plan "+str(i)+">") not in self.choices):
                         self.choices.append(choice_check + " - <Plan " + str(i) + ">")
 
-        for i in range(len(self.data_cont.Omr)):
-            for j in range(len(self.data_cont.Omr[i])):
-                if self.data_cont.Omr[i][j][0] != "":
-                    choice_check = self.data_cont.Omr[i][j][0]
+        for i in range(len(self.data_cont.cost.omr)):
+            for j in range(len(self.data_cont.cost.omr[i])):
+                if self.data_cont.cost.omr[i][j][0] != "":
+                    choice_check = self.data_cont.cost.omr[i][j][0]
                     if i == 0 and ((choice_check+" - <Base Plan>") not in self.choices):
                         self.choices.append(choice_check + " - <Base Plan>")
 
@@ -476,26 +476,26 @@ class CostPage(tk.Frame):
         chosen_cost[1] = chosen_cost[1].replace("Base", '0')
         chosen_cost[1] = int(chosen_cost[1])
 
-        for i in range(len(self.data_cont.DirectCost[chosen_cost[1]])):
-            if self.data_cont.DirectCost[chosen_cost[1]][i][0] == chosen_cost[0]:
-                cost_amount = self.data_cont.DirectCost[chosen_cost[1]][i][1]
-                cost_desc = self.data_cont.DirectCost[chosen_cost[1]][i][2]
+        for i in range(len(self.data_cont.cost.direct[chosen_cost[1]])):
+            if self.data_cont.cost.direct[chosen_cost[1]][i][0] == chosen_cost[0]:
+                cost_amount = self.data_cont.cost.direct[chosen_cost[1]][i][1]
+                cost_desc = self.data_cont.cost.direct[chosen_cost[1]][i][2]
                 cost_type = "Direct"
 
-        for i in range(len(self.data_cont.IndirectCost[chosen_cost[1]])):
-            if self.data_cont.IndirectCost[chosen_cost[1]][i][0] == chosen_cost[0]:
-                cost_amount = self.data_cont.IndirectCost[chosen_cost[1]][i][1]
-                cost_desc = self.data_cont.IndirectCost[chosen_cost[1]][i][2]
+        for i in range(len(self.data_cont.cost.indirect[chosen_cost[1]])):
+            if self.data_cont.cost.indirect[chosen_cost[1]][i][0] == chosen_cost[0]:
+                cost_amount = self.data_cont.cost.indirect[chosen_cost[1]][i][1]
+                cost_desc = self.data_cont.cost.indirect[chosen_cost[1]][i][2]
                 cost_type = "Indirect"
 
-        for i in range(len(self.data_cont.Omr[chosen_cost[1]])):
-            if self.data_cont.Omr[chosen_cost[1]][i][0] == chosen_cost[0]:
-                cost_amount = self.data_cont.Omr[chosen_cost[1]][i][1]
-                cost_desc = self.data_cont.Omr[chosen_cost[1]][i][2]
+        for i in range(len(self.data_cont.cost.omr[chosen_cost[1]])):
+            if self.data_cont.cost.omr[chosen_cost[1]][i][0] == chosen_cost[0]:
+                cost_amount = self.data_cont.cost.omr[chosen_cost[1]][i][1]
+                cost_desc = self.data_cont.cost.omr[chosen_cost[1]][i][2]
                 cost_type = "Omr"
-                this_omr_type = self.data_cont.OmrType[chosen_cost[1]][i][0]
-                omr_year = self.data_cont.OmrType[chosen_cost[1]][i][1]
-                omr_rec = self.data_cont.OmrType[chosen_cost[1]][i][2]
+                this_omr_type = self.data_cont.cost.omr_type[chosen_cost[1]][i][0]
+                omr_year = self.data_cont.cost.omr_type[chosen_cost[1]][i][1]
+                omr_rec = self.data_cont.cost.omr_type[chosen_cost[1]][i][2]
 
         self.title_ent.delete(0, tk.END)
         self.title_ent.insert(tk.END, chosen_cost[0])
@@ -583,28 +583,28 @@ class CostPage(tk.Frame):
             def confirm_delete():
                 """ Confirms that deleting should happen and actually deletes the data."""
                 # ===== Removes the cost from the list
-                for i in range(len(self.data_cont.DirectCost[chosen_cost[1]])):
-                    if self.data_cont.DirectCost[chosen_cost[1]][i][0] == chosen_cost[0]:
-                        del self.data_cont.DirectCost[chosen_cost[1]][i]
+                for i in range(len(self.data_cont.cost.direct[chosen_cost[1]])):
+                    if self.data_cont.cost.direct[chosen_cost[1]][i][0] == chosen_cost[0]:
+                        del self.data_cont.cost.direct[chosen_cost[1]][i]
                         # === Places filler fields so that code operates properly
-                        if len(self.data_cont.DirectCost[chosen_cost[1]]) == 0:
-                            self.data_cont.DirectCost[chosen_cost[1]].extend([["", "", ""]])
+                        if len(self.data_cont.cost.direct[chosen_cost[1]]) == 0:
+                            self.data_cont.cost.direct[chosen_cost[1]].extend([["", "", ""]])
 
-                for i in range(len(self.data_cont.IndirectCost[chosen_cost[1]])):
-                    if self.data_cont.IndirectCost[chosen_cost[1]][i][0] == chosen_cost[0]:
-                        del self.data_cont.IndirectCost[chosen_cost[1]][i]
-                        if len(self.data_cont.IndirectCost[chosen_cost[1]]) == 0:
-                            self.data_cont.IndirectCost[chosen_cost[1]].extend([["", "", ""]])
+                for i in range(len(self.data_cont.cost.indirect[chosen_cost[1]])):
+                    if self.data_cont.cost.indirect[chosen_cost[1]][i][0] == chosen_cost[0]:
+                        del self.data_cont.cost.indirect[chosen_cost[1]][i]
+                        if len(self.data_cont.cost.indirect[chosen_cost[1]]) == 0:
+                            self.data_cont.cost.indirect[chosen_cost[1]].extend([["", "", ""]])
 
-                for i in range(len(self.data_cont.Omr[chosen_cost[1]])):
-                    if self.data_cont.Omr[chosen_cost[1]][i][0] == chosen_cost[0]:
-                        del self.data_cont.Omr[chosen_cost[1]][i]
-                        if len(self.data_cont.Omr[chosen_cost[1]]) == 0:
-                            self.data_cont.Omr[chosen_cost[1]].extend([["", "", ""]])
+                for i in range(len(self.data_cont.cost.omr[chosen_cost[1]])):
+                    if self.data_cont.cost.omr[chosen_cost[1]][i][0] == chosen_cost[0]:
+                        del self.data_cont.cost.omr[chosen_cost[1]][i]
+                        if len(self.data_cont.cost.omr[chosen_cost[1]]) == 0:
+                            self.data_cont.cost.omr[chosen_cost[1]].extend([["", "", ""]])
 
-                        del self.data_cont.OmrType[chosen_cost[1]][i]
-                        if len(self.data_cont.OmrType[chosen_cost[1]]) == 0:
-                            self.data_cont.OmrType[chosen_cost[1]].extend([["", "", ""]])
+                        del self.data_cont.cost.omr_type[chosen_cost[1]][i]
+                        if len(self.data_cont.cost.omr_type[chosen_cost[1]]) == 0:
+                            self.data_cont.cost.omr_type[chosen_cost[1]].extend([["", "", ""]])
 
                 self.update_prev_list()
                 popup.destroy()
@@ -613,20 +613,20 @@ class CostPage(tk.Frame):
                 """ Cancels the delete process."""
                 popup.destroy()
 
-            for i in range(len(self.data_cont.DirectCost[chosen_cost[1]])):
-                if self.data_cont.DirectCost[chosen_cost[1]][i][0] == chosen_cost[0]:
-                    cost_amount = self.data_cont.DirectCost[chosen_cost[1]][i][1]
-                    cost_desc = self.data_cont.DirectCost[chosen_cost[1]][i][2]
+            for i in range(len(self.data_cont.cost.direct[chosen_cost[1]])):
+                if self.data_cont.cost.direct[chosen_cost[1]][i][0] == chosen_cost[0]:
+                    cost_amount = self.data_cont.cost.direct[chosen_cost[1]][i][1]
+                    cost_desc = self.data_cont.cost.direct[chosen_cost[1]][i][2]
 
-            for i in range(len(self.data_cont.IndirectCost[chosen_cost[1]])):
-                if self.data_cont.IndirectCost[chosen_cost[1]][i][0] == chosen_cost[0]:
-                    cost_amount = self.data_cont.IndirectCost[chosen_cost[1]][i][1]
-                    cost_desc = self.data_cont.IndirectCost[chosen_cost[1]][i][2]
+            for i in range(len(self.data_cont.cost.indirect[chosen_cost[1]])):
+                if self.data_cont.cost.indirect[chosen_cost[1]][i][0] == chosen_cost[0]:
+                    cost_amount = self.data_cont.cost.indirect[chosen_cost[1]][i][1]
+                    cost_desc = self.data_cont.cost.indirect[chosen_cost[1]][i][2]
 
-            for i in range(len(self.data_cont.Omr[chosen_cost[1]])):
-                if self.data_cont.Omr[chosen_cost[1]][i][0] == chosen_cost[0]:
-                    cost_amount = self.data_cont.Omr[chosen_cost[1]][i][1]
-                    cost_desc = self.data_cont.Omr[chosen_cost[1]][i][2]
+            for i in range(len(self.data_cont.cost.omr[chosen_cost[1]])):
+                if self.data_cont.cost.omr[chosen_cost[1]][i][0] == chosen_cost[0]:
+                    cost_amount = self.data_cont.cost.omr[chosen_cost[1]][i][1]
+                    cost_desc = self.data_cont.cost.omr[chosen_cost[1]][i][2]
 
             popup.wm_title("Confirmation")
             del_text = "Delete \'" + chosen_cost[0] + "\'?\n\nAmount: " + str(cost_amount) + "\n\nDescription: " + str(cost_desc)
@@ -645,28 +645,28 @@ class CostPage(tk.Frame):
         else:
             # ===== Removes the cost from the list
             #===== REPEATED CODE => find a way that won't require repetition
-            for i in range(len(self.data_cont.DirectCost[chosen_cost[1]])):
-                if self.data_cont.DirectCost[chosen_cost[1]][i][0] == chosen_cost[0]:
-                    del self.data_cont.DirectCost[chosen_cost[1]][i]
+            for i in range(len(self.data_cont.cost.direct[chosen_cost[1]])):
+                if self.data_cont.cost.direct[chosen_cost[1]][i][0] == chosen_cost[0]:
+                    del self.data_cont.cost.direct[chosen_cost[1]][i]
                     # === Places filler fields so that code operates properly
-                    if len(self.data_cont.DirectCost[chosen_cost[1]]) == 0:
-                        self.data_cont.DirectCost[chosen_cost[1]].extend([["", "", ""]])
+                    if len(self.data_cont.cost.direct[chosen_cost[1]]) == 0:
+                        self.data_cont.cost.direct[chosen_cost[1]].extend([["", "", ""]])
 
-            for i in range(len(self.data_cont.IndirectCost[chosen_cost[1]])):
-                if self.data_cont.IndirectCost[chosen_cost[1]][i][0] == chosen_cost[0]:
-                    del self.data_cont.IndirectCost[chosen_cost[1]][i]
-                    if len(self.data_cont.IndirectCost[chosen_cost[1]]) == 0:
-                        self.data_cont.IndirectCost[chosen_cost[1]].extend([["", "", ""]])
+            for i in range(len(self.data_cont.cost.indirect[chosen_cost[1]])):
+                if self.data_cont.cost.indirect[chosen_cost[1]][i][0] == chosen_cost[0]:
+                    del self.data_cont.cost.indirect[chosen_cost[1]][i]
+                    if len(self.data_cont.cost.indirect[chosen_cost[1]]) == 0:
+                        self.data_cont.cost.indirect[chosen_cost[1]].extend([["", "", ""]])
 
-            for i in range(len(self.data_cont.Omr[chosen_cost[1]])):
-                if self.data_cont.Omr[chosen_cost[1]][i][0] == chosen_cost[0]:
-                    del self.data_cont.Omr[chosen_cost[1]][i]
-                    if len(self.data_cont.Omr[chosen_cost[1]]) == 0:
-                        self.data_cont.Omr[chosen_cost[1]].extend([["", "", ""]])
+            for i in range(len(self.data_cont.cost.omr[chosen_cost[1]])):
+                if self.data_cont.cost.omr[chosen_cost[1]][i][0] == chosen_cost[0]:
+                    del self.data_cont.cost.omr[chosen_cost[1]][i]
+                    if len(self.data_cont.cost.omr[chosen_cost[1]]) == 0:
+                        self.data_cont.cost.omr[chosen_cost[1]].extend([["", "", ""]])
 
-                    del self.data_cont.OmrType[chosen_cost[1]][i]
-                    if len(self.data_cont.OmrType[chosen_cost[1]]) == 0:
-                        self.data_cont.OmrType[chosen_cost[1]].extend([["", "", ""]])
+                    del self.data_cont.cost.omr_type[chosen_cost[1]][i]
+                    if len(self.data_cont.cost.omr_type[chosen_cost[1]]) == 0:
+                        self.data_cont.cost.omr_type[chosen_cost[1]].extend([["", "", ""]])
 
             self.update_prev_list()
 

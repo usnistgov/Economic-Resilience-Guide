@@ -200,18 +200,18 @@ def run_main_page(data):
                 ttk.Label(group1, text=self.data_cont.Fatalities[i][1],
                           font=SMALL_FONT).grid(row=6, column=(i+1), sticky="e", **pad_opts)
 
-                num_spaces = int(48-(len('${:,.0f}'.format(self.data_cont.direct_cost_sum[i]))*.8))
+                num_spaces = int(48-(len('${:,.0f}'.format(self.data_cont.cost.d_sum[i]))*.8))
                 my_tab = " " * num_spaces
                 ttk.Label(group2,
-                          text=my_tab+'${:,.0f}'.format(self.data_cont.direct_cost_sum[i]),
+                          text=my_tab+'${:,.0f}'.format(self.data_cont.cost.d_sum[i]),
                           font=SMALL_FONT).grid(row=1, column=(i+1), sticky="e", **pad_opts)
-                ttk.Label(group2, text='${:,.0f}'.format(self.data_cont.indirect_cost_sum[i]),
+                ttk.Label(group2, text='${:,.0f}'.format(self.data_cont.cost.i_sum[i]),
                           font=SMALL_FONT).grid(row=2, column=(i+1), sticky="e", **pad_opts)
-                if self.data_cont.one_time_omr_sum[i] != "":
-                    ttk.Label(group2, text='${:,.0f}'.format(self.data_cont.one_time_omr_sum[i]),
+                if self.data_cont.cost.omr_1_sum[i] != "":
+                    ttk.Label(group2, text='${:,.0f}'.format(self.data_cont.cost.omr_1_sum[i]),
                               font=SMALL_FONT).grid(row=3, column=(i+1), sticky="e", **pad_opts)
-                if self.data_cont.recur_omr_sum[i] != "":
-                    ttk.Label(group2, text='${:,.0f}'.format(self.data_cont.recur_omr_sum[i]),
+                if self.data_cont.cost.omr_r_sum[i] != "":
+                    ttk.Label(group2, text='${:,.0f}'.format(self.data_cont.cost.omr_r_sum[i]),
                               font=SMALL_FONT).grid(row=5, column=(i+1), sticky="e", **pad_opts)
                 total = 0
                 for j in range(len(self.data_cont.NonDBen[i])):
@@ -227,12 +227,12 @@ def run_main_page(data):
                           font=SMALL_FONT).grid(row=7, column=i+1, sticky="e", **pad_opts)
 
             for i in range(self.data_cont.num_plans + 1):
-                num_spaces = int(42 - (len('${:,.0f}'.format(self.data_cont.tot_bens[i])) * .8))
+                num_spaces = int(42 - (len('${:,.0f}'.format(self.data_cont.ben.total[i])) * .8))
 
                 ttk.Label(group3,
-                          text=" "*num_spaces + '${:,.0f}'.format(self.data_cont.tot_bens[i]),
+                          text=" "*num_spaces + '${:,.0f}'.format(self.data_cont.ben.total[i]),
                           font=BOLD_FONT).grid(row=1, column=(i + 1), sticky="e", **pad_opts)
-                ttk.Label(group3, text='${:,.0f}'.format(self.data_cont.tot_costs[i]),
+                ttk.Label(group3, text='${:,.0f}'.format(self.data_cont.cost.total[i]),
                           font=BOLD_FONT).grid(row=2, column=(i + 1), sticky="e", **pad_opts)
                 if self.data_cont.net[i] >= 0:
                     ttk.Label(group3, text='${:,.0f}'.format(self.data_cont.net[i]),

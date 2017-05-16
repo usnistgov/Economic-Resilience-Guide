@@ -22,31 +22,23 @@ import docx
 from Constants import TAB
 
 from BenefitsClass import Benefits
+from CostClass import Costs
 
 class Data():
     """ Contains all of the data for the simulations and does a bulk of the calculations.    """
     # Couldn't find a way to make this look nicer. Basically initializes all global lists
     plan_name = []
-    DirectCost = []
-    IndirectCost = []
     Externalities = []
-    Omr = []
-    OmrType = []
     NonDBen = []
     Fatalities = []
     FIELDS_PER_VALUE = 3
 
     ben = Benefits()
+    cost = Costs()
 
     fatalities_sum = [0]
-    direct_cost_sum = [0]
-    indirect_cost_sum = [0]
-    one_time_omr_sum = [0]
-    recur_omr_sum = [0]
     one_time_non_d_ben_sum = [0]
     recur_non_d_ben_sum = [0]
-    tot_costs = [0]
-    tot_bens = [0]
     net = [0]
     non_d_ben_totals = [0]
 
@@ -106,44 +98,14 @@ class Data():
                             self.plan_name.append(line[i])
 
                 elif line[0] == "Direct Costs":
-                    for index in plan_index_list:
-                        self.DirectCost.append([])
-                        # 2nd dimension: Plan # (1st dimension is 'cost type')
-                        start_value = index
-                        for j in range(start_value, start_value + self.FIELDS_PER_VALUE):
-                            if line[j] != "":
-                                if (j-1) % self.FIELDS_PER_VALUE == 0:
-                                    self.DirectCost[-1].append([line[j]])
-                                    # 3rd dimension: Cost of corresponding plan | Title of the cost
-                                    self.DirectCost[-1][count].append(line[j+1])
-                                    self.DirectCost[-1][count].append(line[j+2])
-                                    j = j + 3
-                                    # $ value of the cost
-                                    # Description of the cost
-                                    count += 1
-                        count = 0
+                    self.cost.fill_direct(line, plan_index_list, self.FIELDS_PER_VALUE)
 
                 elif line[0] == "Indirect Costs":
-                    for index in plan_index_list:
-                        self.IndirectCost.append([])
-                        start_value = index
-                        try:
-                            end_value = plan_index_list[plan_index_list.index(index)+1]
-                        except IndexError:
-                            end_value = len(line)
-                        for j in range(start_value, end_value):
-                            if line[j] != "":
-                                if (j - 1) % self.FIELDS_PER_VALUE == 0:
-                                    self.IndirectCost[-1].append([line[j]])
-                                    self.IndirectCost[-1][count].append(line[j+1])
-                                    self.IndirectCost[-1][count].append(line[j+2])
-                                    j = j + 3
-                                    count += 1
-                        count = 0
+                    self.cost.fill_indirect(line, plan_index_list, self.FIELDS_PER_VALUE)
 
                 elif line[0] == "OMR":
                     for index in plan_index_list:
-                        self.Omr.append([])
+                        self.cost.omr.append([])
                         start_value = index
                         try:
                             end_value = plan_index_list[plan_index_list.index(index)+1]
@@ -152,16 +114,16 @@ class Data():
                         for j in range(start_value, end_value):
                             if line[j] != "":
                                 if (j - 1) % self.FIELDS_PER_VALUE == 0:
-                                    self.Omr[-1].append([line[j]])
-                                    self.Omr[-1][count].append(line[j+1])
-                                    self.Omr[-1][count].append(line[j+2])
+                                    self.cost.omr[-1].append([line[j]])
+                                    self.cost.omr[-1][count].append(line[j+1])
+                                    self.cost.omr[-1][count].append(line[j+2])
                                     j = j + 2
                                     count += 1
                         count = 0
 
                 elif line[0] == "OMRType":
                     for index in plan_index_list:
-                        self.OmrType.append([])
+                        self.cost.omr_type.append([])
                         start_value = index
                         try:
                             end_value = plan_index_list[plan_index_list.index(index)+1]
@@ -170,9 +132,9 @@ class Data():
                         for j in range(start_value, end_value):
                             if line[j] != "":
                                 if (j - 1) % self.FIELDS_PER_VALUE == 0:
-                                    self.OmrType[-1].append([line[j]])
-                                    self.OmrType[-1][count].append(line[j+1])
-                                    self.OmrType[-1][count].append(line[j+2])
+                                    self.cost.omr_type[-1].append([line[j]])
+                                    self.cost.omr_type[-1][count].append(line[j+1])
+                                    self.cost.omr_type[-1][count].append(line[j+2])
                                     j = j + 3
                                     count += 1
                         count = 0
@@ -301,13 +263,13 @@ class Data():
 
             for i in range(self.num_plans + 1):
             # === Makes sure that fields aren't unnecessarily given default values
-                if len(self.DirectCost[i]) == 0:
-                    self.DirectCost[i].append(["", "", ""])
-                if len(self.IndirectCost[i]) == 0:
-                    self.IndirectCost[i].append(["", "", ""])
-                if len(self.Omr[i]) == 0:
-                    self.Omr[i].append(["", "", ""])
-                    self.OmrType[i].append(["", "", ""])
+                if len(self.cost.direct[i]) == 0:
+                    self.cost.direct[i].append(["", "", ""])
+                if len(self.cost.indirect[i]) == 0:
+                    self.cost.indirect[i].append(["", "", ""])
+                if len(self.cost.omr[i]) == 0:
+                    self.cost.omr[i].append(["", "", ""])
+                    self.cost.omr_type[i].append(["", "", ""])
                 if len(self.ben.direct[i]) == 0:
                     self.ben.direct[i].append(["", "", ""])
                 if len(self.ben.indirect[i]) == 0:
@@ -353,7 +315,7 @@ class Data():
     def sir(self, plan_num):
         """Equation for the Savings-to-Investment Ratio"""
         for i in range(self.num_plans + 1):
-            self.up_front.append(self.direct_cost_sum[i] + self.indirect_cost_sum[i])
+            self.up_front.append(self.cost.d_sum[i] + self.cost.i_sum[i])
 
         if self.up_front[plan_num] == 0:
             return 0
@@ -365,8 +327,8 @@ class Data():
         # === Calls the function so that self.up_front is calculated
         #self.sir(plan_num)
 
-        #annual_cost = (self.tot_costs[plan_num] - self.up_front[plan_num]) / float(self.horizon)
-        #annual_savings = self.tot_bens[plan_num] / float(self.horizon)
+        #annual_cost = (self.cost.total[plan_num] - self.up_front[plan_num]) / float(self.horizon)
+        #annual_savings = self.ben.total[plan_num] / float(self.horizon)
 
         #irr_list = [annual_savings - annual_cost] * (int(self.horizon) + 1)
         #irr_list[0] = -(self.up_front[plan_num])
@@ -392,12 +354,12 @@ class Data():
 
     def roi(self, plan_num):
         """Equation for the Return on Investment"""
-        if self.tot_bens[plan_num] == 0:
+        if self.ben.total[plan_num] == 0:
             return 0
-        elif self.tot_costs[plan_num] == 0:
+        elif self.cost.total[plan_num] == 0:
             return 0
-        annual_savings = self.tot_bens[plan_num] / float(self.horizon)
-        simple_payback = self.tot_costs[plan_num] / annual_savings
+        annual_savings = self.ben.total[plan_num] / float(self.horizon)
+        simple_payback = self.cost.total[plan_num] / annual_savings
         return (1 / simple_payback) * 100
 
     def non_d_roi(self, plan_num):
@@ -406,10 +368,10 @@ class Data():
 
         if non_d_ben_total == 0:
             return 0
-        elif self.tot_costs[plan_num] == 0:
+        elif self.cost.total[plan_num] == 0:
             return 0
         annual_savings = non_d_ben_total / float(self.horizon)
-        simple_payback = self.tot_costs[plan_num] / annual_savings
+        simple_payback = self.cost.total[plan_num] / annual_savings
         return (1 / simple_payback) * 100
 
     def summer(self):
@@ -418,16 +380,17 @@ class Data():
         self.ben.d_sum = [0]*(self.num_plans + 1)
         self.ben.i_sum = [0]*(self.num_plans + 1)
         self.fatalities_sum = [0]*(self.num_plans + 1)
-        self.direct_cost_sum = [0]*(self.num_plans + 1)
-        self.indirect_cost_sum = [0]*(self.num_plans + 1)
+        self.cost.d_sum = [0]*(self.num_plans + 1)
+        self.cost.i_sum = [0]*(self.num_plans + 1)
         self.one_time_non_d_ben_sum = [0]*(self.num_plans + 1)
         self.recur_non_d_ben_sum = [0]*(self.num_plans + 1)
-        self.one_time_omr_sum = [0]*(self.num_plans + 1)
-        self.recur_omr_sum = [0]*(self.num_plans + 1)
-        self.tot_costs = [0]*(self.num_plans + 1)
-        self.tot_bens = [0]*(self.num_plans + 1)
+        self.cost.omr_1_sum = [0]*(self.num_plans + 1)
+        self.cost.omr_r_sum = [0]*(self.num_plans + 1)
+        self.cost.total = [0]*(self.num_plans + 1)
+        self.ben.total = [0]*(self.num_plans + 1)
         self.net = [0]*(self.num_plans + 1)
-        self.annual_non_disaster_cash_flows = [[0]*(int(self.horizon)+1) for i in range(int(self.num_plans)+1)]
+        self.annual_non_disaster_cash_flows = [[0]*(int(self.horizon)+1)
+                                               for i in range(int(self.num_plans)+1)]
 
         for i in range(len(self.NonDBen)):
             for j in range(len(self.NonDBen[i])):
@@ -436,59 +399,15 @@ class Data():
 
 
         for i in range(self.num_plans + 1):
-            # === Response/Recovery Costs Reduction
-            for j in range(len(self.ben.res_rec[i])):
-                if self.ben.res_rec[i][j][1] == "":
-                    self.ben.res_rec[i][j][1] = 0
-                self.ben.r_sum[i] += float(self.ben.res_rec[i][j][1])
-
-            # === Direct Costs Reduction
-            for j in range(len(self.ben.direct[i])):
-                if self.ben.direct[i][j][1] == "":
-                    self.ben.direct[i][j][1] = 0
-                self.ben.d_sum[i] += float(self.ben.direct[i][j][1])
-
-            # === Indirect Costs Reduction
-            for j in range(len(self.ben.indirect[i])):
-                if self.ben.indirect[i][j][1] == "":
-                    self.ben.indirect[i][j][1] = 0
-                self.ben.i_sum[i] += float(self.ben.indirect[i][j][1])
+            # === Response/Recovery Costs, Direct Costs, Indirect Costs Reduction
+            self.ben.summer(i)
 
             # === Fatalities Aversion
             self.fatalities_sum[i] = self.calc_fatalities(self.Fatalities[i][1])
 
-            # === Direct Costs
-            for j in range(len(self.DirectCost[i])):
-                if self.DirectCost[i][j][1] == "":
-                    self.DirectCost[i][j][1] = 0
-                self.direct_cost_sum[i] += float(self.DirectCost[i][j][1])
-                self.annual_non_disaster_cash_flows[i][0] -= float(self.DirectCost[i][j][1])
-
-            # === Indirect Costs
-            for j in range(len(self.IndirectCost[i])):
-                if self.IndirectCost[i][j][1] == "":
-                    self.IndirectCost[i][j][1] = 0
-                self.indirect_cost_sum[i] += float(self.IndirectCost[i][j][1])
-                self.annual_non_disaster_cash_flows[i][0] += -float(self.IndirectCost[i][j][1])
-
-            # === One Time OMR  /  Recurring OMR
-            for j in range(len(self.Omr[i])):
-                if self.Omr[i][j][1] == "":
-                    self.Omr[i][j][1] = 0
-
-                if self.OmrType[i][j][0] == "OneTime":
-                    self.annual_non_disaster_cash_flows[i][int(self.OmrType[i][j][1])] += -float(self.Omr[i][j][1])
-                    to_add = self.calc_one_time(float(self.Omr[i][j][1]),
-                                                float(self.OmrType[i][j][1]))
-                    self.one_time_omr_sum[i] += to_add
-
-                if self.OmrType[i][j][0] == "Recurring":
-                    to_add = self.calc_recur(float(self.Omr[i][j][1]), float(self.OmrType[i][j][1]),
-                                             float(self.OmrType[i][j][2]))
-                    self.recur_omr_sum[i] += to_add
-                    for k in range(1, len(self.annual_non_disaster_cash_flows[i])):
-                        if k % int(self.OmrType[i][j][2]) == 0:
-                            self.annual_non_disaster_cash_flows[i][k] += -float(self.Omr[i][j][1])
+            # === Direct Costs, Indirect Costs, One Time/Recurring OMR
+            self.cost.summer(i, self.annual_non_disaster_cash_flows,
+                             self.calc_one_time, self.calc_recur)
 
         # === NonDBens
             for j in range(len(self.NonDBen[i])):
@@ -510,14 +429,14 @@ class Data():
 
         # === Totals
         for i in range(self.num_plans + 1):
-            self.tot_bens[i] += self.on_dis_occ(self.ben.r_sum[i])
-            self.tot_bens[i] += self.on_dis_occ(self.ben.d_sum[i])
-            self.tot_bens[i] += self.on_dis_occ(self.ben.i_sum[i])
-            self.tot_bens[i] += self.fatalities_sum[i]
-            self.tot_bens[i] += self.one_time_non_d_ben_sum[i] + float(self.recur_non_d_ben_sum[i])
-            self.tot_costs[i] += float(self.direct_cost_sum[i]) + float(self.indirect_cost_sum[i])
-            self.tot_costs[i] += float(self.one_time_omr_sum[i]) + float(self.recur_omr_sum[i])
-            self.net[i] = self.tot_bens[i] - self.tot_costs[i]
+            self.ben.total[i] += self.on_dis_occ(self.ben.r_sum[i])
+            self.ben.total[i] += self.on_dis_occ(self.ben.d_sum[i])
+            self.ben.total[i] += self.on_dis_occ(self.ben.i_sum[i])
+            self.ben.total[i] += self.fatalities_sum[i]
+            self.ben.total[i] += self.one_time_non_d_ben_sum[i] + float(self.recur_non_d_ben_sum[i])
+            self.cost.total[i] += float(self.cost.d_sum[i]) + float(self.cost.i_sum[i])
+            self.cost.total[i] += float(self.cost.omr_1_sum[i]) + float(self.cost.omr_r_sum[i])
+            self.net[i] = self.ben.total[i] - self.cost.total[i]
 
 
 # ========= Functions that interact with a text file =========
@@ -530,10 +449,11 @@ class Data():
         # === Holds the maximum lengths of any list related to each plan
         max_lengths = []
         for i in range(self.num_plans + 1):
-            max_1 = max([len(self.DirectCost[i]), len(self.IndirectCost[i]), len(self.Omr[i])])
-            max_2 = max([len(self.Externalities[i]), len(self.ben.direct[i])])
-            max_3 = max([len(self.ben.indirect[i]), len(self.ben.res_rec[i]), len(self.NonDBen[i])])
-            max_lengths.append(max([max_1, max_2, max_3]))
+            lengths = [len(self.cost.direct[i]), len(self.cost.indirect[i]),
+                       len(self.cost.omr[i]), len(self.Externalities[i]),
+                       len(self.ben.direct[i]), len(self.ben.indirect[i]),
+                       len(self.ben.res_rec[i]), len(self.NonDBen[i])]
+            max_lengths.append(max(lengths))
 
         to_write_list = [["Analysis Title", self.analysis_title],   #0
                          ["Number of Plans", self.num_plans],       #1
@@ -582,38 +502,38 @@ class Data():
 
         # ===== Direct Cost
         for i in range(self.num_plans+1):
-            for j in range(len(self.DirectCost[i])):
+            for j in range(len(self.cost.direct[i])):
                 for k in range(self.FIELDS_PER_VALUE):
-                    to_write_list[14].append(self.DirectCost[i][j][k])
+                    to_write_list[14].append(self.cost.direct[i][j][k])
 
-            for j in range(max_lengths[i] - len(self.DirectCost[i])):
+            for j in range(max_lengths[i] - len(self.cost.direct[i])):
                 to_write_list[14].extend([""]*self.FIELDS_PER_VALUE)
 
         # ===== Indirect Cost
         for i in range(self.num_plans + 1):
-            for j in range(len(self.IndirectCost[i])):
+            for j in range(len(self.cost.indirect[i])):
                 for k in range(self.FIELDS_PER_VALUE):
-                    to_write_list[15].append(self.IndirectCost[i][j][k])
+                    to_write_list[15].append(self.cost.indirect[i][j][k])
 
-            for j in range(max_lengths[i] - len(self.IndirectCost[i])):
+            for j in range(max_lengths[i] - len(self.cost.indirect[i])):
                 to_write_list[15].extend([""]*self.FIELDS_PER_VALUE)
 
         # ===== OMR
         for i in range(self.num_plans + 1):
-            for j in range(len(self.Omr[i])):
+            for j in range(len(self.cost.omr[i])):
                 for k in range(self.FIELDS_PER_VALUE):
-                    to_write_list[16].append(self.Omr[i][j][k])
+                    to_write_list[16].append(self.cost.omr[i][j][k])
 
-            for j in range(max_lengths[i] - len(self.Omr[i])):
+            for j in range(max_lengths[i] - len(self.cost.omr[i])):
                 to_write_list[16].extend([""]*self.FIELDS_PER_VALUE)
 
         # ===== OMRType
         for i in range(self.num_plans + 1):
-            for j in range(len(self.OmrType[i])):
+            for j in range(len(self.cost.omr_type[i])):
                 for k in range(self.FIELDS_PER_VALUE):
-                    to_write_list[17].append(self.OmrType[i][j][k])
+                    to_write_list[17].append(self.cost.omr_type[i][j][k])
 
-            for j in range(max_lengths[i] - len(self.OmrType[i])):
+            for j in range(max_lengths[i] - len(self.cost.omr_type[i])):
                 to_write_list[17].extend([""]*self.FIELDS_PER_VALUE)
 
         # ===== Externalities
@@ -802,7 +722,8 @@ class Data():
                     new_text = self.on_dis_occ(float(self.ben.indirect[i][j][1]))
                     doc.add_paragraph(TAB + 'Effective Present Value: '
                                       + '${:,.0f}'.format(new_text))
-                    doc.add_paragraph(TAB + 'Description: ' + str(self.ben.indirect[i][j][2]) + "\n")
+                    doc.add_paragraph(TAB + 'Description: '
+                                      + str(self.ben.indirect[i][j][2]) + "\n")
 
             if float(self.Fatalities[i][1]) != 0:
                 paragraph = doc.add_paragraph()
@@ -845,95 +766,97 @@ class Data():
                         doc.add_paragraph(TAB + 'Description: ' + str(self.NonDBen[i][j][2]) + "\n")
 
             doc.add_heading('Costs\n', 2)
-            if self.DirectCost[i][0][0] != "":
+            if self.cost.direct[i][0][0] != "":
                 paragraph = doc.add_paragraph()
                 run = paragraph.add_run(TAB + 'Up-Front Direct Costs\n')
                 run.bold = True
-                for j in range(len(self.DirectCost[i])):
-                    doc.add_paragraph(TAB + str(j + 1) + ") " + self.DirectCost[i][j][0])
+                for j in range(len(self.cost.direct[i])):
+                    doc.add_paragraph(TAB + str(j + 1) + ") " + self.cost.direct[i][j][0])
                     doc.add_paragraph(TAB + 'Dollar Amount: '
-                                      + str('${:,.0f}'.format(float(self.DirectCost[i][j][1]))))
+                                      + str('${:,.0f}'.format(float(self.cost.direct[i][j][1]))))
                     doc.add_paragraph(TAB + 'Effective Present Value: '
-                                      + '${:,.0f}'.format(float(self.DirectCost[i][j][1])))
-                    doc.add_paragraph(TAB + 'Description: ' + str(self.DirectCost[i][j][2]) + "\n")
+                                      + '${:,.0f}'.format(float(self.cost.direct[i][j][1])))
+                    doc.add_paragraph(TAB + 'Description: ' + str(self.cost.direct[i][j][2]) + "\n")
 
-            if self.IndirectCost[i][0][0] != "":
+            if self.cost.indirect[i][0][0] != "":
                 paragraph = doc.add_paragraph()
                 run = paragraph.add_run(TAB + 'Up-Front Indirect Costs\n')
                 run.bold = True
-                for j in range(len(self.IndirectCost[i])):
-                    doc.add_paragraph(TAB + str(j + 1) + ") " + self.IndirectCost[i][j][0])
+                for j in range(len(self.cost.indirect[i])):
+                    doc.add_paragraph(TAB + str(j + 1) + ") " + self.cost.indirect[i][j][0])
                     doc.add_paragraph(TAB + 'Dollar Amount: '
-                                      + str('${:,.0f}'.format(float(self.IndirectCost[i][j][1]))))
+                                      + str('${:,.0f}'.format(float(self.cost.indirect[i][j][1]))))
                     doc.add_paragraph(TAB + 'Effective Present Value: '
-                                      + '${:,.0f}'.format(float(self.IndirectCost[i][j][1])))
+                                      + '${:,.0f}'.format(float(self.cost.indirect[i][j][1])))
                     doc.add_paragraph(TAB + 'Description: '
-                                      + str(self.IndirectCost[i][j][2]) + "\n")
+                                      + str(self.cost.indirect[i][j][2]) + "\n")
 
             has_one_time = False
-            for j in range(len(self.OmrType[i])):
+            for j in range(len(self.cost.omr_type[i])):
                 # === Checks if there are ANY One-time OMRs to report
-                if self.OmrType[i][j][0] == "OneTime":
+                if self.cost.omr_type[i][j][0] == "OneTime":
                     has_one_time = True
             if has_one_time:
                 paragraph = doc.add_paragraph()
                 run = paragraph.add_run(TAB + 'One-time Operation, Management, or Repairs Costs\n')
                 run.bold = True
-                for j in range(len(self.Omr[i])):
-                    if self.OmrType[i][j][0] == "OneTime":
-                        doc.add_paragraph(TAB + str(j + 1) + ") " + self.Omr[i][j][0])
+                for j in range(len(self.cost.omr[i])):
+                    if self.cost.omr_type[i][j][0] == "OneTime":
+                        doc.add_paragraph(TAB + str(j + 1) + ") " + self.cost.omr[i][j][0])
                         doc.add_paragraph(TAB + 'Dollar Amount: '
-                                          + str('${:,.0f}'.format(float(self.Omr[i][j][1]))))
+                                          + str('${:,.0f}'.format(float(self.cost.omr[i][j][1]))))
                         doc.add_paragraph(TAB + 'Year Applied: '
-                                          + str(self.OmrType[i][j][1]
+                                          + str(self.cost.omr_type[i][j][1]
                                                 + ' years after plan start date'))
-                        new_text = self.calc_one_time(float(self.Omr[i][j][1]),
-                                                      float(self.OmrType[i][j][1]))
+                        new_text = self.calc_one_time(float(self.cost.omr[i][j][1]),
+                                                      float(self.cost.omr_type[i][j][1]))
                         doc.add_paragraph(TAB + 'Effective Present Value: '
                                           + '${:,.0f}'.format(new_text))
-                        doc.add_paragraph(TAB + 'Description: ' + str(self.Omr[i][j][2]) + "\n")
+                        doc.add_paragraph(TAB + 'Description: '
+                                          + str(self.cost.omr[i][j][2]) + "\n")
 
             has_recurring = False
-            for j in range(len(self.OmrType[i])):
+            for j in range(len(self.cost.omr_type[i])):
                 # === Checks if there are ANY Recurring OMRs to report
-                if self.OmrType[i][j][0] == "Recurring":
+                if self.cost.omr_type[i][j][0] == "Recurring":
                     has_recurring = True
             if has_recurring:
                 paragraph = doc.add_paragraph()
                 run = paragraph.add_run(TAB + 'Recurring Operation, Management, or Repairs Costs\n')
                 run.bold = True
-                for j in range(len(self.Omr[i])):
-                    if self.OmrType[i][j][0] == "Recurring":
-                        doc.add_paragraph(TAB + str(j + 1) + ") " + self.Omr[i][j][0])
+                for j in range(len(self.cost.omr[i])):
+                    if self.cost.omr_type[i][j][0] == "Recurring":
+                        doc.add_paragraph(TAB + str(j + 1) + ") " + self.cost.omr[i][j][0])
                         doc.add_paragraph(TAB + 'Dollar Amount: '
-                                          + str('${:,.0f}'.format(float(self.Omr[i][j][1]))))
+                                          + str('${:,.0f}'.format(float(self.cost.omr[i][j][1]))))
                         doc.add_paragraph(TAB + 'Years Applied: '
-                                          + str(self.OmrType[i][j][1])
+                                          + str(self.cost.omr_type[i][j][1])
                                           + ' years after plan start date'
-                                          ' and every ' + str(self.OmrType[i][j][2])
+                                          ' and every ' + str(self.cost.omr_type[i][j][2])
                                           + ' year(s) afterwards')
-                        new_text = self.calc_recur(float(self.Omr[i][j][1]),
-                                                   float(self.OmrType[i][j][1]),
-                                                   float(self.OmrType[i][j][2]))
+                        new_text = self.calc_recur(float(self.cost.omr[i][j][1]),
+                                                   float(self.cost.omr_type[i][j][1]),
+                                                   float(self.cost.omr_type[i][j][2]))
                         doc.add_paragraph(TAB + 'Effective Present Value: '
                                           + '${:,.0f}'.format(new_text))
-                        doc.add_paragraph(TAB + 'Description: ' + str(self.Omr[i][j][2]) + "\n")
+                        doc.add_paragraph(TAB + 'Description: '
+                                          + str(self.cost.omr[i][j][2]) + "\n")
 
             doc.add_heading('Totals\n', 2)
 
             paragraph = doc.add_paragraph()
             if self.net[i] >= 0:
                 run = paragraph.add_run(TAB + 'Total Benefits: '
-                                        + '${:,.0f}'.format(self.tot_bens[i])
+                                        + '${:,.0f}'.format(self.ben.total[i])
                                         + '\n' + TAB + 'Total Costs: '
-                                        + '${:,.0f}'.format(self.tot_costs[i])
+                                        + '${:,.0f}'.format(self.cost.total[i])
                                         + '\n' + TAB + 'Net: '
                                         + '${:,.0f}'.format(self.net[i]))
             else:
                 run = paragraph.add_run(TAB + 'Total Benefits: '
-                                        + '${:,.0f}'.format(self.tot_bens[i])
+                                        + '${:,.0f}'.format(self.ben.total[i])
                                         + '\n' + TAB + 'Total Costs: '
-                                        + '${:,.0f}'.format(self.tot_costs[i])
+                                        + '${:,.0f}'.format(self.cost.total[i])
                                         + '\n' + TAB + 'Net: ('
                                         + '${:,.0f}'.format(self.net[i])+')')
             run.bold = True
@@ -1008,14 +931,14 @@ class Data():
         for i in range(self.num_plans + 1):
             to_write_list[11].append(" ")
             to_write_list[12].append(" ")
-            to_write_list[13].append('${:.0f}'.format(self.direct_cost_sum[i]))
-            to_write_list[14].append('${:.0f}'.format(self.indirect_cost_sum[i]))
-            to_write_list[15].append('${:.0f}'.format(self.one_time_omr_sum[i]))
+            to_write_list[13].append('${:.0f}'.format(self.cost.d_sum[i]))
+            to_write_list[14].append('${:.0f}'.format(self.cost.i_sum[i]))
+            to_write_list[15].append('${:.0f}'.format(self.cost.omr_1_sum[i]))
             to_write_list[16].append(" ")
-            to_write_list[17].append('${:.0f}'.format(self.recur_omr_sum[i]))
+            to_write_list[17].append('${:.0f}'.format(self.cost.omr_r_sum[i]))
             to_write_list[18].append(" ")
-            to_write_list[19].append('${:.0f}'.format(self.tot_bens[i]))
-            to_write_list[20].append('${:.0f}'.format(self.tot_costs[i]))
+            to_write_list[19].append('${:.0f}'.format(self.ben.total[i]))
+            to_write_list[20].append('${:.0f}'.format(self.cost.total[i]))
             if self.net[i] >= 0:
                 to_write_list[21].append('${:.0f}'.format(self.net[i]))
             else:
