@@ -11,6 +11,8 @@ from tkinter import messagebox
 from Constants import SMALL_FONT, LARGE_FONT, NORM_FONT, BOLD_FONT
 from Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 
+from AnalysisUncertainties import run_u_main_page
+
 def run_main_page(data):
     """Only creates a new window called "MainPage" once all calculations are finished"""
     class MainPage(tk.Tk):
@@ -257,6 +259,8 @@ def run_main_page(data):
             exp_button.grid(row=6)
             info_button = ttk.Button(self, text="More Information", command=self.info)
             info_button.grid(row=6, sticky="w")
+            uncert_button = ttk.Button(self, text="View Uncertainty", command=lambda:run_u_main_page(self.data_cont))
+            uncert_button.grid(row=6, sticky="e")
 
         def export(self):
             """Prompts the user to select how to export the Analysis Summary"""
