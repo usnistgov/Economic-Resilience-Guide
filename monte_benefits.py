@@ -4,7 +4,7 @@ import random as r
 from uniDistInv import uniDistInv
 from triDistInv import triDistInv
 
-from BenefitsClass import Benefits
+from Data.ClassBenefits import Benefits
 
 import numpy as np
 import matplotlib

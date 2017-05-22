@@ -82,6 +82,7 @@ def zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert):
 def discount(dr, horizon, inv_lambda, ben_list, value_stat_life, fat_avert):
     """ Calculates the discounted values."""
     inv_lambda = float(inv_lambda)
+    horizon = float(horizon)
     if dr == 0:
         my_sum = zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert)
     else:

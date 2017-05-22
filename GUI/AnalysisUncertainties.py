@@ -8,8 +8,8 @@ import tkinter as tk
 from tkinter import ttk     #for pretty buttons/labels
 from tkinter import messagebox
 
-from Constants import SMALL_FONT, LARGE_FONT, NORM_FONT, BOLD_FONT
-from Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
+from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT, BOLD_FONT
+from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 
 from monte_benefits import monte_carlo as m_bens
 

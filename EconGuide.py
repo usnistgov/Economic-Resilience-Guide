@@ -12,21 +12,22 @@ from tkinter import filedialog
 from tkinter import ttk     #for pretty buttons/labels
 
 
-from Calculations import Data
+#from Calculations import Data
+from Data.ClassSimulation import Simulation
 
-from InfoPage import InfoPage
-from DirectoryPage import DirectoryPage
-from CostPage import CostPage
-from ExternalitiesPage import ExternalitiesPage
-from BenefitsPage import BenefitsPage
-from BenefitsUncertainties import BenefitsUncertaintiesPage
-from FatalitiesPage import FatalitiesPage
-from NonDBensPage import NonDBensPage
+from GUI.InfoPage import InfoPage
+from GUI.DirectoryPage import DirectoryPage
+from GUI.CostPage import CostPage
+from GUI.ExternalitiesPage import ExternalitiesPage
+from GUI.BenefitsPage import BenefitsPage
+from GUI.BenefitsUncertainties import BenefitsUncertaintiesPage
+from GUI.FatalitiesPage import FatalitiesPage
+from GUI.NonDBensPage import NonDBensPage
 
 from VertScroll import VerticalScrolledFrame
 
-from Constants import LARGE_FONT
-from Constants import BASE_PADDING
+from GUI.Constants import LARGE_FONT
+from GUI.Constants import BASE_PADDING
 
 class Application(tk.Tk):
     """ Contains the actual application."""
@@ -34,7 +35,7 @@ class Application(tk.Tk):
         #args = arguments, kwargs = key word args
 
         tk.Tk.__init__(self, *args, **kwargs)
-        self.container = VerticalScrolledFrame(self)#.interior
+        self.container = VerticalScrolledFrame(self)
 
         self.container.grid(sticky="nsew")
 
@@ -104,11 +105,12 @@ class StartPage(tk.Frame):
     def select(self, controller):
         """Makes the OK button interact with the two given radio buttons"""
         if self.choice.get() == "new":
-            controller.data_cont = Data()
+            controller.data_cont = Simulation()
             controller.cont_list = [controller.data_cont]
 
             for page in (DirectoryPage, InfoPage, CostPage, ExternalitiesPage,
-                         BenefitsPage, BenefitsUncertaintiesPage, FatalitiesPage, NonDBensPage):
+                         BenefitsPage, BenefitsUncertaintiesPage,
+                         FatalitiesPage, NonDBensPage):
                 frame = page(controller.container.interior, controller, controller.cont_list)
                 controller.frames[page] = frame
                 frame.grid(row=0, column=0, sticky="nsew")
@@ -118,7 +120,8 @@ class StartPage(tk.Frame):
             # ======== Select a file for opening:
             filename = filedialog.askopenfilename(title='Choose a .csv file')
             if filename != None and filename[-4:] == ".csv":
-                controller.data_cont = Data(file_name=filename)
+                controller.data_cont = Simulation()
+                controller.data_cont.file_read(file_name=filename)
                 controller.cont_list = [controller.data_cont]
                 for page in (DirectoryPage, InfoPage, CostPage,
                              ExternalitiesPage, BenefitsPage, BenefitsUncertaintiesPage,
@@ -130,32 +133,40 @@ class StartPage(tk.Frame):
                 # === Changes these fields so that the .trace methods are envoked
                 # ===  and the respective widgets are altered
                 controller.frames[InfoPage].num_plans_ent.insert(tk.END,
-                                                                 controller.data_cont.num_plans)
-                for i in range(controller.data_cont.num_plans):
-                    controller.frames[InfoPage].name_ents[i].delete(0, tk.END)
-                    controller.frames[InfoPage].name_ents[i].insert(tk.END,
-                                                                    controller.data_cont.plan_name[i+1])
+                                                                 controller.data_cont.num_plans-1)
+                for i in range(1, controller.data_cont.num_plans):
+                    controller.frames[InfoPage].name_ents[i-1].delete(0, tk.END)
+                    controller.frames[InfoPage].name_ents[i-1].insert(tk.END,
+                                                                      controller.data_cont.plan_list[i].name)
 
                 # ===== Global variables part of infopage
-                controller.frames[InfoPage].name_ent.delete(0, tk.END)
-                controller.frames[InfoPage].name_ent.insert(tk.END,
-                                                            controller.data_cont.analysis_title)
-                controller.frames[InfoPage].hor_ent.delete(0, tk.END)
-                controller.frames[InfoPage].hor_ent.insert(tk.END,
-                                                           controller.data_cont.horizon)
-                controller.frames[InfoPage].dis_ent.delete(0, tk.END)
-                controller.frames[InfoPage].dis_ent.insert(tk.END,
-                                                           controller.data_cont.discount_rate)
+                page = controller.frames[InfoPage]
+                page.name_ent.delete(0, tk.END)
+                page.name_ent.insert(tk.END, controller.data_cont.title)
+                page.hor_ent.delete(0, tk.END)
+                page.hor_ent.insert(tk.END, controller.data_cont.horizon)
+                page.dis_ent.delete(0, tk.END)
+                page.dis_ent.insert(tk.END, controller.data_cont.discount_rate)
                 controller.frames[FatalitiesPage].life_ent.delete(0, tk.END)
                 controller.frames[FatalitiesPage].life_ent.insert(tk.END,
                                                                   controller.data_cont.stat_life)
-                controller.frames[InfoPage].haz_ent.delete(0, tk.END)
-                controller.frames[InfoPage].haz_ent.insert(tk.END,
-                                                           controller.data_cont.disaster_rate)
-                controller.frames[InfoPage].mag_ent.delete(0, tk.END)
-                controller.frames[InfoPage].mag_ent.insert(tk.END,
-                                                           controller.data_cont.dis_magnitude)
-                controller.frames[InfoPage].preference.set(controller.data_cont.risk_preference)
+                page.haz_ent.delete(0, tk.END)
+                page.haz_ent.insert(tk.END, controller.data_cont.get_disaster_rate()[0])
+
+                page.recur_range.delete(0, tk.END)
+                page.recur_range.insert(tk.END, controller.data_cont.get_disaster_rate()[1])
+
+                page.recur_choice.set(controller.data_cont.get_disaster_rate()[2])
+
+                page.mag_ent.delete(0, tk.END)
+                page.mag_ent.insert(tk.END, controller.data_cont.get_disaster_magnitude()[0])
+
+                page.mag_range.delete(0, tk.END)
+                page.mag_range.insert(tk.END, controller.data_cont.get_disaster_magnitude()[1])
+
+                page.mag_choice.set(controller.data_cont.get_disaster_magnitude()[2])
+
+                page.preference.set(controller.data_cont.risk_pref)
 
                 # ===== Transitions to DirectoryPage
                 controller.show_frame('DirectoryPage')
