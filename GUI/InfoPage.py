@@ -13,7 +13,7 @@ from tkinter import ttk     #for pretty buttons/labels
 from GUI.Constants import SMALL_FONT, ENTRY_WIDTH
 from GUI.Constants import BASE_PADDING, FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING
 
-from GUI.PlotsAndImages import none_dist, gauss_dist, tri_dist, rect_dist
+from GUI.PlotsAndImages import none_dist, gauss_dist, tri_dist, rect_dist, disc_dist
 
 from Data.ClassSimulation import Plan
 
@@ -152,13 +152,14 @@ class InfoPage(tk.Frame):
         yrs_lbl.grid(row=4, column=2, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         self.recur_choice = tk.StringVar()
-        self.recur_choice.set("1")
+        self.recur_choice.set("none")
         recur_rads = [tk.Radiobutton(group3, variable=self.recur_choice, value="none"),
                       tk.Radiobutton(group3, variable=self.recur_choice, value="gauss"),
                       tk.Radiobutton(group3, variable=self.recur_choice, value="tri"),
-                      tk.Radiobutton(group3, variable=self.recur_choice, value="rect")]
-        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
-        figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
+                      tk.Radiobutton(group3, variable=self.recur_choice, value="rect"),
+                      tk.Radiobutton(group3, variable=self.recur_choice, value="discrete")]
+        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
+        figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         for col in range(len(recur_rads)):
             fig_label = ttk.Label(group3)
             fig_label.grid(row=5, column=col+2)
@@ -346,12 +347,14 @@ class InfoPage(tk.Frame):
 
         data.plan_list = []
         data.plan_list.append(Plan(0, "Base",
-                                   [float(self.haz_ent.get()), float(self.recur_range.get()), self.recur_choice.get()],
-                                   [float(self.mag_ent.get()), float(self.mag_range.get()), self.mag_choice.get()]))
+                                   [self.haz_ent.get(), self.recur_range.get(), self.recur_choice.get()],
+                                   [self.mag_ent.get(), self.mag_range.get(), self.mag_choice.get()],
+                                   data.discount_rate, data.horizon, data.stat_life))
         for i in range(data.num_plans):
             data.plan_list.append(Plan(i+1, self.name_ents[i].get(),
-                                       [float(self.haz_ent.get()), float(self.recur_range.get()), self.recur_choice.get()],
-                                       [float(self.mag_ent.get()), float(self.mag_range.get()), self.mag_choice.get()]))
+                                       [self.haz_ent.get(), self.recur_range.get(), self.recur_choice.get()],
+                                       [self.mag_ent.get(), self.mag_range.get(), self.mag_choice.get()],
+                                       data.discount_rate, data.horizon, data.stat_life))
 
         # TODO: Make file save possible
         #data.save_info()

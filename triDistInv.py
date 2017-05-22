@@ -9,7 +9,7 @@ def triDistInv(rand,a,b,c):
         return "a must be less than c"
     vertex = (b-a)/(c-a)
 
-    if ran <= vertex:
+    if rand <= vertex:
         return a+math.sqrt(rand*(c-a)*(b-a))
     else:
         return c-math.sqrt((1-rand)*(c-a)*(c-b))

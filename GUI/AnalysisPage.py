@@ -40,7 +40,7 @@ def run_main_page(data):
 
             # make the canvas expandable
             self.container.grid()
-            self.container.grid_rowconfigure(0, weight=1, minsize=930)
+            self.container.grid_rowconfigure(0, weight=1, minsize=90)
             self.container.grid_columnconfigure(0, weight=1, minsize=1500)
 
             # create canvas contents
@@ -125,7 +125,7 @@ def run_main_page(data):
             self.data_cont.summer()
 
             non_d_ben_lbl = ttk.Label(group1, text="Non-Disaster Related Benefits",
-                                        font=NORM_FONT)
+                                      font=NORM_FONT)
             non_d_ben_lbl.grid(row=7, column=0, sticky="w", **pad_opts)
 
             # === Lists out all of the NonDBens

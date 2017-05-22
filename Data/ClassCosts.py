@@ -37,6 +37,10 @@ class Costs():
     def make_sum(self):
         """ Calculates the additional Direct Costs, Indirect Costs, and
             OMR costs both initial and recurring. """
+        self.d_sum = 0
+        self.i_sum = 0
+        self.omr_1_sum = 0
+        self.omr_r_sum = 0
         for cost in self.indiv:
             if cost.cost_type == "direct":
                 self.d_sum += cost.amount

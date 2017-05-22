@@ -121,6 +121,9 @@ class Plan():
 
     def sum_it(self, horizon):
         """ Sums up all of the individual pieces. """
+        self.total_bens = 0
+        self.total_costs = 0
+        self.net = 0
         horizon = int(horizon)
         # Note: Fatilites does all summing every time it is updated.
         self.costs.make_sum()

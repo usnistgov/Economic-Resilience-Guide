@@ -131,8 +131,8 @@ class BenefitsUncertaintiesPage(tk.Frame):
 
         for plan in self.data_cont.plan_list:
             for ben in plan.bens.indiv:
-                ben.add_uncertainty(self.range[plan.id_assign][plan.bens.indiv.index(ben)],
-                                    self.choices[plan.id_assign][plan.bens.indiv.index(ben)])
+                ben.add_uncertainty(self.range[plan.id_assign][plan.bens.indiv.index(ben)].get(),
+                                    self.choices[plan.id_assign][plan.bens.indiv.index(ben)].get())
 
         if valid:
             # ===== Updates the page for the next cost
@@ -167,9 +167,9 @@ class BenefitsUncertaintiesPage(tk.Frame):
 
         self.choices = [[tk.StringVar() for ben in plan.bens.indiv]
                         for plan in self.data_cont.plan_list]
-        for item in self.choices:
-            for var in item:
-                var.set("none")
+        for i in range(self.data_cont.num_plans):
+            for j in range(len(self.choices[i])):
+                self.choices[i][j].set(self.data_cont.plan_list[i].bens.indiv[j].dist)
 
         for plan in self.data_cont.plan_list:
             row_index = 0
@@ -217,5 +217,6 @@ class BenefitsUncertaintiesPage(tk.Frame):
                 self.range[i].append(tk.Entry(group[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT))
                 self.range[i][j].grid(row=row_index+3, column=2, sticky="w",
                                       padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                self.range[i][j].insert(tk.END, benefit.range)
                 row_index += 4
 

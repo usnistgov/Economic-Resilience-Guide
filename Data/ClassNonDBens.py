@@ -33,6 +33,8 @@ class NonDBens():
 
     def make_sum(self):
         """ Calculates the value of all Non-Disaster related benefits."""
+        self.one_sum = 0
+        self.r_sum = 0
         for ben in self.indiv:
             if ben.ben_type == "one-time":
                 self.one_sum += self.calc_one_time(ben.amount, ben.times[0])

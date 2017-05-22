@@ -1,18 +1,15 @@
 """
    File:          EconGuide.py
-   Author:        Shannon Craig,
+   Author:        Shannon Grubb (shannon.grubb@nist.gov),
                   Edward Hanson (ehanson1@umbc.edu)
-   Description:   Interacts with Calculations.py,
-                  Focusing on the GUI for user-friendly resilience calculations.
+   Description:   Starts up the application
 """
 
 import sys
 import tkinter as tk
 from tkinter import filedialog
-from tkinter import ttk     #for pretty buttons/labels
+from tkinter import ttk
 
-
-#from Calculations import Data
 from Data.ClassSimulation import Simulation
 
 from GUI.InfoPage import InfoPage
@@ -24,10 +21,10 @@ from GUI.BenefitsUncertainties import BenefitsUncertaintiesPage
 from GUI.FatalitiesPage import FatalitiesPage
 from GUI.NonDBensPage import NonDBensPage
 
-from VertScroll import VerticalScrolledFrame
-
 from GUI.Constants import LARGE_FONT
 from GUI.Constants import BASE_PADDING
+
+from VertScroll import VerticalScrolledFrame
 
 class Application(tk.Tk):
     """ Contains the actual application."""
@@ -41,8 +38,8 @@ class Application(tk.Tk):
 
         tk.Tk.wm_title(self, "NIST Economic Decision Guide")
 
-        self.container.grid_rowconfigure(0, weight=1, minsize=700)
-        self.container.grid_columnconfigure(0, weight=1, minsize=1000)
+        self.container.grid_rowconfigure(0, weight=1, minsize=50)
+        self.container.grid_columnconfigure(0, weight=1, minsize=50)
 
         self.frames = {}
 
@@ -134,10 +131,10 @@ class StartPage(tk.Frame):
                 # ===  and the respective widgets are altered
                 controller.frames[InfoPage].num_plans_ent.insert(tk.END,
                                                                  controller.data_cont.num_plans-1)
-                for i in range(1, controller.data_cont.num_plans):
-                    controller.frames[InfoPage].name_ents[i-1].delete(0, tk.END)
-                    controller.frames[InfoPage].name_ents[i-1].insert(tk.END,
-                                                                      controller.data_cont.plan_list[i].name)
+                for i in range(controller.data_cont.num_plans-1):
+                    controller.frames[InfoPage].name_ents[i].delete(0, tk.END)
+                    name = controller.data_cont.plan_list[i].name
+                    controller.frames[InfoPage].name_ents[i].insert(tk.END, name)
 
                 # ===== Global variables part of infopage
                 page = controller.frames[InfoPage]
