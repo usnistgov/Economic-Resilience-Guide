@@ -41,7 +41,7 @@ class Simulation():
                 self.stat_life = line[7]
             elif 'Plan' in line[0]:
                 build_list = [list(line)]
-                next_plan = Plan(line[0][-1], line[1], list(line[2:5]), list(line[5:8]),
+                next_plan = Plan(line[0][-1], line[1], [line[2], list(line[3:9])], [line[9], list(line[10:17])],
                                  self.discount_rate, self.horizon, self.stat_life)
             elif line[0] == "":
                 build_list.append(list(line))
@@ -83,12 +83,34 @@ class Plan():
         # Basic Information
         self.id_assign = int(plan_id)
         self.name = plan_name
-        self.recurrence = float(disaster_recurrence[0])
-        self.recurr_uncert = float(disaster_recurrence[1])
-        self.recurr_dist = disaster_recurrence[2]
-        self.magnitude = float(disaster_magnitude[0])
-        self.mag_uncert = float(disaster_magnitude[1])
-        self.mag_dist = disaster_magnitude[2]
+        self.recurr_dist = disaster_recurrence[0]
+        self.recurr_range = disaster_recurrence[1]
+        if self.recurr_dist == "none":
+            self.recurr_uncert = 0
+            self.recurrence = disaster_recurrence[1][0]
+        elif self.recurr_dist == "gauss":
+            self.recurr_uncert = disaster_recurrence[1][1]
+            self.recurrence = disaster_recurrence[1][0]
+        elif self.recurr_dist == "discrete":
+            self.recurr_uncert = list([disaster_recurrence[1][1], disaster_recurrence[1][3], disaster_recurrence[1][5]])
+            self.recurrence = list([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
+        else:
+            self.recurr_uncert = list([disaster_recurrence[1][0], disaster_recurrence[1][3]])
+            self.recurrence = disaster_recurrence[1][1]
+        self.mag_dist = disaster_magnitude[0]
+        self.mag_range = disaster_magnitude[1]
+        if self.mag_dist == "none":
+            self.mag_uncert = 0
+            self.magnitude = disaster_magnitude[1][0]
+        elif self.mag_dist == "gauss":
+            self.mag_uncert = disaster_magnitude[1][1]
+            self.magnitude = disaster_magnitude[1][0]
+        elif self.mag_dist == "discrete":
+            self.mag_uncert = list([disaster_magnitude[1][1], disaster_magnitude[1][3], disaster_magnitude[1][5]])
+            self.magnitude = list([disaster_magnitude[1][0], disaster_magnitude[1][2], disaster_magnitude[1][3]])
+        else:
+            self.mag_uncert = list([disaster_magnitude[1][0], disaster_magnitude[1][3]])
+            self.magnitude = disaster_magnitude[1][1]
         self.horizon = horizon
 
         # Specific pieces

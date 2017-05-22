@@ -126,7 +126,7 @@ class InfoPage(tk.Frame):
             ent.configure(state="disabled")
 
         # ===== Discount Rate and Hazard Specifics
-        group3 = ttk.LabelFrame(self, text="Discount Rate/Hazard Specifics")
+        group3 = ttk.LabelFrame(self, text="Discount Rate")
         group3.grid(row=4, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
         dis_lbl = ttk.Label(group3, text="Nominal Discount Rate", font=SMALL_FONT)
@@ -140,101 +140,118 @@ class InfoPage(tk.Frame):
         def_button = ttk.Button(group3, text="Restore Default", command=self.restore)
         def_button.grid(row=2, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        sep1 = ttk.Separator(group3, orient=tk.HORIZONTAL)
-        sep1.grid(row=3, sticky="ew", columnspan=90, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-
-        haz_lbl = ttk.Label(group3, text="Hazard Recurrence", font=SMALL_FONT)
-        haz_lbl.grid(row=4, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.haz_ent = tk.Entry(group3, width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.haz_ent.insert(tk.END, "<expected # of years between each incident>")
-        self.haz_ent.grid(row=4, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        yrs_lbl = ttk.Label(group3, text="Year(s)", font=SMALL_FONT)
-        yrs_lbl.grid(row=4, column=2, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-
+        group4 = ttk.LabelFrame(self, text="Hazard Recurrence")
+        group4.grid(row=4, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.recur_choice = tk.StringVar()
         self.recur_choice.set("none")
-        recur_rads = [tk.Radiobutton(group3, variable=self.recur_choice, value="none"),
-                      tk.Radiobutton(group3, variable=self.recur_choice, value="gauss"),
-                      tk.Radiobutton(group3, variable=self.recur_choice, value="tri"),
-                      tk.Radiobutton(group3, variable=self.recur_choice, value="rect"),
-                      tk.Radiobutton(group3, variable=self.recur_choice, value="discrete")]
+        recur_rads = [tk.Radiobutton(group4, variable=self.recur_choice, value="none"),
+                      tk.Radiobutton(group4, variable=self.recur_choice, value="gauss"),
+                      tk.Radiobutton(group4, variable=self.recur_choice, value="tri"),
+                      tk.Radiobutton(group4, variable=self.recur_choice, value="rect"),
+                      tk.Radiobutton(group4, variable=self.recur_choice, value="discrete")]
         rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
         figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         for col in range(len(recur_rads)):
-            fig_label = ttk.Label(group3)
-            fig_label.grid(row=5, column=col+2)
+            fig_label = ttk.Label(group4)
+            fig_label.grid(row=1, column=col)
             fig = figs[col]
             canvas = FigureCanvasTkAgg(fig, master=fig_label)
-            canvas.get_tk_widget().grid(row=5, column=col+1)
+            canvas.get_tk_widget().grid(row=1, column=col+1)
             canvas.show()
-            recur_rads[col].grid(row=6, column=col+2)
-            rad_label = ttk.Label(group3, text=rad_labels[col], font=SMALL_FONT)
-            rad_label.grid(row=7, column=col+2)
-        recur_range_label = tk.Label(group3, text="Range/Standard Deviation:")
-        recur_range_label.grid(row=5, column=0, sticky="e")
-        self.recur_range = tk.Entry(group3, width=int(ENTRY_WIDTH/2), font=SMALL_FONT)
-        self.recur_range.grid(row=5, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            recur_rads[col].grid(row=3, column=col)
+            rad_label = ttk.Label(group4, text=rad_labels[col], font=SMALL_FONT)
+            rad_label.grid(row=2, column=col)
+        self.recur_choice.trace("w", self.on_trace_change_recur)
+        self.recur_label = [tk.Label(group4, text="Most Frequent (Years)"),
+                            tk.Label(group4, text="Expected Recurrence (Years)"),
+                            tk.Label(group4, text="Least Frequent (Years)")]
+        self.recur_one_label = tk.Label(group4, text="Recurrence (Years)")
+        self.recur_one_label.grid(row=4, column=0)
+        self.recur_gauss_label = [tk.Label(group4, text="Expected Recurrence (Years)"),
+                                  tk.Label(group4, text="Variance (Years)")]
+        self.recur_discrete_label = [tk.Label(group4, text="Most Frequent (Years)"),
+                                     tk.Label(group4, text="Liklihood of most frequent (%)"),
+                                     tk.Label(group4, text="Expected Recurrence (Years)"),
+                                     tk.Label(group4, text="Liklihood of expected (%)"),
+                                     tk.Label(group4, text="Least Frequence (Years)"),
+                                     tk.Label(group4, text="Liklihood of least frequent (%)")]
+        self.recur_range = [tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                            tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                            tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                            tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                            tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                            tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT)]
+        self.recur_range[0].grid(row=4, column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-
-        mag_lbl = ttk.Label(group3, text="Hazard Magnitude", font=SMALL_FONT)
-        mag_lbl.grid(row=9, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.mag_ent = tk.Entry(group3, width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.mag_ent.insert(tk.END, "<enter % of replacement cost>")
-        self.mag_ent.grid(row=9, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        percent_lbl2 = ttk.Label(group3, text="% of replacement cost", font=SMALL_FONT)
-        percent_lbl2.grid(row=9, column=2, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-
+        group5 = ttk.LabelFrame(self, text="Hazard Magnitude")
+        group5.grid(row=5, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.mag_choice = tk.StringVar()
-        self.mag_choice.set("1")
-        mag_rads = [tk.Radiobutton(group3, variable=self.mag_choice, value="none"),
-                    tk.Radiobutton(group3, variable=self.mag_choice, value="gauss"),
-                    tk.Radiobutton(group3, variable=self.mag_choice, value="tri"),
-                    tk.Radiobutton(group3, variable=self.mag_choice, value="rect")]
-        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
-        figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
+        self.mag_choice.set("none")
+        mag_rads = [tk.Radiobutton(group5, variable=self.mag_choice, value="none"),
+                    tk.Radiobutton(group5, variable=self.mag_choice, value="gauss"),
+                    tk.Radiobutton(group5, variable=self.mag_choice, value="tri"),
+                    tk.Radiobutton(group5, variable=self.mag_choice, value="rect"),
+                    tk.Radiobutton(group5, variable=self.mag_choice, value="discrete")]
+        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
+        figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         for col in range(len(mag_rads)):
-            fig_label = ttk.Label(group3)
-            fig_label.grid(row=10, column=col+2)
+            fig_label = ttk.Label(group5)
+            fig_label.grid(row=1, column=col)
             fig = figs[col]
             canvas = FigureCanvasTkAgg(fig, master=fig_label)
-            canvas.get_tk_widget().grid(row=5, column=col+1)
+            canvas.get_tk_widget().grid(row=1, column=col+1)
             canvas.show()
-            mag_rads[col].grid(row=11, column=col+2)
-            rad_label = ttk.Label(group3, text=rad_labels[col], font=SMALL_FONT)
-            rad_label.grid(row=12, column=col+2)
-        mag_range_label = tk.Label(group3, text="Range/Standard Deviation:")
-        mag_range_label.grid(row=10, column=0, sticky="e")
-        self.mag_range = tk.Entry(group3, width=int(ENTRY_WIDTH/2), font=SMALL_FONT)
-        self.mag_range.grid(row=10, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            mag_rads[col].grid(row=3, column=col)
+            rad_label = ttk.Label(group5, text=rad_labels[col], font=SMALL_FONT)
+            rad_label.grid(row=2, column=col)
+        self.mag_choice.trace("w", self.on_trace_change_mag)
+        self.mag_label = [tk.Label(group5, text="Least Severe (%)"),
+                          tk.Label(group5, text="Expected Magnitude (%)"),
+                          tk.Label(group5, text="Most Severe (%)")]
+        self.mag_one_label = tk.Label(group5, text="Magnitude (%)")
+        self.mag_one_label.grid(row=4, column=0)
+        self.mag_gauss_label = [tk.Label(group5, text="Expected Magnitude (%)"),
+                                tk.Label(group5, text="Variance (%)")]
+        self.mag_discrete_label = [tk.Label(group5, text="Least Severe (%)"),
+                                   tk.Label(group5, text="Liklihood of least severe (%)"),
+                                   tk.Label(group5, text="Expected Magnitude (%)"),
+                                   tk.Label(group5, text="Liklihood of expected (%)"),
+                                   tk.Label(group5, text="Most severe (%)"),
+                                   tk.Label(group5, text="Liklihood of most severe (%)")]
+        self.mag_range = [tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                          tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                          tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                          tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                          tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
+                          tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT)]
+        self.mag_range[0].grid(row=4, column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-
-        sep2 = ttk.Separator(group3, orient=tk.HORIZONTAL)
-        sep2.grid(row=13, sticky="ew", columnspan=90, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-
+        group6 = ttk.LabelFrame(self, text="Risk Preference")
+        group6.grid(row=6, stick="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.preference = tk.StringVar()
         self.preference.set("Risk Neutral")
-        risk_lbl = ttk.Label(group3, text="Define Risk Preference", font=SMALL_FONT)
+        risk_lbl = ttk.Label(group6, text="Define Risk Preference", font=SMALL_FONT)
         risk_lbl.grid(row=14, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.neutral = ttk.Radiobutton(group3, text="Risk Neutral",
+        self.neutral = ttk.Radiobutton(group6, text="Risk Neutral",
                                        variable=self.preference, value="neutral")
         self.neutral.grid(row=15, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.averse = ttk.Radiobutton(group3, text="Risk Averse",
+        self.averse = ttk.Radiobutton(group6, text="Risk Averse",
                                       variable=self.preference, value="averse")
         self.averse.grid(row=16, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        self.accepting = ttk.Radiobutton(group3, text="Risk Accepting",
+        self.accepting = ttk.Radiobutton(group6, text="Risk Accepting",
                                          variable=self.preference, value="accepting")
         self.accepting.grid(row=17, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         # ===== Manueverability Buttons
-        group4 = ttk.LabelFrame(self)
-        group4.grid(row=5, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        group7 = ttk.LabelFrame(self)
+        group7.grid(row=7, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
             # === Places spacing so that buttons are on the bottom right
-        space_lbl = ttk.Label(group4, text=" " * 106)
+        space_lbl = ttk.Label(group7, text=" " * 106)
         space_lbl.grid(row=0, column=1)
-        next_button = ttk.Button(group4, text="Next>>", command=lambda: self.check_page(controller))
-        next_button.grid(row=0, column=4, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        next_button = ttk.Button(group7, text="Next>>", command=lambda: self.check_page(controller))
+        next_button.grid(row=0, column=7, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        exit_button = ttk.Button(group4, text="Exit", command=sys.exit)
+        exit_button = ttk.Button(group7, text="Exit", command=sys.exit)
         exit_button.grid(row=0, column=3, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
@@ -291,46 +308,20 @@ class InfoPage(tk.Frame):
             err_messages += "Please enter a positive amount.\n\n"
             valid = False
 
-
-        try:
-            float(self.haz_ent.get())
-        except ValueError:
-            err_messages += "Hazard Recurrence must be a number. Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.haz_ent.get():
-            err_messages += "Hazard Recurrence must be a positive number. "
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
-
-        try:
-            float(self.recur_range.get())
-        except ValueError:
-            err_messages += "Hazard Recurrence must be a number. Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.recur_range.get():
-            err_messages += "Hazard Recurrence must be a positive number. "
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
-
-        try:
-            float(self.mag_ent.get())
-        except ValueError:
-            err_messages += "Hazard Magnitude must be a number. Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.mag_ent.get():
-            err_messages += "Hazard Magnitude must be a positive number. "
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
-
-        try:
-            float(self.mag_range.get())
-        except ValueError:
-            err_messages += "Hazard Magnitude must be a number. Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.mag_range.get():
-            err_messages += "Hazard Magnitude must be a positive number. "
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
+        for entry in self.recur_range:
+            try:
+                entry.get()
+            except ValueError:
+                err_messages += "All Hazard Recurrence values must be a number.\n\n"
+            if "-" in entry.get():
+                err_messages += "All Hazard Recurrence values must be positive.\n\n"
+        for entry in self.mag_range:
+            try:
+                entry.get()
+            except ValueError:
+                err_messages += "All Hazard Magnitude values must be a number.\n\n"
+            if "-" in entry.get():
+                err_messages += "All Hazard Magnitude values must be positive.\n\n"
 
         if not valid:
             messagebox.showerror("ERROR", err_messages)
@@ -346,14 +337,16 @@ class InfoPage(tk.Frame):
         data.risk_preference = self.preference.get()
 
         data.plan_list = []
+        dis_recurr = [entry.get() for entry in self.recur_range]
+        dis_mag = [entry.get() for entry in self.mag_range]
         data.plan_list.append(Plan(0, "Base",
-                                   [self.haz_ent.get(), self.recur_range.get(), self.recur_choice.get()],
-                                   [self.mag_ent.get(), self.mag_range.get(), self.mag_choice.get()],
+                                   [self.recur_choice.get(), dis_recurr],
+                                   [self.mag_choice.get(), dis_mag],
                                    data.discount_rate, data.horizon, data.stat_life))
         for i in range(data.num_plans):
             data.plan_list.append(Plan(i+1, self.name_ents[i].get(),
-                                       [self.haz_ent.get(), self.recur_range.get(), self.recur_choice.get()],
-                                       [self.mag_ent.get(), self.mag_range.get(), self.mag_choice.get()],
+                                       [self.recur_choice.get(), dis_recurr],
+                                       [self.mag_choice.get(), dis_mag],
                                        data.discount_rate, data.horizon, data.stat_life))
 
         # TODO: Make file save possible
@@ -407,3 +400,109 @@ class InfoPage(tk.Frame):
         for i in range(choice, 6):
             self.name_lbls[i].configure(state="disabled")
             self.name_ents[i].configure(text="", state="disabled")
+
+    def on_trace_change_recur(self, _name, _index, _mode):
+        """Triggers refresh when the uncertainty choices change."""
+        if self.recur_choice.get() == "none":
+            self.recur_one_label.grid(row=4, column=0)
+            for label in self.recur_label:
+                label.grid_remove()
+            for label in self.recur_gauss_label:
+                label.grid_remove()
+            for label in self.recur_discrete_label:
+                label.grid_remove()
+            self.recur_range[0].grid(row=4, column=1,
+                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            for i in range(1, len(self.recur_range)):
+                self.recur_range[i].grid_remove()
+        elif self.recur_choice.get() == "gauss":
+            self.recur_one_label.grid_remove()
+            for label in self.recur_label:
+                label.grid_remove()
+            for label in self.recur_gauss_label:
+                label.grid(row=self.recur_gauss_label.index(label)+4, column=0)
+            for label in self.recur_discrete_label:
+                label.grid_remove()
+            self.recur_range[0].grid(row=4, column=1,
+                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            self.recur_range[1].grid(row=5, column=1,
+                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            for i in range(2, len(self.recur_range)):
+                self.recur_range[i].grid_remove()
+        elif self.recur_choice.get() == "discrete":
+            self.recur_one_label.grid_remove()
+            for label in self.recur_label:
+                label.grid_remove()
+            for label in self.recur_gauss_label:
+                label.grid_remove()
+            for label in self.recur_discrete_label:
+                label.grid(row=self.recur_discrete_label.index(label)+4, column=0)
+            for entry in self.recur_range:
+                entry.grid(row=self.recur_range.index(entry)+4, column=1,
+                           padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        else:
+            self.recur_one_label.grid_remove()
+            for label in self.recur_label:
+                label.grid(row=self.recur_label.index(label)+4, column=0)
+            for label in self.recur_gauss_label:
+                label.grid_remove()
+            for label in self.recur_discrete_label:
+                label.grid_remove()
+            for i in range(3):
+                self.recur_range[i].grid(row=self.recur_range.index(self.recur_range[i])+4,
+                                         column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            for i in range(4, len(self.recur_range)):
+                self.recur_range[i].grid_remove()
+
+    def on_trace_change_mag(self, _name, _index, _mode):
+        """Triggers refresh when the uncertainty choices change."""
+        if self.mag_choice.get() == "none":
+            self.mag_one_label.grid(row=4, column=0)
+            for label in self.mag_label:
+                label.grid_remove()
+            for label in self.mag_gauss_label:
+                label.grid_remove()
+            for label in self.mag_discrete_label:
+                label.grid_remove()
+            self.mag_range[0].grid(row=4, column=1,
+                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            for i in range(1, len(self.mag_range)):
+                self.mag_range[i].grid_remove()
+        elif self.mag_choice.get() == "gauss":
+            self.mag_one_label.grid_remove()
+            for label in self.mag_label:
+                label.grid_remove()
+            for label in self.mag_gauss_label:
+                label.grid(row=self.mag_gauss_label.index(label)+4, column=0)
+            for label in self.mag_discrete_label:
+                label.grid_remove()
+            self.mag_range[0].grid(row=4, column=1,
+                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            self.mag_range[1].grid(row=5, column=1,
+                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            for i in range(2, len(self.mag_range)):
+                self.mag_range[i].grid_remove()
+        elif self.mag_choice.get() == "discrete":
+            self.mag_one_label.grid_remove()
+            for label in self.mag_label:
+                label.grid_remove()
+            for label in self.mag_gauss_label:
+                label.grid_remove()
+            for label in self.mag_discrete_label:
+                label.grid(row=self.mag_discrete_label.index(label)+4, column=0)
+            for entry in self.mag_range:
+                entry.grid(row=self.mag_range.index(entry)+4, column=1,
+                           padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        else:
+            self.mag_one_label.grid_remove()
+            for label in self.mag_label:
+                label.grid(row=self.mag_label.index(label)+4, column=0)
+            for label in self.mag_gauss_label:
+                label.grid_remove()
+            for label in self.mag_discrete_label:
+                label.grid_remove()
+            for i in range(3):
+                self.mag_range[i].grid(row=self.mag_range.index(self.mag_range[i])+4,
+                                         column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            for i in range(4, len(self.mag_range)):
+                self.mag_range[i].grid_remove()

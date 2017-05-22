@@ -131,10 +131,10 @@ class StartPage(tk.Frame):
                 # ===  and the respective widgets are altered
                 controller.frames[InfoPage].num_plans_ent.insert(tk.END,
                                                                  controller.data_cont.num_plans-1)
-                for i in range(controller.data_cont.num_plans-1):
-                    controller.frames[InfoPage].name_ents[i].delete(0, tk.END)
+                for i in range(1, controller.data_cont.num_plans):
+                    controller.frames[InfoPage].name_ents[i-1].delete(0, tk.END)
                     name = controller.data_cont.plan_list[i].name
-                    controller.frames[InfoPage].name_ents[i].insert(tk.END, name)
+                    controller.frames[InfoPage].name_ents[i-1].insert(tk.END, name)
 
                 # ===== Global variables part of infopage
                 page = controller.frames[InfoPage]
@@ -147,21 +147,16 @@ class StartPage(tk.Frame):
                 controller.frames[FatalitiesPage].life_ent.delete(0, tk.END)
                 controller.frames[FatalitiesPage].life_ent.insert(tk.END,
                                                                   controller.data_cont.stat_life)
-                page.haz_ent.delete(0, tk.END)
-                page.haz_ent.insert(tk.END, controller.data_cont.get_disaster_rate()[0])
+                for entry in page.recur_range:
+                    entry.delete(0, tk.END)
+                    entry.insert(tk.END, controller.data_cont.plan_list[0].recurr_range[page.recur_range.index(entry)])
+                for entry in page.mag_range:
+                    entry.delete(0, tk.END)
+                    entry.insert(tk.END, controller.data_cont.plan_list[0].mag_range[page.mag_range.index(entry)])
 
-                page.recur_range.delete(0, tk.END)
-                page.recur_range.insert(tk.END, controller.data_cont.get_disaster_rate()[1])
+                page.recur_choice.set(controller.data_cont.plan_list[0].recurr_dist)
 
-                page.recur_choice.set(controller.data_cont.get_disaster_rate()[2])
-
-                page.mag_ent.delete(0, tk.END)
-                page.mag_ent.insert(tk.END, controller.data_cont.get_disaster_magnitude()[0])
-
-                page.mag_range.delete(0, tk.END)
-                page.mag_range.insert(tk.END, controller.data_cont.get_disaster_magnitude()[1])
-
-                page.mag_choice.set(controller.data_cont.get_disaster_magnitude()[2])
+                page.mag_choice.set(controller.data_cont.plan_list[0].mag_dist)
 
                 page.preference.set(controller.data_cont.risk_pref)
 
