@@ -181,77 +181,77 @@ def run_u_main_page(data):
                 print(self.data_cont.plan_list[i].bens.res_rec_range)
                 text_1 = self.data_cont.plan_list[i].bens.r_sum
                 ttk.Label(group0, text='${:,.0f}'.format(text_1),
-                          font=SMALL_FONT).grid(row=5, column=(i+1), **pad_opts)
+                          font=SMALL_FONT).grid(row=5, column=(i+1), sticky="e", **pad_opts)
                 # Direct Benefits
                 print(self.data_cont.plan_list[i].bens.direct_range)
                 text_2 = self.data_cont.plan_list[i].bens.d_sum
                 ttk.Label(group0, text='${:,.0f}'.format(text_2),
-                          font=SMALL_FONT).grid(row=6, column=(i+1), **pad_opts)
+                          font=SMALL_FONT).grid(row=6, column=(i+1), sticky="e", **pad_opts)
                 # Indirect Benefits
                 print(self.data_cont.plan_list[i].bens.indirect_range)
                 text_3 = self.data_cont.plan_list[i].bens.i_sum
                 ttk.Label(group0, text='${:,.0f}'.format(text_3),
-                          font=SMALL_FONT).grid(row=7, column=(i + 1), **pad_opts)
+                          font=SMALL_FONT).grid(row=7, column=(i + 1), sticky="e", **pad_opts)
                 ## ===================================
                 ## We aren't here yet
 
                 # Fatalaties Value averted
                 text = self.data_cont.plan_list[i].fat.stat_value_averted
                 ttk.Label(group0, text='${:,.0f}'.format(text),
-                          font=SMALL_FONT).grid(row=9, column=(i + 1), **pad_opts)
+                          font=SMALL_FONT).grid(row=9, column=(i + 1), sticky="e", **pad_opts)
                 # Fatalaties number averted
                 text = self.data_cont.plan_list[i].fat.stat_averted
                 ttk.Label(group0, text='{:,.2f}'.format(text),
-                          font=SMALL_FONT).grid(row=10, column=(i+1), **pad_opts)
+                          font=SMALL_FONT).grid(row=10, column=(i+1), sticky="e", **pad_opts)
 
                 # Direct Costs
                 ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].costs.d_sum),
-                          font=SMALL_FONT).grid(row=14, column=(i+1), **pad_opts)
+                          font=SMALL_FONT).grid(row=14, column=(i+1), sticky="e", **pad_opts)
                 # Indirect Costs
                 ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].costs.i_sum),
-                          font=SMALL_FONT).grid(row=15, column=(i+1), **pad_opts)
+                          font=SMALL_FONT).grid(row=15, column=(i+1), sticky="e", **pad_opts)
                 # One-Time OMR
                 ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].costs.omr_1_sum),
-                          font=SMALL_FONT).grid(row=16, column=(i+1), **pad_opts)
+                          font=SMALL_FONT).grid(row=16, column=(i+1), sticky="e", **pad_opts)
                 # Recurring OMR
                 ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].costs.omr_r_sum),
-                          font=SMALL_FONT).grid(row=17, column=(i+1), **pad_opts)
+                          font=SMALL_FONT).grid(row=18, column=(i+1), sticky="e", **pad_opts)
 
                 # Non D Bens
                 ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.total),
-                          font=SMALL_FONT).grid(row=11, column=i+1, **pad_opts)
+                          font=SMALL_FONT).grid(row=11, column=i+1, sticky="e", **pad_opts)
 
                 # Totals
                 ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].total_bens),
-                          font=BOLD_FONT).grid(row=21, column=(i + 1), **pad_opts)
+                          font=BOLD_FONT).grid(row=21, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].total_costs),
-                          font=BOLD_FONT).grid(row=22, column=(i + 1), **pad_opts)
+                          font=BOLD_FONT).grid(row=22, column=(i + 1), sticky="e", **pad_opts)
                 if self.data_cont.plan_list[i].net >= 0:
                     ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].net),
-                              font=BOLD_FONT).grid(row=23, column=(i + 1), **pad_opts)
+                              font=BOLD_FONT).grid(row=23, column=(i + 1), sticky="e", **pad_opts)
                 else:
                     ttk.Label(group0,
                               text='(' + '${:,.0f}'.format(self.data_cont.plan_list[i].net) + ')',
-                              font=BOLD_FONT).grid(row=23, column=(i + 1), **pad_opts)
+                              font=BOLD_FONT).grid(row=23, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].sir()),
-                          font=SMALL_FONT).grid(row=25, column=(i + 1), **pad_opts)
+                          font=SMALL_FONT).grid(row=25, column=(i + 1), sticky="e", **pad_opts)
                 if type(self.data_cont.plan_list[i].irr()) == type("string"):
                     ttk.Label(group0, text=self.data_cont.plan_list[i].irr(),
-                              font=SMALL_FONT).grid(row=26, column=(i+1), **pad_opts)
+                              font=SMALL_FONT).grid(row=26, column=(i+1), sticky="e", **pad_opts)
                 else:
                     ttk.Label(group0,
                               text='{:,.1f}'.format(self.data_cont.plan_list[i].irr()) + '%',
-                              font=SMALL_FONT).grid(row=26, column=(i + 1), **pad_opts)
+                              font=SMALL_FONT).grid(row=26, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group0, text='{:,.1f}'.format(self.data_cont.plan_list[i].roi()) + '%',
-                          font=SMALL_FONT).grid(row=27, column=(i + 1), **pad_opts)
+                          font=SMALL_FONT).grid(row=27, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group0,
                           text='{:,.1f}'.format(self.data_cont.plan_list[i].non_d_roi()) + '%',
-                          font=SMALL_FONT).grid(row=28, column=(i + 1), **pad_opts)
+                          font=SMALL_FONT).grid(row=28, column=(i + 1), sticky="e", **pad_opts)
 
             exp_button = ttk.Button(self, text="Export Summary", command=self.export)
             exp_button.grid(row=29)

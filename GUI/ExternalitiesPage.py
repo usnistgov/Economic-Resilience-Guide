@@ -133,6 +133,40 @@ class ExternalitiesPage(tk.Frame):
                                         command=lambda: self.delete_ext(False))
         self.delete_button.grid(row=3, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
+        self.group5 = ttk.LabelFrame(self, text="One time or recurring externality?")
+        self.group5.grid(row=4, column=0, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        self.recur_selection = tk.StringVar()
+        self.recur_selection.set("1")
+        one_time_rad = ttk.Radiobutton(self.group5, text="One-Time Occurrence",
+                                       variable=self.recur_selection, value="one-time")
+        one_time_rad.grid(row = 1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        recurring_rad = ttk.Radiobutton(self.group5, text="Recurring Externality",
+                                        variable = self.recur_selection, value="recurring")
+        recurring_rad.grid(row=2, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
+        self.recur_selection.trace("w", self.recur_trace_change)
+
+        pad_opts = {'sticky':"w", 'padx':FIELDX_PADDING, 'pady':FIELDY_PADDING}
+        self.year_start_lbl = ttk.Label(self.group5, text="Year of occurence", font=SMALL_FONT)
+        self.year_start_lbl.grid(row=4, column=0, **pad_opts)
+        self.year_start_ent = tk.Entry(self.group5, width=ENTRY_WIDTH, font=SMALL_FONT)
+        self.year_start_ent.insert(tk.END, "<enter # of years after build year>")
+        self.year_start_ent.grid(row=5, column=0, **pad_opts)
+        self.year_start_lbl2 = ttk.Label(self.group5, text="Year(s)", font=SMALL_FONT)
+        self.year_start_lbl2.grid(row=5, column=1, **pad_opts)
+
+        self.year_rate_lbl = ttk.Label(self.group5, text="Rate of occurrence")
+        self.year_rate_lbl.grid(row=6, column=0, **pad_opts)
+        self.year_rate_ent = tk.Entry(self.group5, width=ENTRY_WIDTH, font=SMALL_FONT)
+        self.year_rate_ent.insert(tk.END, "<enter rate of occurence in years>")
+        self.year_rate_ent.grid(row=7, column=0, **pad_opts)
+        self.year_rate_lbl2 = ttk.Label(self.group5, text="Year(s)", font=SMALL_FONT)
+        self.year_rate_lbl2.grid(row=7, column=1, **pad_opts)
+
+        self.year_rate_lbl.grid_remove()
+        self.year_rate_ent.grid_remove()
+        self.year_rate_lbl2.grid_remove()
+
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.
             If save unsuccessful asks user for verification to move on."""
@@ -530,3 +564,20 @@ class ExternalitiesPage(tk.Frame):
             self.plan6.configure(text=self.controller.frames[InfoPage].name_ents[5].get()
                                  +" (Plan 6)")
             self.plan6.grid()
+
+    def recur_trace_change(self, _name, _index, _mode):
+        """Updates recurrence if things are changed."""
+        if self.recur_selection.get() == "one-time":
+            self.year_start_lbl.configure(state="normal")
+            self.year_start_ent.configure(state="normal")
+            self.year_start_lbl2.configure(state="normal")
+            self.year_rate_lbl.grid_remove()
+            self.year_rate_ent.grid_remove()
+            self.year_rate_lbl2.grid_remove()
+        elif self.recur_selection.get() == "recurring":
+            self.year_start_lbl.configure(state="normal")
+            self.year_start_ent.configure(state="normal")
+            self.year_start_lbl2.configure(state="normal")
+            self.year_rate_lbl.grid()
+            self.year_rate_ent.grid()
+            self.year_rate_lbl2.grid()

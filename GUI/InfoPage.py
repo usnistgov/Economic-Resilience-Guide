@@ -141,7 +141,7 @@ class InfoPage(tk.Frame):
         def_button.grid(row=2, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         group4 = ttk.LabelFrame(self, text="Hazard Recurrence")
-        group4.grid(row=4, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        group4.grid(row=5, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.recur_choice = tk.StringVar()
         self.recur_choice.set("none")
         recur_rads = [tk.Radiobutton(group4, variable=self.recur_choice, value="none"),
@@ -184,7 +184,7 @@ class InfoPage(tk.Frame):
         self.recur_range[0].grid(row=4, column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         group5 = ttk.LabelFrame(self, text="Hazard Magnitude")
-        group5.grid(row=5, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        group5.grid(row=6, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.mag_choice = tk.StringVar()
         self.mag_choice.set("none")
         mag_rads = [tk.Radiobutton(group5, variable=self.mag_choice, value="none"),
@@ -227,7 +227,7 @@ class InfoPage(tk.Frame):
         self.mag_range[0].grid(row=4, column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         group6 = ttk.LabelFrame(self, text="Risk Preference")
-        group6.grid(row=6, stick="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        group6.grid(row=7, stick="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.preference = tk.StringVar()
         self.preference.set("Risk Neutral")
         risk_lbl = ttk.Label(group6, text="Define Risk Preference", font=SMALL_FONT)
@@ -244,7 +244,7 @@ class InfoPage(tk.Frame):
 
         # ===== Manueverability Buttons
         group7 = ttk.LabelFrame(self)
-        group7.grid(row=7, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        group7.grid(row=8, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
             # === Places spacing so that buttons are on the bottom right
         space_lbl = ttk.Label(group7, text=" " * 106)
         space_lbl.grid(row=0, column=1)

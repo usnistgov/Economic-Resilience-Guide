@@ -172,10 +172,10 @@ class CostPage(tk.Frame):
         self.omr_selection = tk.StringVar()
         self.omr_selection.set("1")
         one_time_rad = ttk.Radiobutton(self.group5, text="One-Time Occurrence",
-                                       variable=self.omr_selection, value="OneTime")
+                                       variable=self.omr_selection, value="one-titme")
         one_time_rad.grid(row=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         recurring_rad = ttk.Radiobutton(self.group5, text="Recurring",
-                                        variable=self.omr_selection, value="Recurring")
+                                        variable=self.omr_selection, value="recurring")
         recurring_rad.grid(row=2, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         # === Changes upcoming fields depending on OMR choice
@@ -660,14 +660,14 @@ class CostPage(tk.Frame):
         self.year_rate_ent.grid_remove()
         self.year_rate_lbl2.grid_remove()
 
-        if self.omr_selection.get() == "OneTime":
+        if self.omr_selection.get() == "one-time":
             self.year_start_lbl.configure(state="normal")
             self.year_start_ent.configure(state="normal")
             self.year_start_lbl2.configure(state="normal")
             self.year_rate_lbl.grid_remove()
             self.year_rate_ent.grid_remove()
             self.year_rate_lbl2.grid_remove()
-        elif self.omr_selection.get() == "Recurring":
+        elif self.omr_selection.get() == "recurring":
             self.year_start_lbl.configure(state="normal")
             self.year_start_ent.configure(state="normal")
             self.year_start_lbl2.configure(state="normal")
