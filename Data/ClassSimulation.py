@@ -226,7 +226,7 @@ class Plan():
         #irr_list = [annual_savings - annual_cost] * (int(self.horizon) + 1)
         #irr_list[0] = -(self.up_front)
 
-        cash_flows = self.annual_non_disaster_cash_flows
+        cash_flows = self.annual_cash_flows#self.annual_non_disaster_cash_flows
         ben_list = [self.bens.d_sum, self.bens.i_sum,
                     self.bens.r_sum]
 
@@ -247,12 +247,12 @@ class Plan():
 
     def roi(self):
         """Equation for the Return on Investment"""
-        if self.bens.total == 0:
+        if self.total_bens == 0:
             return 0
-        elif self.costs.total == 0:
+        elif self.total_costs == 0:
             return 0
-        annual_savings = self.bens.total / float(self.horizon)
-        simple_payback = self.costs.total / annual_savings
+        annual_savings = self.total_bens / float(self.horizon)
+        simple_payback = self.total_costs / annual_savings
         return (1 / simple_payback) * 100
 
     def non_d_roi(self):
@@ -261,8 +261,8 @@ class Plan():
 
         if non_d_ben_total == 0:
             return 0
-        elif self.costs.total == 0:
+        elif self.total_costs == 0:
             return 0
         annual_savings = non_d_ben_total / float(self.horizon)
-        simple_payback = self.costs.total / annual_savings
+        simple_payback = self.total_costs / annual_savings
         return (1 / simple_payback) * 100
