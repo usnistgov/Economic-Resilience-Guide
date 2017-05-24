@@ -11,7 +11,7 @@ from Data.ClassCosts import Costs
 from Data.ClassExternalities import Externalities
 from Data.ClassFatalities import Fatalities
 from Data.ClassNonDBens import NonDBens
-from Data.ClassNonDBens import Benefit as Benefit
+from Data.ClassNonDBens import Benefit as NonDBenefit
 
 from NewIRR import irr_for_all
 
@@ -167,13 +167,12 @@ class Plan():
             if cost.omr_type == "recurring":
                 rec_list.append(cost)
             else:
-                rec_list.append(cost)
+                ot_list.append(cost)
         time_series = []
         for item in rec_list:
             start = float(item.times[0])
             rate = float(item.times[1])
-            print(type(item))
-            if isinstance(item, Benefit):
+            if isinstance(item, NonDBenefit):
                 amount = float(item.amount)
             else:
                 amount = -float(item.amount)
@@ -184,7 +183,7 @@ class Plan():
                 if rate <= self.tol:
                     break
         for item in ot_list:
-            if isinstance(item, Benefit):
+            if isinstance(item, NonDBenefit):
                 amount = float(item.amount)
             else:
                 amount = -float(item.amount)
@@ -194,8 +193,8 @@ class Plan():
         prev = -1
         for i in range(len(time_series)):
             if abs(time_series[i][0]-prev) <= self.tol:
-                time_series[i][0] = -1
-                time_series[i-1][1] += float(time_series[i][1])
+                time_series[i][1] += float(time_series[i-1][1])
+                time_series[i-1][0] = -1
             else:
                 prev = time_series[i][0]
 
@@ -228,9 +227,9 @@ class Plan():
         #irr_list = [annual_savings - annual_cost] * (int(self.horizon) + 1)
         #irr_list[0] = -(self.up_front)
 
-        cash_flows = self.annual_cash_flows#self.annual_non_disaster_cash_flows
-        ben_list = [self.bens.d_sum, self.bens.i_sum,
-                    self.bens.r_sum]
+        cash_flows = self.annual_cash_flows
+        ben_list = [self.bens.d_sum_no_discount, self.bens.i_sum_no_discount,
+                    self.bens.r_sum_no_discount]
 
         try:
             the_irr = irr_for_all(cash_flows, self.horizon, self.recurrence, ben_list,

@@ -16,8 +16,11 @@ class Benefits():
         self.indiv = []
 
         self.d_sum = 0
+        self.d_sum_no_discount = 0
         self.i_sum = 0
+        self.i_sum_no_discount = 0
         self.r_sum = 0
+        self.r_sum_no_discount = 0
 
         self.total = 0
 
@@ -56,6 +59,9 @@ class Benefits():
                 self.i_sum += ben.amount
             elif ben.ben_type == "res-rec":
                 self.r_sum += ben.amount
+        self.d_sum_no_discount = self.d_sum
+        self.i_sum_no_discount = self.i_sum
+        self.r_sum_no_discount = self.r_sum
         self.d_sum = self.on_dis_occ(self.d_sum, self.horizon, self.dis_rate, self.disc_rate)
         self.i_sum = self.on_dis_occ(self.i_sum, self.horizon, self.dis_rate, self.disc_rate)
         self.r_sum = self.on_dis_occ(self.r_sum, self.horizon, self.dis_rate, self.disc_rate)
