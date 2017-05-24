@@ -11,6 +11,7 @@ from Data.ClassCosts import Costs
 from Data.ClassExternalities import Externalities
 from Data.ClassFatalities import Fatalities
 from Data.ClassNonDBens import NonDBens
+from Data.ClassNonDBens import Benefit as Benefit
 
 from NewIRR import irr_for_all
 
@@ -171,6 +172,7 @@ class Plan():
         for item in rec_list:
             start = float(item.times[0])
             rate = float(item.times[1])
+            print(type(item))
             if isinstance(item, Benefit):
                 amount = float(item.amount)
             else:

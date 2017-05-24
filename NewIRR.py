@@ -11,7 +11,6 @@ def irr_for_all(cash_flows, horizon, inv_lambda, ben_list, value_stat_life, fat_
     """ Uses David's method to calculate the IRR.
     ben_list is expected to have:
        Direct Loss Reduction, Indirect Loss Reduction, R&R Cost Reduction  """
-    print(cash_flows)
     rate_list = [0, 0.5, 1]
 
     # Drops the values of cash_flows, ben_list, value_stat_life
