@@ -2,7 +2,6 @@
     Does the irr calculation without the aid of numpy for ease of packaging
 """
 import math
-import numpy
 
 MAX_LOG_RATE = 1e3
 BASE_TOL = 1e-12
@@ -33,8 +32,58 @@ def irr_for_all(cash_flows, horizon, inv_lambda, ben_list, value_stat_life, fat_
         npv_list = []
         for index in range(len(rate_list)):
             dcf_list.append([])
+            for item in cash_flows:
+                dcf_list[index].append(item[1] * math.exp(-rate_list[index]*item[0]))  ## item to item[1], year to item[0]
+            ddrb_list.append(discount(rate_list[index], horizon, inv_lambda, ben_list,
+                                      float(value_stat_life), float(fat_avert)))
+            npv_list.append(sum(dcf_list[index])+ddrb_list[index])
+
+        old_sign = check_sign(npv_list[0])
+        sign_change = False
+        #print('npv', npv_list)
+        for index in range(1, len(npv_list)):
+            new_sign = check_sign(npv_list[index])
+            if new_sign == 0:
+                return rate_list[index]
+            if not new_sign == old_sign:
+                sign_change = True
+                rate_list[0] = rate_list[index-1]
+                rate_list[2] = rate_list[index]
+                break
+        if not sign_change:
+            print('The problem is here')
+            raise ValueError
+
+    return rate_list[1]
+
+def old_irr_for_all(cash_flows, horizon, inv_lambda, ben_list, value_stat_life, fat_avert):
+    """ Uses David's method to calculate the IRR.
+    ben_list is expected to have:
+       Direct Loss Reduction, Indirect Loss Reduction, R&R Cost Reduction  """
+    rate_list = [0, 0.5, 1]
+
+    # Drops the values of cash_flows, ben_list, value_stat_life
+    #  by a factor of 10^6 to avoid OverflowError
+    #for cost in cash_flows:
+    #    cost = cost/(1e6)
+    #for cost in ben_list:
+    #    cost = cost/(1e6)
+    #value_stat_life = value_stat_life/(1e6)
+
+    for _ in range(200):
+        rate_list[1] = (rate_list[2] + rate_list[0])/2
+        if abs(rate_list[2]-rate_list[0]) < BASE_RATE_TOL:
+            return rate_list[1]
+        #print('rate', rate_list)
+
+        dcf_list = []
+        ddrb_list = []
+        npv_list = []
+        for index in range(len(rate_list)):
+            dcf_list.append([])
             year = 0  ## Added to keep track of year
             for item in cash_flows:
+                print(item)
                 dcf_list[index].append(item * math.exp(-rate_list[index]*year))  ## Changed cash_flows.index(item) to year
                 year += 1  ## Iterate on year
             ddrb_list.append(discount(rate_list[index], horizon, inv_lambda, ben_list,
@@ -72,25 +121,26 @@ def check_sign(value):
 
 def zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert):
     """ Calculates the discounted values in the case of a discount of 0."""
-    sum = 0
+    my_sum = 0
     inv_lambda = float(inv_lambda)
     horizon = float(horizon)
     for benefit in ben_list:
-        sum += (1/inv_lambda) * horizon * benefit
-    sum += (1/inv_lambda) * horizon * value_stat_life * fat_avert
-    return sum
+        my_sum += (1/inv_lambda) * horizon * benefit
+    my_sum += (1/inv_lambda) * horizon * value_stat_life * fat_avert
+    return my_sum
 
 def discount(dr, horizon, inv_lambda, ben_list, value_stat_life, fat_avert):
     """ Calculates the discounted values."""
     inv_lambda = float(inv_lambda)
+    horizon = float(horizon)
     if dr == 0:
-        sum = zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert)
+        my_sum = zero_discount(horizon, inv_lambda, ben_list, value_stat_life, fat_avert)
     else:
-        sum = 0
+        my_sum = 0
         for benefit in ben_list:
-            sum += (1/inv_lambda) * (1-math.exp(-dr))**(-1) * (1-math.exp(-dr*horizon)) * benefit
-        sum += (1/inv_lambda) * (1-math.exp(-dr))**(-1) * (1-math.exp(-dr*horizon)) * value_stat_life * fat_avert
-    return sum
+            my_sum += (1/inv_lambda) * (1-math.exp(-dr))**(-1) * (1-math.exp(-dr*horizon)) * benefit
+        my_sum += (1/inv_lambda) * (1-math.exp(-dr))**(-1) * (1-math.exp(-dr*horizon)) * value_stat_life * fat_avert
+    return my_sum
 
 
 ##def irr(stream, tol=BASE_TOL):
