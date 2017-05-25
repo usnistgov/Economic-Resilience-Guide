@@ -116,7 +116,7 @@ class Plan():
 
         # Specific pieces
         self.costs = Costs(discount_rate, horizon)
-        self.exts = Externalities()
+        self.exts = Externalities(discount_rate, horizon)
         self.bens = Benefits(self.recurrence, discount_rate, horizon)
         self.fat = Fatalities(self.recurrence, discount_rate, stat_life, horizon)
         self.nond_bens = NonDBens(discount_rate, horizon)
@@ -151,9 +151,7 @@ class Plan():
         # Note: Fatilites does all summing every time it is updated.
         self.costs.make_sum()
         self.bens.make_sum()
-        # TODO: Figure out how externalities play into this adventure,
-        #       becuase they are MIA in calculations
-        #self.exts.make_sum()
+        self.exts.make_sum()
         self.nond_bens.make_sum()
 
         rec_list = []
@@ -204,7 +202,7 @@ class Plan():
                 self.annual_cash_flows.append(item)
 
         self.total_bens = self.bens.total + self.fat.stat_value_averted + self.nond_bens.total
-        self.total_costs = self.costs.total
+        self.total_costs = self.costs.total + self.exts.one_sum + self.exts.r_sum
         self.net = self.total_bens - self.total_costs
 
     def sir(self):

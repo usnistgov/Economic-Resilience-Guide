@@ -54,9 +54,9 @@ class Costs():
         self.total = self.d_sum + self.i_sum + self.omr_1_sum + self.omr_r_sum
 
     def calc_one_time(self, value, time):
+        """Equation used for One-time OMR costs"""
         time = float(time)
         value = float(value)
-        """Equation used for One-time OMR costs"""
         return (math.exp(-(float(self.discount_rate) / 100) * time)) * value
 
     def calc_recur(self, value, start, rate):

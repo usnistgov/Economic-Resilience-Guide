@@ -74,28 +74,30 @@ class ExternalitiesPage(tk.Frame):
                              font=SMALL_FONT)
         plan_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
-        self.b_bool = tk.BooleanVar()
-        self.p1_bool = tk.BooleanVar()
-        self.p2_bool = tk.BooleanVar()
-        self.p3_bool = tk.BooleanVar()
-        self.p4_bool = tk.BooleanVar()
-        self.p5_bool = tk.BooleanVar()
-        self.p6_bool = tk.BooleanVar()
+        self.bools = [tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar(),
+                      tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar()]
+        #self.b_bool = tk.BooleanVar()
+        #self.p1_bool = tk.BooleanVar()
+        #self.p2_bool = tk.BooleanVar()
+        #self.p3_bool = tk.BooleanVar()
+        #self.p4_bool = tk.BooleanVar()
+        #self.p5_bool = tk.BooleanVar()
+        #self.p6_bool = tk.BooleanVar()
 
         self.base = tk.Checkbutton(group2, text="Base scenario",
-                                   variable=self.b_bool, font=SMALL_FONT)
+                                   variable=self.bools[0], font=SMALL_FONT)
         self.base.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan1 = tk.Checkbutton(group2, text="Plan 1", variable=self.p1_bool, font=SMALL_FONT)
+        self.plan1 = tk.Checkbutton(group2, text="Plan 1", variable=self.bools[1], font=SMALL_FONT)
         self.plan1.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan2 = tk.Checkbutton(group2, text="Plan 2", variable=self.p2_bool, font=SMALL_FONT)
+        self.plan2 = tk.Checkbutton(group2, text="Plan 2", variable=self.bools[2], font=SMALL_FONT)
         self.plan2.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan3 = tk.Checkbutton(group2, text="Plan 3", variable=self.p3_bool, font=SMALL_FONT)
+        self.plan3 = tk.Checkbutton(group2, text="Plan 3", variable=self.bools[3], font=SMALL_FONT)
         self.plan3.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan4 = tk.Checkbutton(group2, text="Plan 4", variable=self.p4_bool, font=SMALL_FONT)
+        self.plan4 = tk.Checkbutton(group2, text="Plan 4", variable=self.bools[4], font=SMALL_FONT)
         self.plan4.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan5 = tk.Checkbutton(group2, text="Plan 5", variable=self.p5_bool, font=SMALL_FONT)
+        self.plan5 = tk.Checkbutton(group2, text="Plan 5", variable=self.bools[5], font=SMALL_FONT)
         self.plan5.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
-        self.plan6 = tk.Checkbutton(group2, text="Plan 6", variable=self.p6_bool, font=SMALL_FONT)
+        self.plan6 = tk.Checkbutton(group2, text="Plan 6", variable=self.bools[6], font=SMALL_FONT)
         self.plan6.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
 
         # ===== Detects if a change occurs in the name fields on 'InfoPage'
@@ -223,44 +225,24 @@ class ExternalitiesPage(tk.Frame):
         """Appends list of externalities, clears page's entry widgets,
            and updates 'Previously Inputted Externalities' section"""
         if moveon:
-            valid = self.check_page(printout=False)
-        else:
-            valid = self.check_page()
-        if not valid:
-            if moveon:
+            [valid, blank, err_messages] = self.check_page(printout=False)
+            if not (valid | blank):
                 checker = messagebox.askyesno('Move Forward?',
                                               "Your externality was not saved. "
                                               "Select \'No\' if you wish to continue editing and "
                                               "\'Yes\' if you wish to move to the next page.")
                 return checker
+            if blank:
+                return True
+        else:
+            [valid, blank, err_messages] = self.check_page()
+        if not valid:
             return False
-
-        plan_num = []            # === List that contains all selected plans
-        if self.b_bool.get():
-            plan_num.append(0)
-        if self.p1_bool.get():
-            plan_num.append(1)
-        if self.p2_bool.get():
-            plan_num.append(2)
-        if self.p3_bool.get():
-            plan_num.append(3)
-        if self.p4_bool.get():
-            plan_num.append(4)
-        if self.p5_bool.get():
-            plan_num.append(5)
-        if self.p6_bool.get():
-            plan_num.append(6)
-
-        this_ext = Externality(title=self.title_ent.get(), amount=self.ext_ent.get(),
-                               desc=self.desc_ent.get('1.0', 'end-1c'))
-        for index in plan_num:
-            self.data_cont.plan_list[index].exts.indiv.append(this_ext)
-
-        if valid:
+        else:
             # ===== Updates the page for the next externality
             self.clear_page()
             self.update_prev_list()
-            messagebox.showinfo("Success", "Externality has been successfully added!")
+            messagebox.showinfo("Success", err_messages)
             return True
 
     def update_prev_list(self):
@@ -287,71 +269,33 @@ class ExternalitiesPage(tk.Frame):
 
         valid = True
 
-        # ===== Mandatory fields cannot be left blank or left alone
-        if self.title_ent.get() == "" or self.title_ent.get() == "<enter a title for this externality>":
-            err_messages += "Title field has been left empty!\n\n"
-            valid = False
-        if "," in self.desc_ent.get("1.0", "end-1c"):
-            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
-            valid = False
-        if self.desc_ent.get("1.0", "end-1c") == "" or self.desc_ent.get("1.0", "end-1c") == "<enter a description for this externality>":
-            self.desc_ent.delete('1.0', tk.END)
-            self.desc_ent.insert(tk.END, "N/A")
-        if not (self.b_bool.get() or self.p1_bool.get() or self.p2_bool.get() or self.p3_bool.get() or self.p4_bool.get() or self.p5_bool.get() or self.p6_bool.get()):
+        # ===== Check which plan/plans to add to
+        plan_num = []            # === List that contains all selected plans
+        for boolean in self.bools:
+            if boolean.get():
+                plan_num.append(self.bools.index(boolean))
+
+        new_title = self.title_ent.get()
+        new_desc = self.desc_ent.get("0.0", tk.END)
+        new_amount = self.ext_ent.get()
+        new_type = self.recur_selection.get()
+        new_times = [self.year_start_ent.get(), self.year_rate_ent.get(), 0]
+        if len(plan_num) == 0:
             err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
-            valid = False
+            plan = self.data_cont.plan_list[0]
+            [valid, blank, err_messages] = plan.exts.save(new_title, new_desc, new_amount,
+                                                          new_type, new_times,
+                                                          err_messages, blank=True)
+        else:
+            for i in plan_num:
+                plan = self.data_cont.plan_list[i]
+                [valid, blank, err_messages] = plan.exts.save(new_title, new_desc, new_amount,
+                                                              new_type, new_times,
+                                                              err_messages)
 
-        # ===== Externality cannot have a duplicate title
-        plan_num = []  # === List that contains all selected plans
-        if self.p1_bool.get():
-            plan_num.append(1)
-        if self.p2_bool.get():
-            plan_num.append(2)
-        if self.p3_bool.get():
-            plan_num.append(3)
-        if self.p4_bool.get():
-            plan_num.append(4)
-        if self.p5_bool.get():
-            plan_num.append(5)
-        if self.p6_bool.get():
-            plan_num.append(6)
-
-        for choice in self.choices:
-            if (choice)[:len(self.title_ent.get())] == self.title_ent.get():
-                if self.b_bool.get() and (choice)[len(self.title_ent.get()):] == " - <Base Plan>":
-                    err_messages += ("\"" + self.title_ent.get() + "\" is already ")
-                    err_messages += "used as a externality title for the Base Plan. "
-                    err_messages += "Please input a different title.\n\n"
-                    valid = False
-
-                for plan in plan_num:
-                    if (choice)[len(self.title_ent.get()):] == " - <Plan " + str(plan) + ">":
-                        err_messages += ("\"" + self.title_ent.get() + "\" is already ")
-                        err_messages += ("used as a externality title for Plan " + str(plan))
-                        err_messages += ". Please input a different title.\n\n"
-                        valid = False
-
-        # ===== Externality Title must not have a hyphen '-'
-        if "-" in self.title_ent.get():
-            err_messages += "Title cannot have a hyphen \'-\'. Please change the title.\n\n"
-            valid = False
-
-        # ===== Cost must be a positive number
-        try:
-            float(self.ext_ent.get())
-        except ValueError:
-            err_messages += "Dollar value of the externality must be a number. "
-            err_messages += "Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.ext_ent.get():
-            err_messages += "Externality must be a positive number. "
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
-
-
-        if (not valid) & printout:
+        if (not valid) & (not blank):
             messagebox.showerror("ERROR", err_messages)
-        return valid
+        return [valid, blank, err_messages]
 
     def copy_ext(self):
         """Duplicates information of chosen externality and pastes it on screen"""
@@ -526,6 +470,11 @@ class ExternalitiesPage(tk.Frame):
         self.ext_ent.insert(tk.END, "<enter an amount for this externality>")
         self.desc_ent.delete('1.0', tk.END)
         self.desc_ent.insert(tk.END, "<enter a description for this externality>")
+        self.year_start_ent.delete(0, tk.END)
+        self.year_start_ent.insert(tk.END, "<enter # of years after build year>")
+        self.year_rate_ent.delete(0, tk.END)
+        self.year_rate_ent.insert(tk.END, "<enter rate of occurence in years>")
+        self.recur_selection.set(1)
         self.base.deselect()
         self.plan1.deselect()
         self.plan2.deselect()
