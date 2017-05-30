@@ -71,4 +71,6 @@ class Benefit():
         self.ben_type = ben_type
         self.times = times
         self.amount = amount
-        self.desc = desc
+        self.desc = ""
+        for bit in desc:
+            self.desc += bit

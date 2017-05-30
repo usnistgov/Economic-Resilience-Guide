@@ -24,7 +24,9 @@ class Fatalities():
     def update(self, averted, desc):
         """ Makes a new fatality and adds it to the list of fatality types. """
         self.averted = float(averted)
-        self.desc = desc
+        self.desc = ""
+        for bit in desc:
+            self.desc += bit
 
         self.stat_value_averted = self.on_dis_occ(self.stat_value*self.averted, self.horizon, self.disaster_rate, self.discount_rate)
         self.stat_averted = 1/self.disaster_rate * self.horizon * self.averted

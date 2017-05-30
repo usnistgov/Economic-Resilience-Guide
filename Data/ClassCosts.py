@@ -84,6 +84,8 @@ class Cost():
         self.omr_type = omr_type
         self.amount = float(amount)
         self.times = omr_times
-        self.desc = desc
+        self.desc = ""
+        for bit in desc:
+            self.desc += bit
         for num in self.times:
             num = float(num)

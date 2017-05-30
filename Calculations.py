@@ -176,7 +176,7 @@ class Data():
 
 # ========= Functions that interact with a text file =========
 
-    def save_info(self):
+    def file_save(self):
         """Saves current progress
         First converts all information into a 2D array, then writes into .csv file.
         Accessible to all classes"""

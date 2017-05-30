@@ -219,7 +219,7 @@ class CostPage(tk.Frame):
 
         # ===== Manueverability/Information buttons
         save_button = ttk.Button(self, text="Save Analysis",
-                                 command=lambda: self.data_cont.save_info())
+                                 command=lambda: self.data_cont.file_save())
         save_button.grid(row=1, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Add Cost", command=self.add_cost)
         self.add_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -632,6 +632,7 @@ class CostPage(tk.Frame):
                                  +" (Plan 2)")
             self.plan2.grid()
         if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 2:
+            print(self.controller.frames[InfoPage].name_ents[2].get())
             self.plan3.configure(text=self.controller.frames[InfoPage].name_ents[2].get()
                                  +" (Plan 3)")
             self.plan3.grid()

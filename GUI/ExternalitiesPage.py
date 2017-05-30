@@ -188,7 +188,7 @@ class ExternalitiesPage(tk.Frame):
 
         # ===== Manueverability/Information buttons
         save_button = ttk.Button(self, text="Save Analysis",
-                                 command=lambda: self.data_cont.save_info())
+                                 command=lambda: self.data_cont.file_save())
         save_button.grid(row=0, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Add Externality", command=self.add_ext)
         self.add_button.grid(row=5, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)

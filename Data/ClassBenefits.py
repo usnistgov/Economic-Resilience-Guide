@@ -129,7 +129,9 @@ class Benefit():
         self.title = title
         self.ben_type = ben_type
         self.amount = float(amount)
-        self.desc = desc
+        self.desc = ""
+        for bit in desc:
+            self.desc += bit
 
         self.range = 0
         self.dist = "none"

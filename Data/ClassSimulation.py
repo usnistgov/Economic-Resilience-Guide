@@ -5,6 +5,7 @@
 """
 
 import csv
+from tkinter import filedialog
 
 from Data.ClassBenefits import Benefits, Benefit
 from Data.ClassCosts import Costs
@@ -57,6 +58,21 @@ class Simulation():
             else:
                 pass
 
+    def file_save(self):
+        """ Saves the data in the save file."""
+        my_formats = [('Comma Separated Value', '*.csv'),]
+        file_name = filedialog.asksaveasfilename(filetypes=my_formats, title="Save the file as...")
+        if '.csv' != file_name[-4:]:
+            file_name = file_name + '.csv'
+        new_file = open(file_name, 'w')
+        new_file.write('Title,' + str(self.title) + ',,Horizon,' + str(int(self.horizon)) + '\n')
+        new_file.write('Discount Rate,' + str(self.discount_rate) + ',,Risk Prev,' + self.risk_pref + ',,Value of Stat Life,' + str(self.stat_life) + '\n')
+        new_file.write('BEGIN PLANS\n')
+        for plan in self.plan_list:
+            plan.save_plan(new_file)
+            new_file.write('END PLAN\n')
+        new_file.write('END FILE')
+
     def get_disaster_rate(self):
         """ Returns the disaster rate for the first plan
         since at the moment all plans will be the same."""
@@ -87,28 +103,28 @@ class Plan():
         self.recurr_dist = disaster_recurrence[0]
         self.recurr_range = disaster_recurrence[1]
         if self.recurr_dist == "none":
-            self.recurr_uncert = 0
+            self.recurr_uncert = [0]
             self.recurrence = disaster_recurrence[1][0]
         elif self.recurr_dist == "gauss":
             self.recurr_uncert = disaster_recurrence[1][1]
             self.recurrence = disaster_recurrence[1][0]
         elif self.recurr_dist == "discrete":
-            self.recurr_uncert = list([disaster_recurrence[1][1], disaster_recurrence[1][3], disaster_recurrence[1][5]])
-            self.recurrence = list([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
+            self.recurr_uncert = list(disaster_recurrence)
+            self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
         else:
-            self.recurr_uncert = list([disaster_recurrence[1][0], disaster_recurrence[1][3]])
-            self.recurrence = disaster_recurrence[1][1]
+            self.recurr_uncert = list(disaster_recurrence)
+            self.recurrence = [disaster_recurrence[1][1]]
         self.mag_dist = disaster_magnitude[0]
         self.mag_range = disaster_magnitude[1]
         if self.mag_dist == "none":
             self.mag_uncert = 0
-            self.magnitude = disaster_magnitude[1][0]
+            self.magnitude = [disaster_magnitude[1][0]]
         elif self.mag_dist == "gauss":
             self.mag_uncert = disaster_magnitude[1][1]
-            self.magnitude = disaster_magnitude[1][0]
+            self.magnitude = [disaster_magnitude[1][0]]
         elif self.mag_dist == "discrete":
-            self.mag_uncert = list([disaster_magnitude[1][1], disaster_magnitude[1][3], disaster_magnitude[1][5]])
-            self.magnitude = list([disaster_magnitude[1][0], disaster_magnitude[1][2], disaster_magnitude[1][3]])
+            self.mag_uncert = list(disaster_magnitude)
+            self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2], disaster_magnitude[1][3]])
         else:
             self.mag_uncert = list([disaster_magnitude[1][0], disaster_magnitude[1][3]])
             self.magnitude = disaster_magnitude[1][1]
@@ -128,6 +144,55 @@ class Plan():
         self.annual_cash_flows = [0 for x in range(int(horizon) + 1)]
         self.annual_non_disaster_cash_flows = [0 for x in range(int(horizon) + 1)]
 
+    def update(self, plan_id, plan_name, disaster_recurrence, disaster_magnitude,
+                 discount_rate, horizon, stat_life):
+        # Basic Information
+        self.id_assign = int(plan_id)
+        self.name = plan_name
+        self.recurr_dist = disaster_recurrence[0]
+        self.recurr_range = disaster_recurrence[1]
+        if self.recurr_dist == "none":
+            self.recurr_uncert = [0]
+            self.recurrence = disaster_recurrence[1][0]
+        elif self.recurr_dist == "gauss":
+            self.recurr_uncert = disaster_recurrence[1][1]
+            self.recurrence = disaster_recurrence[1][0]
+        elif self.recurr_dist == "discrete":
+            self.recurr_uncert = list(disaster_recurrence[1])
+            self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
+        else:
+            self.recurr_uncert = list(disaster_recurrence[1])
+            self.recurrence = [disaster_recurrence[1][1]]
+        self.mag_dist = disaster_magnitude[0]
+        self.mag_range = disaster_magnitude[1]
+        if self.mag_dist == "none":
+            self.mag_uncert = 0
+            self.magnitude = [disaster_magnitude[1][0]]
+        elif self.mag_dist == "gauss":
+            self.mag_uncert = disaster_magnitude[1][1]
+            self.magnitude = [disaster_magnitude[1][0]]
+        elif self.mag_dist == "discrete":
+            self.mag_uncert = list(disaster_magnitude[1])
+            self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2], disaster_magnitude[1][3]])
+        else:
+            self.mag_uncert = list(disaster_magnitude[1])
+            self.magnitude = disaster_magnitude[1][1]
+        self.horizon = horizon
+
+        # Specific pieces
+        self.costs.discount_rate = discount_rate
+        self.costs.horizon = horizon
+        self.exts.discount_rate = discount_rate
+        self.exts.horizon = horizon
+        self.bens.recurrence = self.recurrence
+        self.bens.discount_rate = discount_rate
+        self.bens.horizon = horizon
+        self.fat.recurrence = self.recurrence
+        self.fat.discount_rate = discount_rate
+        self.fat.horizon = horizon
+        self.nond_bens.discount_rate = discount_rate
+        self.nond_bens.horizon = horizon
+
     def new_plan(self, save_list):
         """ Builds a plan from a list of pieces from the save file."""
         for line in save_list:
@@ -141,6 +206,69 @@ class Plan():
                 self.fat.update(line[2], line[3:])
             elif line[1] == "Non-Disaster Benefits":
                 self.nond_bens.new_ben(list(line[2:]))
+
+    def save_plan(self, new_file):
+        """ Saves a plan into the file."""
+        new_file.write('Plan ' + str(self.id_assign) + ',' + self.name + ',')
+        new_file.write(self.recurr_dist + ',')
+        if self.recurr_dist in {'discrete', 'rect', 'tri'}:
+            to_write = []
+            for item in self.recurr_uncert:
+                to_write.append(item)
+            while len(to_write) < 6:
+                to_write.append(0)
+            for item in to_write:
+                new_file.write(str(item) + ',')
+        else:
+            to_write = [self.recurrence]
+            for item in self.recurr_uncert:
+                to_write.append(item)
+            while len(to_write) < 6:
+                to_write.append(0)
+            for item in to_write:
+                new_file.write(str(item) + ',')
+        new_file.write(self.mag_dist + ',')
+        if self.mag_dist in {'discrete', 'rect', 'tri'}:
+            to_write = []
+            for item in self.mag_uncert:
+                to_write.append(item)
+            while len(to_write) < 6:
+                to_write.append(0)
+            for item in to_write:
+                new_file.write(str(item) + ',')
+        else:
+            to_write = [self.magnitude]
+            for item in self.mag_uncert:
+                to_write.append(item)
+            while len(to_write) < 6:
+                to_write.append(0)
+            for item in to_write:
+                new_file.write(str(item) + ',')
+        new_file.write('\n')
+        for cost in self.costs.indiv:
+            new_file.write(',Costs,' + cost.title + ',' + cost.cost_type + ',' + cost.omr_type + ',')
+            for time in cost.times:
+                new_file.write(str(time) + ',')
+            new_file.write(str(cost.amount) + ',' + str(cost.desc) + '\n')
+        for ben in self.bens.indiv:
+            new_file.write(',Benefits,' + ben.title + ',' + ben.ben_type + ',')
+            new_file.write(str(ben.amount) + ',' + str(ben.desc) + '\n')
+            new_file.write(',Benefits,Uncertainty,' + ben.dist)
+            new_file.write(',' + str(ben.range))
+            #for entry in ben.range:
+            #    new_file.write(',' + str(entry))
+            new_file.write('\n')
+        for ext in self.exts.indiv:
+            new_file.write(',Externalities,' + ext.title + ',' + ext.ext_type)
+            for entry in ext.times:
+                new_file.write(',' + str(entry))
+            new_file.write(',' + str(ext.amount) + ',' + str(ext.desc) + '\n')
+        for nond_ben in self.nond_bens.indiv:
+            new_file.write(',Non-Disaster Benefits,' + nond_ben.title + ',' + nond_ben.ben_type + ',')
+            for item in nond_ben.times:
+                new_file.write(str(item) + ',')
+            new_file.write(str(nond_ben.amount) + ',' + str(nond_ben.desc) + '\n')
+        new_file.write(',Fatalities,' + str(self.fat.averted) + ',' + str(self.fat.desc) + '\n')
 
     def sum_it(self, horizon):
         """ Sums up all of the individual pieces. """
@@ -202,7 +330,7 @@ class Plan():
                 self.annual_cash_flows.append(item)
 
         self.total_bens = self.bens.total + self.fat.stat_value_averted + self.nond_bens.total
-        self.total_costs = self.costs.total + self.exts.one_sum + self.exts.r_sum
+        self.total_costs = self.costs.total
         self.net = self.total_bens - self.total_costs
 
     def sir(self):

@@ -336,21 +336,50 @@ class InfoPage(tk.Frame):
         data.discount_rate = float(self.dis_ent.get())
         data.risk_preference = self.preference.get()
 
-        data.plan_list = []
         dis_recurr = [entry.get() for entry in self.recur_range]
         dis_mag = [entry.get() for entry in self.mag_range]
-        data.plan_list.append(Plan(0, "Base",
-                                   [self.recur_choice.get(), dis_recurr],
-                                   [self.mag_choice.get(), dis_mag],
-                                   data.discount_rate, data.horizon, data.stat_life))
-        for i in range(data.num_plans):
-            data.plan_list.append(Plan(i+1, self.name_ents[i].get(),
-                                       [self.recur_choice.get(), dis_recurr],
-                                       [self.mag_choice.get(), dis_mag],
-                                       data.discount_rate, data.horizon, data.stat_life))
+        
+        if data.plan_list == []:
+            data.plan_list.append(Plan(0, "Base",
+                                    [self.recur_choice.get(), dis_recurr],
+                                    [self.mag_choice.get(), dis_mag],
+                                    data.discount_rate, data.horizon, data.stat_life))
+            for i in range(data.num_plans):
+                data.plan_list.append(Plan(i+1, self.name_ents[i].get(),
+                                        [self.recur_choice.get(), dis_recurr],
+                                        [self.mag_choice.get(), dis_mag],
+                                        data.discount_rate, data.horizon, data.stat_life))
+        else:
+            old_num_plans = len(data.plan_list)
+            new_num_plans = data.num_plans + 1
+            if old_num_plans <= new_num_plans:
+                data.plan_list[0].update(0, 'Base', [self.recur_choice.get(), dis_recurr],
+                                         [self.mag_choice.get(), dis_mag],
+                                         data.discount_rate, data.horizon, data.stat_life)
+                for i in range(1, old_num_plans):
+                    data.plan_list[i].update(i, self.name_ents[i-1].get(),
+                                             [self.recur_choice.get(), dis_recurr],
+                                             [self.mag_choice.get(), dis_mag],
+                                             data.discount_rate, data.horizon, data.stat_life)
+                for j in range(old_num_plans, new_num_plans):
+                    data.plan_list.append(Plan(i, self.name_ents[i-1].get(),
+                                          [self.recur_choice.get(), dis_recurr],
+                                          [self.mag_choice.get(), dis_mag],
+                                          data.discount_rate, data.horizon, data.stat_life))
+            elif old_num_plans > new_num_plans:
+                data.plan_list[0].update(0, 'Base', [self.recur_choice.get(), dis_recurr],
+                                         [self.mag_choice.get(), dis_mag],
+                                         data.discount_rate, data.horizon, data.stat_life)
+                for i in range(1, new_num_plans):
+                    data.plan_list[i].update(i, self.name_ents[i-1].get(),
+                                             [self.recur_choice.get(), dis_recurr],
+                                             [self.mag_choice.get(), dis_mag],
+                                             data.discount_rate, data.horizon, data.stat_life)
+                for j in range(new_num_plans, old_num_plans):
+                    data.plan_list.remove(data.plan_list[j])
 
         # TODO: Make file save possible
-        #data.save_info()
+        data.file_save()
         controller.show_frame('CostPage')
 
     def show_info(self):
@@ -389,6 +418,12 @@ class InfoPage(tk.Frame):
                             "Hazard Magnitude and Risk Preference Fields have no impact on any "
                             "calculations made with this tool. "
                             "The information will merely be stored.")
+
+    def on_trace_change(self, _name, _index, _mode):
+        """ Triggers all on_trace_***"""
+        self.on_trace_change_mag(_name, _index, _mode)
+        self.on_trace_change_recur(_name, _index, _mode)
+        self.on_trace_choice(_name, _index, _mode)
 
     def on_trace_choice(self, _name, _index, _mode):
         """Triggers refresh when combobox changes"""

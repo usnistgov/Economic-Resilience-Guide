@@ -64,6 +64,7 @@ class Application(tk.Tk):
                       'NonDBensPage': NonDBensPage}
         cont = frame_dict[cont_string]
         frame = self.frames[cont]
+        frame.on_trace_change("","","")
         frame.tkraise()
 
     def selectall(self, event):
@@ -166,6 +167,10 @@ class StartPage(tk.Frame):
                 print("ERR: Not a .csv file")
         else:
             return
+    
+    def on_trace_change(self, _name, _index, _mode):
+        """ Passes to allow on_trace_change of other pages."""
+        pass
 
 
 # Directory Page

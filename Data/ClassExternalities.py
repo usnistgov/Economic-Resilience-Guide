@@ -130,11 +130,11 @@ class Externalities():
         field_dict['times'] = times
         # == DESCRIPTION
         # No comma in description
-        if ',' in desc:
-            err_messages += "Description cannot have a comma. Please change the description.\n\n"
-            valid = False
+        #if ',' in desc:
+        #    err_messages += "Description cannot have a comma. Please change the description.\n\n"
+        #    valid = False
         # Set blank description to N/A or non-blank description to dict
-        if desc in {"", "<enter a description for this externality>"}:
+        if desc in {"", "<enter a description for this externality>\n"}:
             field_dict['desc'] = 'N/A'
         else:
             field_dict['desc'] = desc
@@ -153,4 +153,6 @@ class Externality():
         self.times = []
         for item in times:
             self.times.append(float(item))
-        self.desc = desc
+        self.desc = ""
+        for bit in desc:
+            self.desc += bit
