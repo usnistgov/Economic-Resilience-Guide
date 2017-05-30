@@ -632,6 +632,7 @@ class CostPage(tk.Frame):
                                  +" (Plan 2)")
             self.plan2.grid()
         if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 2:
+            print(self.controller.frames[InfoPage].name_ents[2].get())
             self.plan3.configure(text=self.controller.frames[InfoPage].name_ents[2].get()
                                  +" (Plan 3)")
             self.plan3.grid()

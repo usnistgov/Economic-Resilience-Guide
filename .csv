@@ -1,0 +1,4 @@
+Title,EconGuide Test 1,,Horizon,60.0
+Discount Rate,3.0,,Risk Prev,averse,,Value of Stat Life,7500000
+BEGIN PLANS
+Plan 0,Base,gauss,35,5,0,0,0,0,tri,

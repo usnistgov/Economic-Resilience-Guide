@@ -72,3 +72,7 @@ class DirectoryPage(tk.Frame):
 
         exit_button = ttk.Button(self, text="Exit", command=sys.exit)
         exit_button.grid(row=3, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
+    def on_trace_change(self, _name, _index, _mode):
+        """ Passes to allow on_trace_change for other pages."""
+        pass

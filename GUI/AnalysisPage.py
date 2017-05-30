@@ -158,16 +158,16 @@ def run_main_page(data):
             net_lbl = ttk.Label(group0, text=my_tab + "Net", font=SMALL_FONT)
             net_lbl.grid(row=25, column=0, sticky="w", **pad_opts)
 
-            ttk.Label(group0, text=" ").grid(row=24, **pad_opts)
+            #ttk.Label(group0, text=" ").grid(row=24, **pad_opts)
             sir_lbl = ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio",
                                 font=SMALL_FONT)
-            sir_lbl.grid(row=26, column=0, sticky="w", **pad_opts)
+            sir_lbl.grid(row=27, column=0, sticky="w", **pad_opts)
             irr_lbl = ttk.Label(group0, text=my_tab + "Internal Rate of Return", font=SMALL_FONT)
-            irr_lbl.grid(row=27, column=0, sticky="w", **pad_opts)
+            irr_lbl.grid(row=28, column=0, sticky="w", **pad_opts)
             roi_lbl = ttk.Label(group0, text=my_tab + "Return on Investment", font=SMALL_FONT)
-            roi_lbl.grid(row=28, column=0, sticky="w", **pad_opts)
+            roi_lbl.grid(row=29, column=0, sticky="w", **pad_opts)
             non_d_roi = ttk.Label(group0, text=my_tab + "Non-Disaster ROI", font=SMALL_FONT)
-            non_d_roi.grid(row=29, column=0, sticky="w", **pad_opts)
+            non_d_roi.grid(row=30, column=0, sticky="w", **pad_opts)
             # === Places spaces to correct an unknown error with the window size
             ttk.Label(group0, text=" ").grid(row=30)
             ttk.Label(group0, text=" ").grid(row=31)
@@ -242,7 +242,7 @@ def run_main_page(data):
                               text='(' + '${:,.0f}'.format(self.data_cont.plan_list[i].net) + ')',
                               font=BOLD_FONT).grid(row=25, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].sir()),
-                          font=SMALL_FONT).grid(row=26, column=(i + 1), sticky="e", **pad_opts)
+                          font=SMALL_FONT).grid(row=27, column=(i + 1), sticky="e", **pad_opts)
                 if type(self.data_cont.plan_list[i].irr()) == type("string"):
                     ttk.Label(group0, text=self.data_cont.plan_list[i].irr(),
                               font=SMALL_FONT).grid(row=28, column=(i+1), sticky="e", **pad_opts)
