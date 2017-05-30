@@ -156,7 +156,7 @@ class FatalitiesPage(tk.Frame):
         """Updates global variables with whats on the page
            in case user forgets to click 'Update Fatalities'"""
         self.add_fat()
-        self.data_cont.save_info()
+        self.data_cont.file_save()
 
     def show_info(self):
         """ Pulls up information for the Fatalities page."""

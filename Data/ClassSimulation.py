@@ -262,7 +262,7 @@ class Plan():
             new_file.write(',Externalities,' + ext.title + ',' + ext.ext_type)
             for entry in ext.times:
                 new_file.write(',' + str(entry))
-            new_file.write(',' + str(ext.desc) + '\n')
+            new_file.write(',' + str(ext.amount) + ',' + str(ext.desc) + '\n')
         for nond_ben in self.nond_bens.indiv:
             new_file.write(',Non-Disaster Benefits,' + nond_ben.title + ',' + nond_ben.ben_type + ',')
             for item in nond_ben.times:

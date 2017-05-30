@@ -163,13 +163,13 @@ def run_u_main_page(data):
             ttk.Label(group0, text=" ").grid(row=24, **pad_opts)
             sir_lbl = ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio",
                                 font=SMALL_FONT)
-            sir_lbl.grid(row=26, column=0, sticky="w", **pad_opts)
+            sir_lbl.grid(row=25, column=0, sticky="w", **pad_opts)
             irr_lbl = ttk.Label(group0, text=my_tab + "Internal Rate of Return", font=SMALL_FONT)
-            irr_lbl.grid(row=27, column=0, sticky="w", **pad_opts)
+            irr_lbl.grid(row=26, column=0, sticky="w", **pad_opts)
             roi_lbl = ttk.Label(group0, text=my_tab + "Return on Investment", font=SMALL_FONT)
-            roi_lbl.grid(row=28, column=0, sticky="w", **pad_opts)
+            roi_lbl.grid(row=27, column=0, sticky="w", **pad_opts)
             non_d_roi = ttk.Label(group0, text=my_tab + "Non-Disaster ROI", font=SMALL_FONT)
-            non_d_roi.grid(row=29, column=0, sticky="w", **pad_opts)
+            non_d_roi.grid(row=28, column=0, sticky="w", **pad_opts)
             # === Places spaces to correct an unknown error with the window size
             ttk.Label(group0, text=" ").grid(row=30)
             ttk.Label(group0, text=" ").grid(row=31)
