@@ -24,6 +24,15 @@ def none_dist():
     return fig
 
 @mem.cache
+def disc_dist():
+    fig = Figure(figsize=(0.5, 0.5), dpi=100)
+    sub = fig.add_subplot(111)
+    x = [0, 0.99, 1, 1.01, 1.99, 2, 2.01, 3, 3.99, 4, 4.01, 5, 6]
+    y = [0, 0, 1, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0]
+    sub.plot(x,y)
+    return fig
+
+@mem.cache
 def gauss_dist():
     fig = Figure(figsize=(0.5, 0.5), dpi=100)
     sub = fig.add_subplot(111)
