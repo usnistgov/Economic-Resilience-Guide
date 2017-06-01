@@ -98,11 +98,8 @@ class Benefits():
         res_rec_totals.sort()
 
         self.direct_range = [direct_totals[0], direct_totals[num_iters-1]]
-        print(self.direct_range)
         self.indirect_range = [indirect_totals[0], indirect_totals[num_iters-1]]
-        print(self.indirect_range)
         self.res_rec_range = [res_rec_totals[0], res_rec_totals[num_iters-1]]
-        print(self.res_rec_range)
 
     def one_iter(self, new_seed=100):
         dist_dict = {'tri':triDistInv, 'rect':uniDistInv}
