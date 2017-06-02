@@ -280,13 +280,13 @@ def run_main_page(data):
             def commas():
                 """Destroys popup and calls csv export."""
                 leavemini()
-                self.data_cont.to_csv()
+                self.data_cont.csv_export()
 
             def both():
                 """Destroys popup and calls docx and csv export."""
                 leavemini()
                 self.data_cont.to_docx()
-                self.data_cont.to_csv()
+                self.data_cont.csv_export()
 
             popup.wm_title("Export")
             label = ttk.Label(popup, text="Which format would you like to export?", font=NORM_FONT)

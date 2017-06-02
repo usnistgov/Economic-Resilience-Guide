@@ -97,9 +97,13 @@ class Benefits():
         indirect_totals.sort()
         res_rec_totals.sort()
 
-        self.direct_range = [direct_totals[0], direct_totals[num_iters-1]]
-        self.indirect_range = [indirect_totals[0], indirect_totals[num_iters-1]]
-        self.res_rec_range = [res_rec_totals[0], res_rec_totals[num_iters-1]]
+        confidence = 95
+        first_num = math.floor(num_iters*(1-confidence/100)/2)
+        last_num = num_iters - first_num
+
+        self.direct_range = [direct_totals[first_num], direct_totals[last_num]]
+        self.indirect_range = [indirect_totals[first_num], indirect_totals[last_num]]
+        self.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
 
     def one_iter(self, new_seed=100):
         dist_dict = {'tri':triDistInv, 'rect':uniDistInv}

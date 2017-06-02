@@ -72,6 +72,162 @@ class Simulation():
             plan.save_plan(new_file)
             new_file.write('END PLAN\n')
         new_file.write('END FILE')
+        new_file.close()
+
+    def csv_export(self):
+        my_formats=[('Comma Separated Value', '*.csv'),]
+        file_name = filedialog.asksaveasfilename(filetypes=my_formats, title="Save the file as...")
+        if '.csv' != file_name[-4:]:
+            file_name = file_name + '.csv'
+        new_file = open(file_name, 'w')
+        new_file.write('Outputs of Economic Evaluation: [' + self.title + ']\n')
+        new_file.write(',Base Case')
+        for i in range(1, self.num_plans):
+            new_file.write(',Alternative ' + str(i))
+        new_file.write('\n,Base')
+        for i in range(1, self.num_plans):
+            new_file.write(',' + self.plan_list[i].name)
+        new_file.write('\nBenefits\nDisaster Economic Benefits\nResponse and Recovery Costs')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.bens.r_sum))
+        new_file.write('\nDirect Loss Reduction')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.bens.d_sum))
+        new_file.write('\nIndirect Losses')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.bens.i_sum))
+        new_file.write('\nDisaster Non-Market Benefits\nValue of Statistical Lives Saved')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.fat.stat_value_averted))
+        new_file.write('\nNumber of Statistical Lives Saved')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.fat.stat_averted))
+        new_file.write('\nNon-disaster Related Benefits')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.nond_bens.total))
+        new_file.write('\nCosts\nInitial\nDirect Costs')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.d_sum))
+        new_file.write('\nIndirect Costs')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.i_sum))
+        new_file.write('\nOMR')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.omr_1_sum))
+        new_file.write('\nExternalities')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.one_sum))
+        new_file.write('\nRecurring Costs\nOMR')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.omr_r_sum))
+        new_file.write('\nExternalities')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.r_sum))
+        new_file.write('\nTotal: Present Expected Value\nBenefits')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.total_bens))
+        new_file.write('\nCosts')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.total_costs))
+        new_file.write('\nNet')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.net))
+        new_file.write('\n\nSavings-to-Investment Ratio')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.sir()))
+        new_file.write('\nInternal Rate of Return (%)')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.irr()))
+        new_file.write('\nReturn on Investment (%)')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.roi()))
+        new_file.write('\nNon-Disaster ROI (%)')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.non_d_roi()))
+        new_file.close()
+
+    def csv_export_uncert(self):
+        num_runs = 1000
+        seed = 100
+        certainty = 95
+
+        my_formats=[('Comma Separated Value', '*.csv'),]
+        file_name = filedialog.asksaveasfilename(filetypes=my_formats, title="Save the file as...")
+        if '.csv' != file_name[-4:]:
+            file_name = file_name + '.csv'
+        new_file = open(file_name, 'w')
+        new_file.write('Outputs of Economic Evaluation: [' + self.title + ']\n')
+        new_file.write('NOTE: All bounds on uncertainties are given from ' + str(num_runs)
+                       + ' Monte Carlo simulations with a ' + str(certainty)
+                       + '% confidence interval.\n')
+        new_file.write('The random number seed for these runs was ' + str(seed) + '.\n')
+        new_file.write(',Base Case,Lower Bound,Upper Bound')
+        for i in range(1, self.num_plans):
+            new_file.write(',Alternative ' + str(i) + ',Lower Bound,Upper Bound')
+        new_file.write('\n,Base')
+        for i in range(1, self.num_plans):
+            new_file.write(',,,' + self.plan_list[i].name)
+        new_file.write('\nBenefits\nDisaster Economic Benefits\nResponse and Recovery Costs')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.bens.r_sum))
+            new_file.write(',$' + str(plan.bens.res_rec_range[0]) + ',$' + str(plan.bens.res_rec_range[1]))
+        new_file.write('\nDirect Loss Reduction')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.bens.d_sum))
+            new_file.write(',$' + str(plan.bens.direct_range[0]) + ',$' + str(plan.bens.direct_range[1]))
+        new_file.write('\nIndirect Losses')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.bens.i_sum))
+            new_file.write(',$' + str(plan.bens.indirect_range[0]) + ',$' + str(plan.bens.indirect_range[1]))
+        new_file.write('\nDisaster Non-Market Benefits\nValue of Statistical Lives Saved')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.fat.stat_value_averted)+',,')
+        new_file.write('\nNumber of Statistical Lives Saved')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.fat.stat_averted)+',,')
+        new_file.write('\nNon-disaster Related Benefits')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.nond_bens.total)+',,')
+        new_file.write('\nCosts\nInitial\nDirect Costs')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.d_sum)+',,')
+        new_file.write('\nIndirect Costs')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.i_sum)+',,')
+        new_file.write('\nOMR')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.omr_1_sum)+',,')
+        new_file.write('\nExternalities')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.one_sum)+',,')
+        new_file.write('\nRecurring Costs\nOMR')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.omr_r_sum)+',,')
+        new_file.write('\nExternalities')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.r_sum)+',,')
+        new_file.write('\nTotal: Present Expected Value\nBenefits')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.total_bens)+',,')
+        new_file.write('\nCosts')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.total_costs)+',,')
+        new_file.write('\nNet')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.net)+',,')
+        new_file.write('\n\nSavings-to-Investment Ratio')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.sir())+',,')
+        new_file.write('\nInternal Rate of Return (%)')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.irr())+',,')
+        new_file.write('\nReturn on Investment (%)')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.roi())+',,')
+        new_file.write('\nNon-Disaster ROI (%)')
+        for plan in self.plan_list:
+            new_file.write(',' + str(plan.non_d_roi())+',,')
+        new_file.close()
 
     def get_disaster_rate(self):
         """ Returns the disaster rate for the first plan

@@ -303,13 +303,13 @@ def run_u_main_page(data):
             def commas():
                 """Destroys popup and calls csv export."""
                 leavemini()
-                self.data_cont.to_csv()
+                self.data_cont.csv_export_uncert()
 
             def both():
                 """Destroys popup and calls docx and csv export."""
                 leavemini()
                 self.data_cont.to_docx()
-                self.data_cont.to_csv()
+                self.data_cont.csv_export_uncert()
 
             popup.wm_title("Export")
             label = ttk.Label(popup, text="Which format would you like to export?", font=NORM_FONT)
@@ -320,7 +320,7 @@ def run_u_main_page(data):
             csv_button = ttk.Button(popup, text=".csv", command=commas)
             csv_button.grid(row=2, padx=BASE_PADDING, pady=BASE_PADDING)
             both_button = ttk.Button(popup, text="Both formats", command=both)
-            both_button.grid(row=2, padx=BASE_PADDING, pady=BASE_PADDING)
+            both_button.grid(row=2, sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
 
             popup.mainloop()
 
