@@ -72,6 +72,8 @@ class Benefits():
         """ Used for expected value on disaster occurence. """
         disaster_rate = float(disaster_rate)
         discount_rate = float(discount_rate)
+        horizon = float(horizon)
+        value = float(value)
         eqn_lambda = 1/disaster_rate
         k = discount_rate/100
         mult = eqn_lambda / math.fabs(1 - math.exp(-k))

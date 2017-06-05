@@ -12,6 +12,7 @@ class Externalities():
         self.indiv = []
         self.one_sum = 0
         self.r_sum = 0
+        self.total = self.one_sum + self.r_sum
 
         self.discount_rate = float(discount_rate)
         self.horizon = float(horizon)
@@ -37,6 +38,8 @@ class Externalities():
                 self.one_sum += self.calc_one_time(ext.amount, ext.times[0])
             elif ext.ext_type == "recurring":
                 self.r_sum += self.calc_recur(ext.amount, ext.times[0], ext.times[1])
+        
+        self.total = self.one_sum + self.r_sum
 
     def calc_one_time(self, value, time):
         """Equation used for One-time OMR costs"""
