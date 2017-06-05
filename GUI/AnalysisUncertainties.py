@@ -304,7 +304,7 @@ def run_u_main_page(data):
             def document():
                 """Destroys popup and calls docx export."""
                 leavemini()
-                self.data_cont.to_docx()
+                self.data_cont.word_export_uncert()
 
             def commas():
                 """Destroys popup and calls csv export."""
@@ -314,7 +314,7 @@ def run_u_main_page(data):
             def both():
                 """Destroys popup and calls docx and csv export."""
                 leavemini()
-                self.data_cont.to_docx()
+                self.data_cont.word_export_uncert()
                 self.data_cont.csv_export_uncert()
 
             popup.wm_title("Export")
