@@ -170,11 +170,11 @@ class InfoPage(tk.Frame):
         self.recur_gauss_label = [tk.Label(group4, text="Expected Recurrence (Years)"),
                                   tk.Label(group4, text="Variance (Years)")]
         self.recur_discrete_label = [tk.Label(group4, text="Most Frequent (Years)"),
-                                     tk.Label(group4, text="Liklihood of most frequent (%)"),
-                                     tk.Label(group4, text="Expected Recurrence (Years)"),
-                                     tk.Label(group4, text="Liklihood of expected (%)"),
+                                     tk.Label(group4, text="Middle Recurrence (Years)"),
                                      tk.Label(group4, text="Least Frequence (Years)"),
-                                     tk.Label(group4, text="Liklihood of least frequent (%)")]
+                                     tk.Label(group4, text="Liklihood of Most Frequent (%)"),
+                                     tk.Label(group4, text="Liklihood of Middle Recurrence (%)"),
+                                     tk.Label(group4, text="Liklihood of Least Frequent (%)")]
         self.recur_range = [tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
                             tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
                             tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
@@ -213,11 +213,11 @@ class InfoPage(tk.Frame):
         self.mag_gauss_label = [tk.Label(group5, text="Expected Magnitude (%)"),
                                 tk.Label(group5, text="Variance (%)")]
         self.mag_discrete_label = [tk.Label(group5, text="Least Severe (%)"),
-                                   tk.Label(group5, text="Liklihood of least severe (%)"),
-                                   tk.Label(group5, text="Expected Magnitude (%)"),
-                                   tk.Label(group5, text="Liklihood of expected (%)"),
+                                   tk.Label(group5, text="Middle Severity (%)"),
                                    tk.Label(group5, text="Most severe (%)"),
-                                   tk.Label(group5, text="Liklihood of most severe (%)")]
+                                   tk.Label(group5, text="Liklihood of Least Severe (%)"),
+                                   tk.Label(group5, text="Liklihood of Middle Severity (%)"),
+                                   tk.Label(group5, text="Liklihood of Most Severe (%)")]
         self.mag_range = [tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
                           tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
                           tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
@@ -470,10 +470,15 @@ class InfoPage(tk.Frame):
                 label.grid_remove()
             for label in self.recur_gauss_label:
                 label.grid_remove()
-            for label in self.recur_discrete_label:
+            for label in self.recur_discrete_label[0:3]:
                 label.grid(row=self.recur_discrete_label.index(label)+4, column=0)
-            for entry in self.recur_range:
+            for label in self.recur_discrete_label[3:6]:
+                label.grid(row=self.recur_discrete_label.index(label)+1, column=2)
+            for entry in self.recur_range[0:3]:
                 entry.grid(row=self.recur_range.index(entry)+4, column=1,
+                           padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            for entry in self.recur_range[3:6]:
+                entry.grid(row=self.recur_range.index(entry)+1, column=3,
                            padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         else:
             self.recur_one_label.grid_remove()
@@ -486,7 +491,7 @@ class InfoPage(tk.Frame):
             for i in range(3):
                 self.recur_range[i].grid(row=self.recur_range.index(self.recur_range[i])+4,
                                          column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-            for i in range(4, len(self.recur_range)):
+            for i in range(3, len(self.recur_range)):
                 self.recur_range[i].grid_remove()
 
     def on_trace_change_mag(self, _name, _index, _mode):
@@ -523,10 +528,15 @@ class InfoPage(tk.Frame):
                 label.grid_remove()
             for label in self.mag_gauss_label:
                 label.grid_remove()
-            for label in self.mag_discrete_label:
+            for label in self.mag_discrete_label[0:3]:
                 label.grid(row=self.mag_discrete_label.index(label)+4, column=0)
-            for entry in self.mag_range:
+            for label in self.mag_discrete_label[3:6]:
+                label.grid(row=self.mag_discrete_label.index(label)+1, column=2)
+            for entry in self.mag_range[0:3]:
                 entry.grid(row=self.mag_range.index(entry)+4, column=1,
+                           padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            for entry in self.mag_range[3:6]:
+                entry.grid(row=self.mag_range.index(entry)+1, column=3,
                            padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         else:
             self.mag_one_label.grid_remove()
@@ -539,5 +549,5 @@ class InfoPage(tk.Frame):
             for i in range(3):
                 self.mag_range[i].grid(row=self.mag_range.index(self.mag_range[i])+4,
                                          column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-            for i in range(4, len(self.mag_range)):
+            for i in range(3, len(self.mag_range)):
                 self.mag_range[i].grid_remove()
