@@ -128,7 +128,7 @@ class BenefitsPage(tk.Frame):
                                      variable=self.choice, value="res-rec")
         res_rec_rad.grid(sticky="w")
 
-        self.choice.trace("w", self.on_trace_change)
+        #self.choice.trace("w", self.on_trace_change)
 
         # ===== Interact with previously inputted costs
         group4 = ttk.LabelFrame(self, text="Previously Inputted Benefits (optional)")

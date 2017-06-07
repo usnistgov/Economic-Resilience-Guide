@@ -17,7 +17,7 @@ from tkinter import ttk     #for pretty buttons/labels
 from GUI.BenefitsPage import BenefitsPage
 from GUI.InfoPage import InfoPage
 
-from GUI.PlotsAndImages import none_dist, gauss_dist, tri_dist, rect_dist
+from GUI.PlotsAndImages import none_dist, gauss_dist, tri_dist, rect_dist, disc_dist
 
 from GUI.Constants import SMALL_FONT, LARGE_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
@@ -56,6 +56,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
         self.direct_range = []
         self.indirect_range = []
         self.res_rec_range = []
+        self.groups = []
         self.create_widgets(controller)
 
     def create_widgets(self, controller):
@@ -66,7 +67,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
 
         self.on_trace_change("name", "index", "mode")
 
-        controller.frames[BenefitsPage].choice.trace("w", self.on_trace_change)
+        #controller.frames[BenefitsPage].choice.trace("w", self.on_trace_change)
 
 
         def save_and_next():
@@ -92,7 +93,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
         save_button.grid(row=1, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Update Uncertainties",
                                      command=self.add_uncertainty)
-        self.add_button.grid(row=12, column=1, sticky="se",
+        self.add_button.grid(row=3, column=1, sticky="w",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         did_info = ttk.Button(self, text="More Information", command=self.show_info)
         did_info.grid(row=2, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -101,11 +102,6 @@ class BenefitsUncertaintiesPage(tk.Frame):
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=13, column=1, sticky="se",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-
-    def hover(self, _event):
-        """Updates prevList when mouse is hovered over the widget"""
-        # NOTE: the _ before event designates it as an intentionally unused input
-        self.update_prev_list()
 
     def show_info(self):
         """ Pulls up information for the Benefits page."""
@@ -117,27 +113,20 @@ class BenefitsUncertaintiesPage(tk.Frame):
         """Appends list of benefits, clears page's entry widgets,
            and updates 'Previously Inputted Benefits' section"""
         if moveon:
-            valid = self.check_page(printout=False)
-        else:
             valid = self.check_page()
-        if not valid:
-            if moveon:
-                checker = messagebox.askyesno('Move Forward?',
-                                              'Your benefit was not saved. '
-                                              'Select \'No\' if you wish to continue editing'
-                                              ' and \'Yes\' if you wish to move to the next page.')
-                return checker
-            return False
+        else:
+            valid = self.check_page(printout=False)
 
         for plan in self.data_cont.plan_list:
             for ben in plan.bens.indiv:
-                ben.add_uncertainty(self.range[plan.id_assign][plan.bens.indiv.index(ben)].get(),
+                new_values = []
+                for entry in self.ranges[plan.id_assign][plan.bens.indiv.index(ben)]:
+                    new_values.append(entry.get())
+                ben.add_uncertainty(new_values,
                                     self.choices[plan.id_assign][plan.bens.indiv.index(ben)].get())
+        self.on_trace_change('_name', '_index', '_mode')
 
-        if valid:
-            # ===== Updates the page for the next cost
-            self.update_prev_list()
-            return True
+        return valid
 
     def update_prev_list(self):
         """Updates 'Previously Inputted Benefits' Section"""
@@ -148,8 +137,66 @@ class BenefitsUncertaintiesPage(tk.Frame):
            Returns a bool"""
         #TODO: Fix this function
         err_messages = ""
-
         valid = True
+        for plan in self.data_cont.plan_list:
+            for ben in plan.bens.indiv:
+                dist = self.choices[plan.id_assign][plan.bens.indiv.index(ben)].get()
+                nums = self.ranges[plan.id_assign][plan.bens.indiv.index(ben)]
+                try:
+                    assert dist in ['none', 'gauss', 'rect', 'tri', 'discrete']
+                except AssertionError:
+                    valid = False
+
+                if dist == 'none':
+                    for entry in nums:
+                        entry.delete(0, tk.END)
+                        entry.insert(tk.END, '<insert uncertainty>')
+                elif dist == 'gauss':
+                    try:
+                        float(nums[0].get())
+                    except ValueError:
+                        valid = False
+                        err_messages += "All inputs must be numbers (" + ben.title +").\n\n"
+                    for entry in nums[1:]:
+                        entry.delete(0, tk.END)
+                        entry.insert(tk.END, '<insert uncertainty>')
+                elif dist == 'discrete':
+                    for entry in nums:
+                        try:
+                            float(entry.get())
+                        except ValueError:
+                            valid = False
+                            err_messages += "All inputs must be numbers (" + ben.title + ").\n\n"
+                    try:
+                        assert float(nums[0].get()) <= float(nums[1].get()) <= float(nums[2].get())
+                        disc_sum = float(nums[3].get()) + float(nums[4].get()) + float(nums[5].get())
+                        if disc_sum != 100:
+                            valid = False
+                            err_messages += "Discrete liklihoods must add to 100% (" + ben.title + ").\n\n"
+                    except AssertionError:
+                        valid = False
+                        err_messages += "Discrete options must be in order (" + ben.title + ").\n\n"
+                    except ValueError:
+                        pass
+                    try:
+                        assert float(ben.amount) in [float(nums[0].get()), float(nums[1].get()), float(nums[2].get())]
+                    except AssertionError:
+                        valid = False
+                        err_messages += "One of the discrete options must be your point estimate (" + ben.title + ").\n\n"
+                    except ValueError:
+                        pass
+                else:
+                    try:
+                        bound = float(nums[0].get()) <= float(ben.amount) <= float(nums[1].get())
+                        if not bound:
+                            valid = False
+                            err_messages += "Lower bound must be below Upper bound (" + ben.title + ").\n\n"
+                    except ValueError:
+                        valid = False
+                        err_messages += "All inputs must be numbers (" + ben.title + ").\n\n"
+                    for entry in nums[2:]:
+                        entry.delete(0, tk.END)
+                        entry.insert(tk.END, '<insert uncertainty>')
 
 
         if (not valid) & printout:
@@ -158,65 +205,90 @@ class BenefitsUncertaintiesPage(tk.Frame):
 
 
     def on_trace_change(self, _name, _index, _mode):
-        """Updates checkbox fields if names are changed in 'InfoPage'"""
-        # TODO: Ensure that this works as expected/desired.
-
-        group = []
-        self.labels = []
-        self.range = []
-
+        """Updates the number of plans with options dependent on number of benefits input."""
+        for group in self.groups:
+            group.grid_forget()
+            group.destroy()
+        self.groups = []
+        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
+        figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         self.choices = [[tk.StringVar() for ben in plan.bens.indiv]
                         for plan in self.data_cont.plan_list]
-        for i in range(self.data_cont.num_plans):
-            for j in range(len(self.choices[i])):
-                self.choices[i][j].set(self.data_cont.plan_list[i].bens.indiv[j].dist)
-
+        rads = []
+        self.ranges = []
+        self.labels = []
         for plan in self.data_cont.plan_list:
             row_index = 0
-            group.append(ttk.LabelFrame(self, text=plan.name))
+            self.groups.append(ttk.LabelFrame(self, text=plan.name))
+            self.groups[-1].grid(row=4+plan.id_assign, sticky="ew",
+                            padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            rads.append([])
+            self.ranges.append([])
+            self.labels.append([])
             for ben in plan.bens.indiv:
-                print_text = ben.title + " - $" + str(ben.amount)
-                self.labels.append(ttk.Label(group[-1], text=print_text, font=SMALL_FONT))
-                self.labels[-1].grid(row=row_index, column=0, sticky="w",
-                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                row_index += 1
-
-
-        for plan in self.data_cont.plan_list:
-            row_index = 0
-            i = self.data_cont.plan_list.index(plan)
-            group.append(ttk.LabelFrame(self, text=plan.name))
-            group[-1].grid(row=3+i, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
-            self.range.append([])
-            for benefit in plan.bens.indiv:
-                print_text = benefit.title + " - $" + str(benefit.amount)
-                self.labels.append(ttk.Label(group[-1], text=print_text,
-                                             font=SMALL_FONT))
-                self.labels[-1].grid(row=row_index, column=0, sticky="w",
-                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                row_index += 1
-                j = plan.bens.indiv.index(benefit)
-                rads = [tk.Radiobutton(group[-1], variable=self.choices[i][j], value="none"),
-                        tk.Radiobutton(group[-1], variable=self.choices[i][j], value="gauss"),
-                        tk.Radiobutton(group[-1], variable=self.choices[i][j], value="tri"),
-                        tk.Radiobutton(group[-1], variable=self.choices[i][j], value="rect")]
-                rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-"]
-                figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist()]
-                for col in range(len(rads)):
-                    fig_label = ttk.Label(group[-1])
-                    fig_label.grid(row=row_index, column=col+1)
+                choice = plan.bens.indiv.index(ben)
+                self.choices[plan.id_assign][choice].set(ben.dist)
+                titles = ttk.Label(self.groups[-1], text=ben.title + " - $" + str(ben.amount),
+                                   font=SMALL_FONT)
+                titles.grid(row=row_index, column=0, sticky="w",
+                            padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                rads[plan.id_assign].append([tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="none"),
+                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="gauss"),
+                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="tri"),
+                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="rect"),
+                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="discrete")])
+                self.ranges[plan.id_assign].append([tk.Entry(self.groups[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT) for i in range(6)])
+                self.labels[plan.id_assign].append([])
+                for col in range(5):
+                    fig_label = ttk.Label(self.groups[-1])
+                    fig_label.grid(row=row_index + 1, column=col)
                     fig = figs[col]
                     canvas = FigureCanvasTkAgg(fig, master=fig_label)
-                    canvas.get_tk_widget().grid(row=row_index, column=col+1)
+                    canvas.get_tk_widget().grid(row=1, column=col+1)
                     canvas.show()
-                    rads[col].grid(row=row_index+1, column=col+1)
-                    rad_label = ttk.Label(group[-1], text=rad_labels[col], font=SMALL_FONT)
-                    rad_label.grid(row=row_index+2, column=col+1)
-                range_label = tk.Label(group[-1], text="Range/Standard Deviation:")
-                range_label.grid(row=row_index+3, column=1, sticky="e")
-                self.range[i].append(tk.Entry(group[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT))
-                self.range[i][j].grid(row=row_index+3, column=2, sticky="w",
-                                      padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                self.range[i][j].insert(tk.END, benefit.range)
-                row_index += 4
+                    rads[plan.id_assign][choice][col].grid(row=row_index + 3, column=col)
+                    rad_label = ttk.Label(self.groups[-1], text=rad_labels[col], font=SMALL_FONT)
+                    rad_label.grid(row=row_index + 2, column=col)
+
+                if self.choices[plan.id_assign][choice].get() == "none":
+                    row_index += 4
+                    for entry in self.ranges[plan.id_assign][choice]:
+                        entry.grid_remove()
+                elif self.choices[plan.id_assign][choice].get() == "gauss":
+                    self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Variance ($)")]
+                    self.labels[plan.id_assign][choice][0].grid(row=row_index + 4, column=0)
+                    for entry in self.ranges[plan.id_assign][choice]:
+                        entry.grid_remove()
+                    self.ranges[plan.id_assign][choice][0].grid(row=row_index + 4, column=1)
+                    row_index += 5
+                elif self.choices[plan.id_assign][choice].get() == "discrete":
+                    self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Lowest Amount ($)"),
+                                                           tk.Label(self.groups[-1], text="Middle Amount ($)"),
+                                                           tk.Label(self.groups[-1], text="Highest Amount ($)"),
+                                                           tk.Label(self.groups[-1], text="Liklihood of Lowest Amount (%)"),
+                                                           tk.Label(self.groups[-1], text="Liklihood of Middle Amount (%)"),
+                                                           tk.Label(self.groups[-1], text="Liklihood of Highest Amount (%)")]
+                    for label in self.labels[plan.id_assign][choice][0:3]:
+                        label.grid(row=row_index+self.labels[plan.id_assign][choice].index(label)+5, column=0)
+                    for label in self.labels[plan.id_assign][choice][3:6]:
+                        label.grid(row=row_index+self.labels[plan.id_assign][choice].index(label)+2, column=2)
+                    for entry in self.ranges[plan.id_assign][choice][0:3]:
+                        entry.grid(row=row_index+self.ranges[plan.id_assign][choice].index(entry)+5, column=1,
+                                   padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                    for entry in self.ranges[plan.id_assign][choice][3:6]:
+                        entry.grid(row=row_index+self.ranges[plan.id_assign][choice].index(entry)+2, column=3,
+                                   padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                    row_index += 8
+                else:
+                    self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Lower Bound ($)"),
+                                                           tk.Label(self.groups[-1], text="Upper Bound ($)")]
+                    self.labels[plan.id_assign][choice][0].grid(row=row_index+4, column=0)
+                    self.labels[plan.id_assign][choice][1].grid(row=row_index+4, column=2)
+                    for entry in self.ranges[plan.id_assign][choice]:
+                        entry.grid_remove()
+                    self.ranges[plan.id_assign][choice][0].grid(row=row_index+4, column=1)
+                    self.ranges[plan.id_assign][choice][1].grid(row=row_index+4, column=3)
+                    row_index+= 5
+                for entry in self.ranges[plan.id_assign][choice]:
+                    entry.insert(tk.END, ben.range[self.ranges[plan.id_assign][choice].index(entry)])
 

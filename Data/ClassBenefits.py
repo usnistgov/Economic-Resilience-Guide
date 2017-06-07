@@ -36,7 +36,7 @@ class Benefits():
         """ Makes a new benefit and adds it to the list of benefit types. """
         if line[0] == 'Uncertainty':
             self.indiv[-1].dist = line[1]
-            self.indiv[-1].range = float(line[2])
+            self.indiv[-1].range = list(line[2:8])
         else:
             opts = {}
             opts['title'] = line[0]
@@ -115,7 +115,7 @@ class Benefits():
                         'ben_type': ben.ben_type,
                         'desc': ben.desc}
             rand = r.random()
-            ben_dict['amount'] = dist_dict[ben.dist](rand, ben.amount-ben.range, ben.amount, ben.amount+ben.range)
+            ben_dict['amount'] = dist_dict[ben.dist](rand, ben.amount, ben.range)
             delta_ben.indiv.append(Benefit(**ben_dict))
 
         return delta_ben
@@ -136,12 +136,16 @@ class Benefit():
         for bit in desc:
             self.desc += bit
 
-        self.range = 0
+        self.range = ['<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>']
         self.dist = "none"
 
     def add_uncertainty(self, new_range, distribution):
         """ Adds uncertainty to a specific benefit."""
-        self.range = float(new_range)
+
+        self.range = new_range
         self.dist = distribution
-
-
