@@ -5,10 +5,9 @@
 """
 
 import math
-import random as r
+import numpy as np
 
-from uniDistInv import uniDistInv
-from triDistInv import triDistInv
+from Data.distributions import uniDistInv, triDistInv, gauss_dist_inv, none_dist, discrete_dist_inv
 
 class Benefits():
     """ Holds a list of all of the benefits and performs the benefit-related calculations."""
@@ -82,10 +81,10 @@ class Benefits():
 
     def monte(self, num_iters, new_seed = 100):
         ben_list = []
-        r.seed(new_seed)
+        ### NOTE: It's mad about this call, claiming it will pull an error. It doesn't
+        np.random.seed(seed=new_seed)
         for i in range(num_iters):
             ben_list.append(self.one_iter())
-
 
         direct_totals = []
         indirect_totals = []
@@ -107,15 +106,14 @@ class Benefits():
         self.indirect_range = [indirect_totals[first_num], indirect_totals[last_num]]
         self.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
 
-    def one_iter(self, new_seed=100):
-        dist_dict = {'tri':triDistInv, 'rect':uniDistInv}
+    def one_iter(self):
+        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
         delta_ben = Benefits(self.dis_rate, self.disc_rate, self.horizon)
         for ben in self.indiv:
             ben_dict = {'title': ben.title,
                         'ben_type': ben.ben_type,
                         'desc': ben.desc}
-            rand = r.random()
-            ben_dict['amount'] = dist_dict[ben.dist](rand, ben.amount, ben.range)
+            ben_dict['amount'] = dist_dict[ben.dist](np.random.uniform(), ben.amount, ben.range)
             delta_ben.indiv.append(Benefit(**ben_dict))
 
         return delta_ben
