@@ -106,10 +106,10 @@ class Benefits():
         self.indirect_range = [indirect_totals[first_num], indirect_totals[last_num]]
         self.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
 
-    def one_iter(self):
+    def one_iter(self, old_ben_list):
         dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
         delta_ben = Benefits(self.dis_rate, self.disc_rate, self.horizon)
-        for ben in self.indiv:
+        for ben in old_ben_list:
             ben_dict = {'title': ben.title,
                         'ben_type': ben.ben_type,
                         'desc': ben.desc}

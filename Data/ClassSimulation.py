@@ -21,6 +21,7 @@ from NewIRR import irr_for_all
 from GUI.Constants import TAB
 
 import math
+import numpy as np
 
 class Simulation():
     """ Holds all of the plans and does all of the larger calculations. """
@@ -845,6 +846,58 @@ class Simulation():
         """ Sums up all of the pieces."""
         for plan in self.plan_list:
             plan.sum_it(self.horizon)
+
+    def monte(self):
+        """ Runs the monte-carlo everything."""
+        num_iters = 1000
+        new_seed = 100
+        ### NOTE: It's mad about this call, claiming it will pull an error. It doesn't
+        np.random.seed(seed=new_seed)
+
+        for plan in self.plan_list:
+            direct_totals = []
+            indirect_totals = []
+            res_rec_totals = []
+
+            ben_totals = []
+            net_totals = []
+
+            similar_list = []
+            for i in range(num_iters):
+                similar_list.append(self.one_iter(plan))
+            for new_plan in similar_list:
+                new_plan.sum_it(self.horizon)
+                direct_totals.append(new_plan.bens.d_sum)
+                indirect_totals.append(new_plan.bens.i_sum)
+                res_rec_totals.append(new_plan.bens.r_sum)
+                ben_totals.append(new_plan.total_bens)
+                net_totals.append(new_plan.net)
+            direct_totals.sort()
+            indirect_totals.sort()
+            res_rec_totals.sort()
+            ben_totals.sort()
+            net_totals.sort()
+
+            confidence = 95
+            first_num = math.floor(num_iters*(1-confidence/100)/2)
+            last_num = num_iters - first_num
+
+            plan.bens.direct_range = [direct_totals[first_num], direct_totals[last_num]]
+            plan.bens.indirect_range = [indirect_totals[first_num], indirect_totals[last_num]]
+            plan.bens.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
+            plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
+            plan.net_range = [net_totals[first_num], net_totals[last_num]]
+
+    def one_iter(self, my_plan):
+        delta_plan = Plan(my_plan.id_assign, my_plan.name, [my_plan.recurr_dist, my_plan.recurr_range],
+                          [my_plan.mag_dist, my_plan.mag_range], self.discount_rate, self.horizon,
+                          self.stat_life)
+        delta_plan.bens = delta_plan.bens.one_iter(my_plan.bens.indiv)
+        delta_plan.exts = my_plan.exts
+        delta_plan.costs = my_plan.costs
+        delta_plan.fat = my_plan.fat
+        delta_plan.nond_bens = my_plan.nond_bens
+        return delta_plan
 
 class Plan():
     """ Has all of the aspects of the plan. """
