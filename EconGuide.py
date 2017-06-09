@@ -15,6 +15,7 @@ from Data.ClassSimulation import Simulation
 from GUI.InfoPage import InfoPage
 from GUI.DirectoryPage import DirectoryPage
 from GUI.CostPage import CostPage
+from GUI.CostsUncertainties import CostsUncertaintiesPage
 from GUI.ExternalitiesPage import ExternalitiesPage
 from GUI.BenefitsPage import BenefitsPage
 from GUI.BenefitsUncertainties import BenefitsUncertaintiesPage
@@ -57,7 +58,9 @@ class Application(tk.Tk):
     def show_frame(self, cont_string):
         """ Brings to the forefront the frame described by cont_string."""
         frame_dict = {'StartPage': StartPage, 'DirectoryPage': DirectoryPage, 'InfoPage': InfoPage,
-                      'CostPage': CostPage, 'ExternalitiesPage': ExternalitiesPage,
+                      'CostPage': CostPage,
+                      'CostsUncertaintiesPage': CostsUncertaintiesPage,
+                      'ExternalitiesPage': ExternalitiesPage,
                       'BenefitsPage': BenefitsPage,
                       'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
                       'FatalitiesPage': FatalitiesPage,
@@ -106,7 +109,8 @@ class StartPage(tk.Frame):
             controller.data_cont = Simulation()
             controller.cont_list = [controller.data_cont]
 
-            for page in (DirectoryPage, InfoPage, CostPage, ExternalitiesPage,
+            for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintisPage,
+                         ExternalitiesPage,
                          BenefitsPage, BenefitsUncertaintiesPage,
                          FatalitiesPage, NonDBensPage):
                 frame = page(controller.container.interior, controller, controller.cont_list)
@@ -121,7 +125,7 @@ class StartPage(tk.Frame):
                 controller.data_cont = Simulation()
                 controller.data_cont.file_read(file_name=filename)
                 controller.cont_list = [controller.data_cont]
-                for page in (DirectoryPage, InfoPage, CostPage,
+                for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
                              ExternalitiesPage, BenefitsPage, BenefitsUncertaintiesPage,
                              FatalitiesPage, NonDBensPage):
                     frame = page(controller.container.interior, controller, controller.cont_list)

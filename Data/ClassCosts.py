@@ -22,6 +22,11 @@ class Costs():
         self.discount_rate = float(discount_rate)
         self.horizon = float(horizon)
 
+        self.direct_range = [0, 0]
+        self.indirect_range = [0, 0]
+        self.omr_one_range = [0, 0]
+        self.omr_r_range = [0, 0]
+
     def new_cost(self, line):
         """ Makes a new cost and adds it to the list of cost types. """
         opts = {}
@@ -89,3 +94,17 @@ class Cost():
             self.desc += bit
         for num in self.times:
             num = float(num)
+
+        self.range = ['<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>']
+        self.dist = "none"
+
+    def add_uncertainty(self, new_range, distribution):
+        """ Adds uncertainty to a specific benefit."""
+
+        self.range = new_range
+        self.dist = distribution
