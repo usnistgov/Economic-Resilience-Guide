@@ -287,11 +287,18 @@ def run_u_main_page(data):
                 ttk.Label(group0,
                           text='{:,.1f}'.format(self.data_cont.plan_list[i].non_d_roi()) + '%',
                           font=SMALL_FONT).grid(row=tot_index + 8, column=(i + 1), sticky="e", **pad_opts)
+            # === Places spaces to correct an unknown error with the window size
+            ttk.Label(group0, text=" ").grid(row=tot_index + 9)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 10)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 11)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 12)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 13)
 
+            button_index = 6
             exp_button = ttk.Button(self, text="Export Summary", command=self.export)
-            exp_button.grid(row=31)
+            exp_button.grid(row=button_index)
             info_button = ttk.Button(self, text="More Information", command=self.info)
-            info_button.grid(row=31, sticky="w")
+            info_button.grid(row=button_index, sticky="w")
 
         def export(self):
             """Prompts the user to select how to export the Analysis Summary"""
