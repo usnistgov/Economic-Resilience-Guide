@@ -80,6 +80,7 @@ class Benefits():
 
 
     def monte(self, num_iters, new_seed = 100):
+        print('Calling Benefits Monte')
         ben_list = []
         ### NOTE: It's mad about this call, claiming it will pull an error. It doesn't
         np.random.seed(seed=new_seed)

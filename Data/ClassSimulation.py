@@ -894,7 +894,7 @@ class Simulation():
                           self.stat_life)
         delta_plan.bens = delta_plan.bens.one_iter(my_plan.bens.indiv)
         delta_plan.exts = my_plan.exts
-        delta_plan.costs = my_plan.costs
+        delta_plan.costs = delta_plan.costs.one_iter(my_plan.costs.indiv)
         delta_plan.fat = my_plan.fat
         delta_plan.nond_bens = my_plan.nond_bens
         return delta_plan
@@ -1057,13 +1057,14 @@ class Plan():
             for time in cost.times:
                 new_file.write(str(time) + ',')
             new_file.write(str(cost.amount) + ',' + str(cost.desc) + '\n')
+            new_file.write(',Costs,Uncertainty,' + cost.dist)
+            new_file.write(',' + str(ben.range))
+            new_file.write('\n')
         for ben in self.bens.indiv:
             new_file.write(',Benefits,' + ben.title + ',' + ben.ben_type + ',')
             new_file.write(str(ben.amount) + ',' + str(ben.desc) + '\n')
             new_file.write(',Benefits,Uncertainty,' + ben.dist)
             new_file.write(',' + str(ben.range))
-            #for entry in ben.range:
-            #    new_file.write(',' + str(entry))
             new_file.write('\n')
         for ext in self.exts.indiv:
             new_file.write(',Externalities,' + ext.title + ',' + ext.ext_type)

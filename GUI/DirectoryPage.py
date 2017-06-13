@@ -45,6 +45,10 @@ class DirectoryPage(tk.Frame):
                                  command=lambda: controller.show_frame('CostPage'))
         cost_button.grid(row=1, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
+        ben_button = ttk.Button(group, text="Costs Uncertainties",
+                                command=lambda: controller.show_frame('CostsUncertaintiesPage'))
+        ben_button.grid(row=1, column=1, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
         ext_button = ttk.Button(group, text="Externalities",
                                 command=lambda: controller.show_frame('ExternalitiesPage'))
         ext_button.grid(row=2, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)

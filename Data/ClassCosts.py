@@ -5,6 +5,9 @@
 """
 
 import math
+import numpy as np
+
+from Data.distributions import uniDistInv, triDistInv, gauss_dist_inv, none_dist, discrete_dist_inv
 
 class Costs():
     """ Holds a list of all of the costs and performs the cost-related calculations."""
@@ -29,15 +32,19 @@ class Costs():
 
     def new_cost(self, line):
         """ Makes a new cost and adds it to the list of cost types. """
-        opts = {}
-        opts['title'] = line[0]
-        opts['cost_type'] = line[1]
-        opts['omr_type'] = line[2]
-        opts['omr_times'] = [line[3], line[4], line[5]]
-        opts['amount'] = float(line[6])
-        opts['desc'] = line[7:]
-        this_cost = Cost(**opts)
-        self.indiv.append(this_cost)
+        if line[0] == 'Uncertainty':
+            self.indiv[-1].dist = line[1]
+            self.indiv[-1].range = list(line[2:8])
+        else:
+            opts = {}
+            opts['title'] = line[0]
+            opts['cost_type'] = line[1]
+            opts['omr_type'] = line[2]
+            opts['omr_times'] = [line[3], line[4], line[5]]
+            opts['amount'] = float(line[6])
+            opts['desc'] = line[7:]
+            this_cost = Cost(**opts)
+            self.indiv.append(this_cost)
 
     def make_sum(self):
         """ Calculates the additional Direct Costs, Indirect Costs, and
@@ -76,6 +83,20 @@ class Costs():
             year += rate
         return total
 
+    def one_iter(self, old_cost_list):
+        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
+        delta_cost = Costs(self.discount_rate, self.horizon)
+        for cost in old_cost_list:
+            cost_dict = {'title': cost.title,
+                        'cost_type': cost.cost_type,
+                        'omr_type': cost.omr_type,
+                        'omr_times': cost.times,
+                        'desc': cost.desc}
+            cost_dict['amount'] = dist_dict[cost.dist](np.random.uniform(), cost.amount, cost.range)
+            delta_cost.indiv.append(Cost(**cost_dict))
+
+        return delta_cost
+
 class Cost():
     """ Holds all of the information about costs. """
     types = ["direct", "indirect", "omr"]
@@ -104,7 +125,7 @@ class Cost():
         self.dist = "none"
 
     def add_uncertainty(self, new_range, distribution):
-        """ Adds uncertainty to a specific benefit."""
+        """ Adds uncertainty to a specific costefit."""
 
         self.range = new_range
         self.dist = distribution
