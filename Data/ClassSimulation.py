@@ -855,11 +855,16 @@ class Simulation():
         np.random.seed(seed=new_seed)
 
         for plan in self.plan_list:
-            direct_totals = []
-            indirect_totals = []
+            ben_direct_totals = []
+            ben_indirect_totals = []
             res_rec_totals = []
+            cost_direct_totals = []
+            cost_indirect_totals = []
+            cost_omr_1_totals = []
+            cost_omr_r_totals = []
 
             ben_totals = []
+            cost_totals = []
             net_totals = []
 
             similar_list = []
@@ -867,25 +872,40 @@ class Simulation():
                 similar_list.append(self.one_iter(plan))
             for new_plan in similar_list:
                 new_plan.sum_it(self.horizon)
-                direct_totals.append(new_plan.bens.d_sum)
-                indirect_totals.append(new_plan.bens.i_sum)
+                ben_direct_totals.append(new_plan.bens.d_sum)
+                ben_indirect_totals.append(new_plan.bens.i_sum)
+                cost_direct_totals.append(new_plan.costs.d_sum)
+                cost_indirect_totals.append(new_plan.costs.i_sum)
+                cost_omr_1_totals.append(new_plan.costs.omr_1_sum)
+                cost_omr_r_totals.append(new_plan.costs.omr_r_sum)
                 res_rec_totals.append(new_plan.bens.r_sum)
                 ben_totals.append(new_plan.total_bens)
+                cost_totals.append(new_plan.total_costs)
                 net_totals.append(new_plan.net)
-            direct_totals.sort()
-            indirect_totals.sort()
+            ben_direct_totals.sort()
+            ben_indirect_totals.sort()
+            cost_direct_totals.sort()
+            cost_indirect_totals.sort()
+            cost_omr_1_totals.sort()
+            cost_omr_r_totals.sort()
             res_rec_totals.sort()
             ben_totals.sort()
+            cost_totals.sort()
             net_totals.sort()
 
             confidence = 95
             first_num = math.floor(num_iters*(1-confidence/100)/2)
             last_num = num_iters - first_num
 
-            plan.bens.direct_range = [direct_totals[first_num], direct_totals[last_num]]
-            plan.bens.indirect_range = [indirect_totals[first_num], indirect_totals[last_num]]
+            plan.bens.direct_range = [ben_direct_totals[first_num], ben_direct_totals[last_num]]
+            plan.bens.indirect_range = [ben_indirect_totals[first_num], ben_indirect_totals[last_num]]
             plan.bens.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
+            plan.costs.direct_range = [cost_direct_totals[first_num], cost_direct_totals[last_num]]
+            plan.costs.indirect_range = [cost_indirect_totals[first_num], cost_indirect_totals[last_num]]
+            plan.costs.omr_one_range = [cost_omr_1_totals[first_num], cost_omr_1_totals[last_num]]
+            plan.costs.omr_r_range = [cost_omr_r_totals[first_num], cost_omr_r_totals[last_num]]
             plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
+            plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
             plan.net_range = [net_totals[first_num], net_totals[last_num]]
 
     def one_iter(self, my_plan):
