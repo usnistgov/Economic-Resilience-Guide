@@ -116,9 +116,6 @@ def run_main_page(data):
                                  font=SMALL_FONT)
             fat_lbl2.grid(row=10, column=0, sticky="w", **pad_opts)
 
-            # ===== Sums up the numbers
-            self.data_cont.summer()
-
             non_d_ben_lbl = ttk.Label(group0, text="Non-Disaster Related Benefits",
                                       font=NORM_FONT)
             non_d_ben_lbl.grid(row=11, column=0, sticky="w", **pad_opts)

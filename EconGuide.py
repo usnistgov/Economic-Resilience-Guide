@@ -21,6 +21,7 @@ from GUI.BenefitsPage import BenefitsPage
 from GUI.BenefitsUncertainties import BenefitsUncertaintiesPage
 from GUI.FatalitiesPage import FatalitiesPage
 from GUI.NonDBensPage import NonDBensPage
+from GUI.AnalysisInfo import AnalysisInfo
 
 from GUI.Constants import LARGE_FONT
 from GUI.Constants import BASE_PADDING
@@ -64,10 +65,11 @@ class Application(tk.Tk):
                       'BenefitsPage': BenefitsPage,
                       'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
                       'FatalitiesPage': FatalitiesPage,
-                      'NonDBensPage': NonDBensPage}
+                      'NonDBensPage': NonDBensPage,
+                      'AnalysisInfo': AnalysisInfo}
         cont = frame_dict[cont_string]
         frame = self.frames[cont]
-        frame.on_trace_change("","","")
+        frame.on_trace_change("", "","")
         frame.tkraise()
 
     def selectall(self, event):
@@ -109,10 +111,10 @@ class StartPage(tk.Frame):
             controller.data_cont = Simulation()
             controller.cont_list = [controller.data_cont]
 
-            for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintisPage,
+            for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
                          ExternalitiesPage,
                          BenefitsPage, BenefitsUncertaintiesPage,
-                         FatalitiesPage, NonDBensPage):
+                         FatalitiesPage, NonDBensPage, AnalysisInfo):
                 frame = page(controller.container.interior, controller, controller.cont_list)
                 controller.frames[page] = frame
                 frame.grid(row=0, column=0, sticky="nsew")
@@ -127,7 +129,7 @@ class StartPage(tk.Frame):
                 controller.cont_list = [controller.data_cont]
                 for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
                              ExternalitiesPage, BenefitsPage, BenefitsUncertaintiesPage,
-                             FatalitiesPage, NonDBensPage):
+                             FatalitiesPage, NonDBensPage, AnalysisInfo):
                     frame = page(controller.container.interior, controller, controller.cont_list)
                     controller.frames[page] = frame
                     frame.grid(row=0, column=0, sticky="nsew")

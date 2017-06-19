@@ -177,9 +177,10 @@ class NonDBensPage(tk.Frame):
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.
             If save unsuccessful asks user for verification to move on."""
+            go_to_place = 'AnalysisInfo'
             moveon = self.add_ben(moveon=True)
             if moveon:
-                run_main_page(self.data_cont)
+                controller.show_frame(go_to_place)
 
         def save_and_back():
             """ Tries to save the input and sends the user to the previous screen.
@@ -199,9 +200,8 @@ class NonDBensPage(tk.Frame):
         did_info.grid(row=2, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         back_button = ttk.Button(self, text="<<Back", command=save_and_back)
         back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        finished_button = ttk.Button(self, text="Finish Calculations", command=save_and_next)
+        finished_button = ttk.Button(self, text="View Analysis", command=save_and_next)
         finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        # ===== GOES TO MAIN PAGE
 
     def hover(self, _event):
         """Updates prevList when mouse is hovered over the widget"""

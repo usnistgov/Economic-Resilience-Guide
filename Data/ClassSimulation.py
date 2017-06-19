@@ -162,8 +162,6 @@ class Simulation():
 
     def csv_export_uncert(self):
         num_runs = 1000
-        seed = 100
-        certainty = 95
 
         my_formats = [('Comma Separated Value', '*.csv'),]
         file_name = filedialog.asksaveasfilename(filetypes=my_formats, title="Save the file as...")
@@ -172,9 +170,9 @@ class Simulation():
         new_file = open(file_name, 'w')
         new_file.write('Outputs of Economic Evaluation: [' + self.title + ']\n')
         new_file.write('NOTE: All bounds on uncertainties are given from ' + str(num_runs)
-                       + ' Monte Carlo simulations with a ' + str(certainty)
+                       + ' Monte Carlo simulations with a ' + str(self.confidence)
                        + '% confidence interval.\n')
-        new_file.write('The random number seed for these runs was ' + str(seed) + '.\n')
+        new_file.write('The random number seed for these runs was ' + str(self.seed) + '.\n')
         new_file.write(',Base Case,Lower Bound,Upper Bound')
         for i in range(1, self.num_plans):
             new_file.write(',Alternative ' + str(i) + ',Lower Bound,Upper Bound')
@@ -867,10 +865,11 @@ class Simulation():
         for plan in self.plan_list:
             plan.sum_it(self.horizon)
 
-    def monte(self):
+    def monte(self, new_seed, confidence):
         """ Runs the monte-carlo everything."""
         num_iters = 1000
-        new_seed = 100
+        self.seed = new_seed
+        self.confidence = confidence
         ### NOTE: It's mad about this call, claiming it will pull an error. It doesn't
         np.random.seed(seed=new_seed)
 
@@ -913,7 +912,6 @@ class Simulation():
             cost_totals.sort()
             net_totals.sort()
 
-            confidence = 95
             first_num = math.floor(num_iters*(1-confidence/100)/2)
             last_num = num_iters - first_num
 

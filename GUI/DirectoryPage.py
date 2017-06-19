@@ -70,8 +70,8 @@ class DirectoryPage(tk.Frame):
         non_d_ben_button.grid(row=5, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
-        ana_button = ttk.Button(self, text="Show Analysis",
-                                command=lambda: run_main_page(self.data_cont))
+        ana_button = ttk.Button(self, text="Analysis",
+                                command=lambda: controller.show_frame('AnalysisInfo'))
         ana_button.grid(row=3, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         exit_button = ttk.Button(self, text="Exit", command=sys.exit)

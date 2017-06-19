@@ -79,7 +79,6 @@ def run_u_main_page(data):
             tk.Tk.config(self, menu=menubar)"""
 
             # ===== Labels the plans
-            self.data_cont.monte()
             my_tab = " " * 5
             pad_opts = {'padx': FIELDX_PADDING, 'pady':FIELDY_PADDING}
 

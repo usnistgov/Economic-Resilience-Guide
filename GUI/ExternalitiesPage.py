@@ -112,9 +112,7 @@ class ExternalitiesPage(tk.Frame):
         # ===== Sets third party affected
         def new_party_ext():
             """ Adds a new party to the list."""
-            print('I''m being called.')
             self.data_cont.plan_list[0].exts.parties.append(self.party_ent.get())
-            print(self.data_cont.plan_list[0].exts.parties)
 
             self.third_parties.configure(values=self.data_cont.plan_list[0].exts.parties)
 
