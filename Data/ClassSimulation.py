@@ -865,11 +865,12 @@ class Simulation():
         for plan in self.plan_list:
             plan.sum_it(self.horizon)
 
-    def monte(self, new_seed, confidence):
+    def monte(self, new_seed, confidence, tol, low_iters = 100, high_iters = 102400):
         """ Runs the monte-carlo everything."""
-        num_iters = 1000
         self.seed = new_seed
         self.confidence = confidence
+        tol_percent = tol/100
+        num_iters = low_iters
         ### NOTE: It's mad about this call, claiming it will pull an error. It doesn't
         np.random.seed(seed=new_seed)
 
@@ -887,44 +888,76 @@ class Simulation():
             net_totals = []
 
             similar_list = []
-            for i in range(num_iters):
-                similar_list.append(self.one_iter(plan))
-            for new_plan in similar_list:
-                new_plan.sum_it(self.horizon)
-                ben_direct_totals.append(new_plan.bens.d_sum)
-                ben_indirect_totals.append(new_plan.bens.i_sum)
-                cost_direct_totals.append(new_plan.costs.d_sum)
-                cost_indirect_totals.append(new_plan.costs.i_sum)
-                cost_omr_1_totals.append(new_plan.costs.omr_1_sum)
-                cost_omr_r_totals.append(new_plan.costs.omr_r_sum)
-                res_rec_totals.append(new_plan.bens.r_sum)
-                ben_totals.append(new_plan.total_bens)
-                cost_totals.append(new_plan.total_costs)
-                net_totals.append(new_plan.net)
-            ben_direct_totals.sort()
-            ben_indirect_totals.sort()
-            cost_direct_totals.sort()
-            cost_indirect_totals.sort()
-            cost_omr_1_totals.sort()
-            cost_omr_r_totals.sort()
-            res_rec_totals.sort()
-            ben_totals.sort()
-            cost_totals.sort()
-            net_totals.sort()
+            cost_ben_net = [False, False, False]
+            old_iters = 0
+            num_iters = low_iters
+            while (not all(cost_ben_net)) and num_iters < high_iters:
 
-            first_num = math.floor(num_iters*(1-confidence/100)/2)
-            last_num = num_iters - first_num
+                old_ben = list(plan.ben_range)
+                old_cost = list(plan.cost_range)
+                old_net = list(plan.net_range)
 
-            plan.bens.direct_range = [ben_direct_totals[first_num], ben_direct_totals[last_num]]
-            plan.bens.indirect_range = [ben_indirect_totals[first_num], ben_indirect_totals[last_num]]
-            plan.bens.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
-            plan.costs.direct_range = [cost_direct_totals[first_num], cost_direct_totals[last_num]]
-            plan.costs.indirect_range = [cost_indirect_totals[first_num], cost_indirect_totals[last_num]]
-            plan.costs.omr_one_range = [cost_omr_1_totals[first_num], cost_omr_1_totals[last_num]]
-            plan.costs.omr_r_range = [cost_omr_r_totals[first_num], cost_omr_r_totals[last_num]]
-            plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
-            plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
-            plan.net_range = [net_totals[first_num], net_totals[last_num]]
+                for i in range(old_iters, num_iters):
+                    similar_list.append(self.one_iter(plan))
+                for new_plan in similar_list:
+                    new_plan.sum_it(self.horizon)
+                    ben_direct_totals.append(new_plan.bens.d_sum)
+                    ben_indirect_totals.append(new_plan.bens.i_sum)
+                    cost_direct_totals.append(new_plan.costs.d_sum)
+                    cost_indirect_totals.append(new_plan.costs.i_sum)
+                    cost_omr_1_totals.append(new_plan.costs.omr_1_sum)
+                    cost_omr_r_totals.append(new_plan.costs.omr_r_sum)
+                    res_rec_totals.append(new_plan.bens.r_sum)
+                    ben_totals.append(new_plan.total_bens)
+                    cost_totals.append(new_plan.total_costs)
+                    net_totals.append(new_plan.net)
+                ben_direct_totals.sort()
+                ben_indirect_totals.sort()
+                cost_direct_totals.sort()
+                cost_indirect_totals.sort()
+                cost_omr_1_totals.sort()
+                cost_omr_r_totals.sort()
+                res_rec_totals.sort()
+                ben_totals.sort()
+                cost_totals.sort()
+                net_totals.sort()
+
+                first_num = math.floor(num_iters*(1-confidence/100)/2)
+                last_num = num_iters - first_num
+
+                plan.bens.direct_range = [ben_direct_totals[first_num], ben_direct_totals[last_num]]
+                plan.bens.indirect_range = [ben_indirect_totals[first_num], ben_indirect_totals[last_num]]
+                plan.bens.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
+                plan.costs.direct_range = [cost_direct_totals[first_num], cost_direct_totals[last_num]]
+                plan.costs.indirect_range = [cost_indirect_totals[first_num], cost_indirect_totals[last_num]]
+                plan.costs.omr_one_range = [cost_omr_1_totals[first_num], cost_omr_1_totals[last_num]]
+                plan.costs.omr_r_range = [cost_omr_r_totals[first_num], cost_omr_r_totals[last_num]]
+                plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
+                plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
+                plan.net_range = [net_totals[first_num], net_totals[last_num]]                
+
+                # Test costs
+                tol = plan.total_costs * tol_percent + 0.001
+                if max(abs(plan.cost_range[0] - old_cost[0]), abs(plan.cost_range[1] - old_cost[1])) < tol:
+                    cost_ben_net[0] = True
+                # Test bens
+                tol = plan.total_bens * tol_percent + 0.001
+                if max(abs(plan.ben_range[0] - old_ben[0]), abs(plan.ben_range[1] - old_ben[1])) < tol:
+                    cost_ben_net[1] = True
+                # Test net
+                tol = plan.net * tol_percent + 0.001
+                if max(abs(plan.net_range[0] - old_net[0]), abs(plan.net_range[1] - old_net[1])) < tol:
+                    cost_ben_net[2] = True
+
+                old_iters = num_iters
+                num_iters = 2 * num_iters
+
+                #print('Iterations:', num_iters/2)
+                #print('Costs:', plan.cost_range)
+                #print('Benefits:', plan.ben_range)
+                #print('Net:', plan.net_range)
+                #print(cost_ben_net)
+                #input()
 
     def one_iter(self, my_plan):
         delta_plan = Plan(my_plan.id_assign, my_plan.name, [my_plan.recurr_dist, my_plan.recurr_range],
@@ -988,6 +1021,10 @@ class Plan():
 
         self.annual_cash_flows = [0 for x in range(int(horizon) + 1)]
         self.annual_non_disaster_cash_flows = [0 for x in range(int(horizon) + 1)]
+        self.ben_range = [0, 0]
+        self.cost_range = [0, 0]
+        self.net_range = [0, 0]                
+
 
     def update(self, plan_id, plan_name, disaster_recurrence, disaster_magnitude,
                  discount_rate, horizon, stat_life):

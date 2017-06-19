@@ -88,6 +88,21 @@ class AnalysisInfo(tk.Frame):
         ttk.Label(uncert_group, text="%",
                   font=SMALL_FONT).grid(row=1, column=2, sticky="w",
                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(uncert_group, text="Monte Carlo Bounds Tolerance",
+                  font=SMALL_FONT).grid(row=2, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.tol_ent = tk.Entry(uncert_group, width=ENTRY_WIDTH, font=SMALL_FONT)
+        self.tol_ent.insert(tk.END, '0.1')
+        self.tol_ent.grid(row=2, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(uncert_group, text="% of point estimate",
+                  font=SMALL_FONT).grid(row=2, column=2, sticky="w",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(uncert_group, text="Maximum number of runs",
+                  font=SMALL_FONT).grid(row=3, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.max_ent = tk.Entry(uncert_group, width=ENTRY_WIDTH, font=SMALL_FONT)
+        self.max_ent.insert(tk.END, '102400')
+        self.max_ent.grid(row=3, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         # Changes presence of uncertainty choices based on whether or not uncertainty is selected
         # For now deemed unnecessary since the page is fairly clean with choices
@@ -116,7 +131,18 @@ class AnalysisInfo(tk.Frame):
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
                 messagebox.showerror("Error", "Confidence must be a positive number less than or equal to 100%.")
-            self.data_cont.monte(seed, conf)
+            try:
+                tol = float(self.tol_ent.get())
+                assert 0 < tol <= 100
+            except ValueError:
+                messagebox.showerror("Error", "Tolerance must be a number.")
+            except AssertionError:
+                messagebox.showerror("Error", "Tolerance must be a positive number less than or equal to 100%.")
+            try:
+                break_point = int(self.max_ent.get())
+            except ValueError:
+                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")            
+            self.data_cont.monte(seed, conf, tol, high_iters=break_point)
             run_u_main_page(self.data_cont)
         else:
             messagebox.showerror("Error", "You must select whether to use uncertainty inputs in your analysis.")
@@ -133,9 +159,23 @@ class AnalysisInfo(tk.Frame):
                 messagebox.showerror("Error", "Input seed must be an integer value.")
             try:
                 conf = float(self.conf_ent.get())
+                assert 0 < conf <= 100
             except ValueError:
                 messagebox.showerror("Error", "Confidence must be a number.")
-            self.data_cont.monte(seed, conf)
+            except AssertionError:
+                messagebox.showerror("Error", "Confidence must be a positive number less than or equal to 100%.")
+            try:
+                tol = float(self.tol_ent.get())
+                assert 0 < tol <= 100
+            except ValueError:
+                messagebox.showerror("Error", "Tolerance must be a number.")
+            except AssertionError:
+                messagebox.showerror("Error", "Tolerance must be a positive number less than or equal to 100%.")
+            try:
+                break_point = int(self.max_ent.get())
+            except ValueError:
+                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")
+            self.data_cont.monte(seed, conf, tol, max_iters=break_point)
             self.data_cont.word_export_uncert()
         else:
             messagebox.showerror("Error", "You must select whether to use uncertainty inputs in your analysis.")
@@ -152,9 +192,23 @@ class AnalysisInfo(tk.Frame):
                 messagebox.showerror("Error", "Input seed must be an integer value.")
             try:
                 conf = float(self.conf_ent.get())
+                assert 0 < conf <= 100
             except ValueError:
                 messagebox.showerror("Error", "Confidence must be a number.")
-            self.data_cont.monte(seed, conf)
+            except AssertionError:
+                messagebox.showerror("Error", "Confidence must be a positive number less than or equal to 100%.")
+            try:
+                tol = float(self.tol_ent.get())
+                assert 0 < tol <= 100
+            except ValueError:
+                messagebox.showerror("Error", "Tolerance must be a number.")
+            except AssertionError:
+                messagebox.showerror("Error", "Tolerance must be a positive number less than or equal to 100%.")
+            try:
+                break_point = int(self.max_ent.get())
+            except ValueError:
+                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")            
+            self.data_cont.monte(seed, conf, tol, max_iters=break_point)
             self.data_cont.csv_export_uncert()
         else:
             messagebox.showerror("Error", "You must select whether to use uncertainty inputs in your analysis.")
@@ -172,9 +226,23 @@ class AnalysisInfo(tk.Frame):
                 messagebox.showerror("Error", "Input seed must be an integer value.")
             try:
                 conf = float(self.conf_ent.get())
+                assert 0 < conf <= 100
             except ValueError:
                 messagebox.showerror("Error", "Confidence must be a number.")
-            self.data_cont.monte(seed, conf)
+            except AssertionError:
+                messagebox.showerror("Error", "Confidence must be a positive number less than or equal to 100%.")
+            try:
+                tol = float(self.tol_ent.get())
+                assert 0 < tol <= 100
+            except ValueError:
+                messagebox.showerror("Error", "Tolerance must be a number.")
+            except AssertionError:
+                messagebox.showerror("Error", "Tolerance must be a positive number less than or equal to 100%.")
+            try:
+                break_point = int(self.max_ent.get())
+            except ValueError:
+                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")            
+            self.data_cont.monte(seed, conf, tol, max_iters=break_point)
             self.data_cont.word_export_uncert()
             self.data_cont.csv_export_uncert()
         else:
