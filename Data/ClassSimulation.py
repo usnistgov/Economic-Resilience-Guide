@@ -121,13 +121,13 @@ class Simulation():
             new_file.write(',$' + str(plan.costs.omr_1_sum))
         new_file.write('\nExternalities')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.one_sum))
+            new_file.write(',$' + str(plan.exts.one_sum_n))
         new_file.write('\nRecurring Costs\nOMR')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.omr_r_sum))
         new_file.write('\nExternalities')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.r_sum))
+            new_file.write(',$' + str(plan.exts.r_sum_n))
         new_file.write('\nTotal: Present Expected Value\nBenefits')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.total_bens))
@@ -204,13 +204,13 @@ class Simulation():
             new_file.write(',$' + str(plan.costs.omr_1_sum)+',,')
         new_file.write('\nExternalities')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.one_sum)+',,')
+            new_file.write(',$' + str(plan.exts.one_sum_n)+',,')
         new_file.write('\nRecurring Costs\nOMR')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.omr_r_sum)+',,')
         new_file.write('\nExternalities')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.r_sum)+',,')
+            new_file.write(',$' + str(plan.exts.r_sum_n)+',,')
         new_file.write('\nTotal: Present Expected Value\nBenefits')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.total_bens)+',,')
@@ -488,7 +488,7 @@ class Simulation():
             ext_table.cell(0, 5).text = 'Effective Present Value ($)'
             ext_table.cell(1, 0).merge(ext_table.cell(1,2))
             ext_table.cell(1, 0).text = 'One Time Externalities'
-            ext_table.cell(1, 5).text = '{:,.0f}'.format(plan.exts.one_sum)
+            ext_table.cell(1, 5).text = '{:,.0f}'.format(plan.exts.one_sum_n)
             ext_table.cell(1, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ext in plan.exts.indiv:
                 if ext.ext_type == "one-time":
@@ -505,7 +505,7 @@ class Simulation():
                     ext_index += 1
             ext_table.cell(ext_index, 0).merge(ext_table.cell(ext_index, 2))
             ext_table.cell(ext_index, 0).text = 'Recurring Externalities'
-            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.r_sum)
+            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.r_sum_n)
             ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ext_index += 1
             for ext in plan.exts.indiv:
@@ -522,7 +522,7 @@ class Simulation():
                     ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ext_index += 1
             ext_table.cell(ext_index, 0).text = 'Total'
-            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.total)
+            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.total_n)
             ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
 
@@ -787,7 +787,7 @@ class Simulation():
             ext_table.cell(0, 5).text = 'Effective Present Value ($)'
             ext_table.cell(1, 0).merge(ext_table.cell(1,2))
             ext_table.cell(1, 0).text = 'One Time Externalities'
-            ext_table.cell(1, 5).text = '{:,.0f}'.format(plan.exts.one_sum)
+            ext_table.cell(1, 5).text = '{:,.0f}'.format(plan.exts.one_sum_n)
             ext_table.cell(1, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ext in plan.exts.indiv:
                 if ext.ext_type == "one-time":
@@ -804,7 +804,7 @@ class Simulation():
                     ext_index += 1
             ext_table.cell(ext_index, 0).merge(ext_table.cell(ext_index, 2))
             ext_table.cell(ext_index, 0).text = 'Recurring Externalities'
-            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.r_sum)
+            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.r_sum_n)
             ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ext_index += 1
             for ext in plan.exts.indiv:
@@ -821,7 +821,7 @@ class Simulation():
                     ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ext_index += 1
             ext_table.cell(ext_index, 0).text = 'Total'
-            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.total)
+            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.total_n)
             ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
 
@@ -1078,19 +1078,27 @@ class Plan():
                 new_file.write(str(time) + ',')
             new_file.write(str(cost.amount) + ',' + str(cost.desc) + '\n')
             new_file.write(',Costs,Uncertainty,' + cost.dist)
-            new_file.write(',' + str(ben.range))
+            for value in cost.range:
+                new_file.write(',' + str(value))
             new_file.write('\n')
         for ben in self.bens.indiv:
             new_file.write(',Benefits,' + ben.title + ',' + ben.ben_type + ',')
             new_file.write(str(ben.amount) + ',' + str(ben.desc) + '\n')
             new_file.write(',Benefits,Uncertainty,' + ben.dist)
-            new_file.write(',' + str(ben.range))
+            for value in ben.range:
+                new_file.write(',' + str(value))
             new_file.write('\n')
         for ext in self.exts.indiv:
             new_file.write(',Externalities,' + ext.title + ',' + ext.ext_type)
             for entry in ext.times:
                 new_file.write(',' + str(entry))
             new_file.write(',' + str(ext.amount) + ',' + str(ext.desc) + '\n')
+            new_file.write(',Externalities,')
+            if ext.pm == '+':
+                new_file.write('positive,')
+            else:
+                new_file.write('negative,')
+            new_file.write(ext.third_party + '\n')
         for nond_ben in self.nond_bens.indiv:
             new_file.write(',Non-Disaster Benefits,' + nond_ben.title + ',' + nond_ben.ben_type + ',')
             for item in nond_ben.times:

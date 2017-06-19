@@ -8,38 +8,59 @@ import math
 class Externalities():
     """ Holds a list of all of the externalities
         and performs the externality-related calculations."""
+    parties = ['developer', 'title holder(s)', 'lender(s)', 'tenants', 'users', 'community']
     def __init__(self, discount_rate, horizon):
         self.indiv = []
-        self.one_sum = 0
-        self.r_sum = 0
-        self.total = self.one_sum + self.r_sum
+        self.one_sum_p = 0
+        self.one_sum_n = 0
+        self.r_sum_p = 0
+        self.r_sum_n = 0
+        self.total_p = self.one_sum_p + self.r_sum_p
+        self.total_n = self.one_sum_n + self.r_sum_n
 
         self.discount_rate = float(discount_rate)
         self.horizon = float(horizon)
 
     def new_ext(self, line):
         """ Makes a new externality and adds it to the list of externality types. """
-        opts = {}
-        opts['title'] = line[0]
-        opts['ext_type'] = line[1]
-        opts['times'] = [line[2], line[3], line[4]]
-        opts['amount'] = line[5]
-        opts['desc'] = line[6]
-        this_ext = Externality(**opts)
-        self.indiv.append(this_ext)
+        if line[0] == "positive":
+            self.indiv[-1].pm = '+'
+            self.indiv[-1].set_party(line[1])
+        elif line[0] == "negative":
+            self.indiv[-1].pm = '-'
+            self.indiv[-1].set_party(line[1])
+        else:
+            opts = {}
+            opts['title'] = line[0]
+            opts['ext_type'] = line[1]
+            opts['times'] = [line[2], line[3], line[4]]
+            opts['amount'] = line[5]
+            opts['desc'] = line[6]
+            opts['parties'] = self.parties
+            this_ext = Externality(**opts)
+            self.indiv.append(this_ext)
 
     def make_sum(self):
         """ Calculates the cost sums from externalities."""
-        self.one_sum = 0
-        self.r_sum = 0
+        self.one_sum_p = 0
+        self.r_sum_p = 0
+        self.one_sum_n = 0
+        self.r_sum_n = 0
 
         for ext in self.indiv:
-            if ext.ext_type == "one-time":
-                self.one_sum += self.calc_one_time(ext.amount, ext.times[0])
-            elif ext.ext_type == "recurring":
-                self.r_sum += self.calc_recur(ext.amount, ext.times[0], ext.times[1])
-        
-        self.total = self.one_sum + self.r_sum
+            if ext.pm == "+":
+                if ext.ext_type == "one-time":
+                    self.one_sum_p += self.calc_one_time(ext.amount, ext.times[0])
+                elif ext.ext_type == "recurring":
+                    self.r_sum_p += self.calc_recur(ext.amount, ext.times[0], ext.times[1])
+            elif ext.pm == "-":
+                if ext.ext_type == "one-time":
+                    self.one_sum_n += self.calc_one_time(ext.amount, ext.times[0])
+                elif ext.ext_type == "recurring":
+                    self.r_sum_n += self.calc_recur(ext.amount, ext.times[0], ext.times[1])
+
+        self.total_p = self.one_sum_p + self.r_sum_p
+        self.total_n = self.one_sum_n + self.r_sum_n
 
     def calc_one_time(self, value, time):
         """Equation used for One-time OMR costs"""
@@ -60,7 +81,7 @@ class Externalities():
         return total
 
 
-    def save(self, title, desc, amount, new_type, times, err_messages, blank=False):
+    def save(self, title, desc, amount, new_type, times, err_messages, pm, blank=False):
         """ Saves the fields if possible and returns applicable error messages if not."""
         field_dict = {}
         if blank:
@@ -128,9 +149,19 @@ class Externalities():
             if (float(times[1]) <= 0) & (new_type == "recurring"):
                 err_messages += "Cannot recur every " + str(times[1]) +" years. "
                 err_messages += "Please enter a positive amount.\n\n"
+                blank = False
+                valid = False
         except ValueError:
             pass
         field_dict['times'] = times
+        # == POSITIVE/NEGATIVE
+        # Must be defined as a positive or negative externality
+        if (pm == '+') | (pm == '-'):
+            field_dict['pm'] = pm
+            blank = False
+        else:
+            err_messages += "Must choose if this is a positive or negative externalitiy. \n\n"
+            valid = False
         # == DESCRIPTION
         # No comma in description
         #if ',' in desc:
@@ -149,13 +180,27 @@ class Externalities():
 
 class Externality():
     """ Holds all of the information about externalities. """
-    def __init__(self, title="none", amount=0, ext_type='none', times=[0, 0, 0], desc="N/A"):
+    def __init__(self, title="none", amount=0, ext_type='none', times=[0, 0, 0], pm='none',
+                 new_party='none', parties=['none'], desc="N/A"):
         self.title = title
         self.amount = float(amount)
         self.ext_type = ext_type
         self.times = []
         for item in times:
             self.times.append(float(item))
+        self.pm = pm
         self.desc = ""
         for bit in desc:
             self.desc += bit
+        self.parties = parties
+        self.third_party = self.set_party(new_party)
+
+    def set_party(self, new_party):
+        if (new_party == 'none') | (new_party == ''):
+            self.third_party = 'none'
+        elif new_party in self.parties:
+            self.third_party = new_party
+        else:
+            self.parties.append(new_party)
+            self.third_party = new_party
+        return self.third_party

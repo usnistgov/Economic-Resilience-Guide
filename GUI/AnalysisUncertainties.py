@@ -338,19 +338,19 @@ def run_u_main_page(data):
 
                 # One-Time Extenalities Positive
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum),
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum_p),
                           font=SMALL_FONT).grid(row=e_index + 2, column=(i+1), sticky="e", **pad_opts)
                 # Recurring Externalities Positive
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum),
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum_p),
                           font=SMALL_FONT).grid(row=e_index + 3, column=(i+1), sticky="e", **pad_opts)
                 # One-Time Extenalities Negative
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum),
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum_n),
                           font=SMALL_FONT).grid(row=e_index + 5, column=(i+1), sticky="e", **pad_opts)
                 # Recurring Externalities Negative
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum),
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum_n),
                           font=SMALL_FONT).grid(row=e_index + 6, column=(i+1), sticky="e", **pad_opts)
 
                 # Non D Bens

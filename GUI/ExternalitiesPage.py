@@ -109,9 +109,34 @@ class ExternalitiesPage(tk.Frame):
         controller.frames[InfoPage].traces[5].trace("w", self.on_trace_change)
         controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
 
+        # ===== Sets third party affected
+        def new_party_ext():
+            """ Adds a new party to the list."""
+            print('I''m being called.')
+            self.data_cont.plan_list[0].exts.parties.append(self.party_ent.get())
+            print(self.data_cont.plan_list[0].exts.parties)
+
+            self.third_parties.configure(values=self.data_cont.plan_list[0].exts.parties)
+
+
+        group3 = ttk.LabelFrame(self, text="Third Party Affected")
+        group3.grid(row=4, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        ttk.Label(group3, text="Add a party affected by the externality",
+                  font=SMALL_FONT).grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
+        self.party_ent = tk.Entry(group3, width=ENTRY_WIDTH, font=SMALL_FONT)
+        self.party_ent.insert(tk.END, "<new third party option>")
+        self.party_ent.grid(row=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.new_party_button = ttk.Button(group3, text="Add Option", command=new_party_ext)
+        self.new_party_button.grid(row=2, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.new_party = tk.StringVar()
+        self.third_parties = ttk.Combobox(group3, textvariable=self.new_party, font=SMALL_FONT,
+                                          width=ENTRY_WIDTH,
+                                          values=self.data_cont.plan_list[0].exts.parties)
+        self.third_parties.grid(row=3, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
         # ===== Interact with previously inputted externalities
         group4 = ttk.LabelFrame(self, text="Previously Inputted Externalities (optional)")
-        group4.grid(row=4, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        group4.grid(row=5, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
         hist_lbl = ttk.Label(group4, text="Interact with previously inputted externalities",
                              font=SMALL_FONT)
@@ -135,8 +160,17 @@ class ExternalitiesPage(tk.Frame):
                                         command=lambda: self.delete_ext(False))
         self.delete_button.grid(row=3, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
+        self.group_sign = ttk.LabelFrame(self, text="Positive or negative externality?")
+        self.group_sign.grid(row=4, column=0, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        self.sign_select = tk.StringVar()
+        self.sign_select.set("1")
+        positive_rad = ttk.Radiobutton(self.group_sign, text="Positive", variable=self.sign_select, value="+")
+        positive_rad.grid(row=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        negative_rad = ttk.Radiobutton(self.group_sign, text="Negative", variable=self.sign_select, value="-")
+        negative_rad.grid(row=2, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
         self.group5 = ttk.LabelFrame(self, text="One time or recurring externality?")
-        self.group5.grid(row=4, column=0, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
+        self.group5.grid(row=5, column=0, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.recur_selection = tk.StringVar()
         self.recur_selection.set("1")
         one_time_rad = ttk.Radiobutton(self.group5, text="One-Time Occurrence",
@@ -180,7 +214,7 @@ class ExternalitiesPage(tk.Frame):
         def save_and_back():
             """ Tries to save the input and sends the user to the previous screen.
             If save unsuccessful asks user for verification to move on."""
-            go_to_place = 'CostPage'
+            go_to_place = 'CostUncertainties'
             moveon = self.add_ext(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)
@@ -191,13 +225,13 @@ class ExternalitiesPage(tk.Frame):
                                  command=lambda: self.data_cont.file_save())
         save_button.grid(row=0, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Add Externality", command=self.add_ext)
-        self.add_button.grid(row=5, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.add_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         did_info = ttk.Button(self, text="More Information", command=self.show_info)
         did_info.grid(row=2, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         back_button = ttk.Button(self, text="<<Back", command=save_and_back)
-        back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        back_button.grid(row=7, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
-        finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        finished_button.grid(row=7, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
     def hover(self, _event):
         """Updates prevList when mouse is hovered over the widget"""
@@ -280,18 +314,19 @@ class ExternalitiesPage(tk.Frame):
         new_amount = self.ext_ent.get()
         new_type = self.recur_selection.get()
         new_times = [self.year_start_ent.get(), self.year_rate_ent.get(), 0]
+        pm = self.sign_select.get()
         if len(plan_num) == 0:
             err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
             plan = self.data_cont.plan_list[0]
             [valid, blank, err_messages] = plan.exts.save(new_title, new_desc, new_amount,
                                                           new_type, new_times,
-                                                          err_messages, blank=True)
+                                                          err_messages, pm, blank=True)
         else:
             for i in plan_num:
                 plan = self.data_cont.plan_list[i]
                 [valid, blank, err_messages] = plan.exts.save(new_title, new_desc, new_amount,
                                                               new_type, new_times,
-                                                              err_messages)
+                                                              err_messages, pm)
 
         if (not valid) & (not blank):
             messagebox.showerror("ERROR", err_messages)
@@ -323,6 +358,15 @@ class ExternalitiesPage(tk.Frame):
         self.ext_ent.insert(tk.END, old_ext.amount)
         self.desc_ent.delete('1.0', tk.END)
         self.desc_ent.insert(tk.END, old_ext.desc)
+
+        self.sign_select.set(old_ext.pm)
+        self.recur_selection.set(old_ext.ext_type)
+        self.year_start_ent.delete(0, tk.END)
+        self.year_start_ent.insert(tk.END, old_ext.times[0])
+        self.year_rate_ent.delete(0, tk.END)
+        self.year_rate_ent.insert(tk.END, old_ext.times[1])
+
+        self.new_party.set(old_ext.third_party)
 
 
     def edit_ext(self):
@@ -475,6 +519,8 @@ class ExternalitiesPage(tk.Frame):
         self.year_rate_ent.delete(0, tk.END)
         self.year_rate_ent.insert(tk.END, "<enter rate of occurence in years>")
         self.recur_selection.set(1)
+        self.sign_select.set(1)
+        self.new_party.set('')
         self.base.deselect()
         self.plan1.deselect()
         self.plan2.deselect()
@@ -513,6 +559,7 @@ class ExternalitiesPage(tk.Frame):
             self.plan6.configure(text=self.controller.frames[InfoPage].name_ents[5].get()
                                  +" (Plan 6)")
             self.plan6.grid()
+        self.clear_page()
 
     def recur_trace_change(self, _name, _index, _mode):
         """Updates recurrence if things are changed."""

@@ -237,19 +237,19 @@ def run_main_page(data):
                 # Externalities
                 # One-Time Extenalities Positive
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum),
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum_p),
                           font=SMALL_FONT).grid(row=23, column=(i+1), sticky="e", **pad_opts)
                 # Recurring Externalities Positive
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum),
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum_p),
                           font=SMALL_FONT).grid(row=24, column=(i+1), sticky="e", **pad_opts)
                 # One-Time Extenalities Negative
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum),
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum_n),
                           font=SMALL_FONT).grid(row=26, column=(i+1), sticky="e", **pad_opts)
                 # Recurring Externalities Negative
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum),
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum_n),
                           font=SMALL_FONT).grid(row=27, column=(i+1), sticky="e", **pad_opts)
 
                 # Totals
