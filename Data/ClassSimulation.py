@@ -107,25 +107,34 @@ class Simulation():
         new_file.write('\nNumber of Statistical Lives Saved')
         for plan in self.plan_list:
             new_file.write(',' + str(plan.fat.stat_averted))
-        new_file.write('\nNon-disaster Related Benefits')
+        new_file.write('\nNon-disaster Related Benefits\nOne-Time')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.nond_bens.total))
-        new_file.write('\nCosts\nInitial\nDirect Costs')
+            new_file.write(',$' + str(plan.nond_bens.one_sum))
+        new_file.write('\nRecurring\n')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.nond_bens.r_sum))
+        new_file.write('\nCosts\nDirect Costs')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.d_sum))
         new_file.write('\nIndirect Costs')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.i_sum))
-        new_file.write('\nOMR')
+        new_file.write('\nOMR\nOne-Time')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.omr_1_sum))
-        new_file.write('\nExternalities')
-        for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.one_sum_n))
-        new_file.write('\nRecurring Costs\nOMR')
+        new_file.write('\nRecurring')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.omr_r_sum))
-        new_file.write('\nExternalities')
+        new_file.write('\nExternalities\nPositive\nOne-Time')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.one_sum_p))
+        new_file.write('\nRecurring')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.r_sum_p))
+        new_file.write('\nNegative\nOne-Time')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.one_sum_n))
+        new_file.write('\nRecurring')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.exts.r_sum_n))
         new_file.write('\nTotal: Present Expected Value\nBenefits')
@@ -156,7 +165,7 @@ class Simulation():
         seed = 100
         certainty = 95
 
-        my_formats=[('Comma Separated Value', '*.csv'),]
+        my_formats = [('Comma Separated Value', '*.csv'),]
         file_name = filedialog.asksaveasfilename(filetypes=my_formats, title="Save the file as...")
         if '.csv' != file_name[-4:]:
             file_name = file_name + '.csv'
@@ -190,25 +199,36 @@ class Simulation():
         new_file.write('\nNumber of Statistical Lives Saved')
         for plan in self.plan_list:
             new_file.write(',' + str(plan.fat.stat_averted)+',,')
-        new_file.write('\nNon-disaster Related Benefits')
+        new_file.write('\nNon-disaster Related Benefits\nOne-Time')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.nond_bens.total)+',,')
-        new_file.write('\nCosts\nInitial\nDirect Costs')
+            new_file.write(',$' + str(plan.nond_bens.one_sum)+',,')
+        new_file.write('\nRecurring\n')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.costs.d_sum)+',,')
+            new_file.write(',$' + str(plan.nond_bens.r_sum)+',,')
+        new_file.write('\nCosts\nDirect Costs')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.costs.d_sum))
+            new_file.write(',$' + str(plan.costs.direct_range[0]) + ',$' + str(plan.costs.direct_range[1]))
         new_file.write('\nIndirect Costs')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.costs.i_sum)+',,')
-        new_file.write('\nOMR')
+            new_file.write(',$' + str(plan.costs.i_sum))
+            new_file.write(',$' + str(plan.costs.indirect_range[0]) + ',$' + str(plan.costs.indirect_range[1]))
+        new_file.write('\nOMR\nOne-Time')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.omr_1_sum)+',,')
-        new_file.write('\nExternalities')
-        for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.one_sum_n)+',,')
-        new_file.write('\nRecurring Costs\nOMR')
+        new_file.write('\nRecurring')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.omr_r_sum)+',,')
-        new_file.write('\nExternalities')
+        new_file.write('\nExternalities\nPositive\nOne-Time')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.one_sum_p)+',,')
+        new_file.write('\nRecurring')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.r_sum_p)+',,')
+        new_file.write('\nNegative\nOne-Time')
+        for plan in self.plan_list:
+            new_file.write(',$' + str(plan.exts.one_sum_n)+',,')
+        new_file.write('\nRecurring')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.exts.r_sum_n)+',,')
         new_file.write('\nTotal: Present Expected Value\nBenefits')
