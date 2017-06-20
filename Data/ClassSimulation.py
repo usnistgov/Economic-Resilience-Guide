@@ -200,7 +200,7 @@ class Simulation():
         new_file.write('\nNon-disaster Related Benefits\nOne-Time')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.nond_bens.one_sum)+',,')
-        new_file.write('\nRecurring\n')
+        new_file.write('\nRecurring')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.nond_bens.r_sum)+',,')
         new_file.write('\nCosts\nDirect Costs')
@@ -213,10 +213,12 @@ class Simulation():
             new_file.write(',$' + str(plan.costs.indirect_range[0]) + ',$' + str(plan.costs.indirect_range[1]))
         new_file.write('\nOMR\nOne-Time')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.costs.omr_1_sum)+',,')
+            new_file.write(',$' + str(plan.costs.omr_1_sum))
+            new_file.write(',$' + str(plan.costs.omr_one_range[0]) + ',$' + str(plan.costs.omr_one_range[1]))
         new_file.write('\nRecurring')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.costs.omr_r_sum)+',,')
+            new_file.write(',$' + str(plan.costs.omr_r_sum))
+            new_file.write(',$' + str(plan.costs.omr_r_range[0]) + ',$' + str(plan.costs.omr_r_range[1]))
         new_file.write('\nExternalities\nPositive\nOne-Time')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.exts.one_sum_p)+',,')
@@ -231,13 +233,16 @@ class Simulation():
             new_file.write(',$' + str(plan.exts.r_sum_n)+',,')
         new_file.write('\nTotal: Present Expected Value\nBenefits')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.total_bens)+',,')
+            new_file.write(',$' + str(plan.total_bens))
+            new_file.write(',$' + str(plan.ben_range[0]) + ',$' + str(plan.ben_range[1]))
         new_file.write('\nCosts')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.total_costs)+',,')
+            new_file.write(',$' + str(plan.total_costs))
+            new_file.write(',$' + str(plan.cost_range[0]) + ',$' + str(plan.cost_range[1]))
         new_file.write('\nNet')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.net)+',,')
+            new_file.write(',$' + str(plan.net))
+            new_file.write(',$' + str(plan.net_range[0]) + ',$' + str(plan.net_range[1]))
         new_file.write('\n\nSavings-to-Investment Ratio')
         for plan in self.plan_list:
             new_file.write(',' + str(plan.sir())+',,')

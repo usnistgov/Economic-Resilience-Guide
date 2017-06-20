@@ -207,8 +207,9 @@ class AnalysisInfo(tk.Frame):
             try:
                 break_point = int(self.max_ent.get())
             except ValueError:
-                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")            
-            self.data_cont.monte(seed, conf, tol, max_iters=break_point)
+                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")
+            messagebox.showinfo("Please be patient", "The Monte-Carlo simulations will take some time to run. Please be patient while they compute.")
+            self.data_cont.monte(seed, conf, tol, high_iters=break_point)
             self.data_cont.csv_export_uncert()
         else:
             messagebox.showerror("Error", "You must select whether to use uncertainty inputs in your analysis.")
@@ -241,8 +242,8 @@ class AnalysisInfo(tk.Frame):
             try:
                 break_point = int(self.max_ent.get())
             except ValueError:
-                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")            
-            self.data_cont.monte(seed, conf, tol, max_iters=break_point)
+                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")
+            self.data_cont.monte(seed, conf, tol, high_iters=break_point)
             self.data_cont.word_export_uncert()
             self.data_cont.csv_export_uncert()
         else:
