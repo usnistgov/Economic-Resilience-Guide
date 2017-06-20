@@ -12,10 +12,14 @@ import tkinter as tk
 from tkinter import ttk     #for pretty buttons/labels
 from tkinter import messagebox
 
+import time
+import threading
+
+
 from GUI.AnalysisPage import run_main_page
 from GUI.AnalysisUncertainties import run_u_main_page
 
-from GUI.Constants import SMALL_FONT, LARGE_FONT, ENTRY_WIDTH
+from GUI.Constants import SMALL_FONT, LARGE_FONT, ENTRY_WIDTH, NORM_FONT
 from GUI.Constants import FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 
 class AnalysisInfo(tk.Frame):
@@ -130,22 +134,31 @@ class AnalysisInfo(tk.Frame):
             except ValueError:
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
-                messagebox.showerror("Error", "Confidence must be a positive number less than or equal to 100%.")
+                messagebox.showerror("Error", "Confidence must be a positive"
+                                     " number less than or equal to 100%.")
             try:
                 tol = float(self.tol_ent.get())
                 assert 0 < tol <= 100
             except ValueError:
                 messagebox.showerror("Error", "Tolerance must be a number.")
             except AssertionError:
-                messagebox.showerror("Error", "Tolerance must be a positive number less than or equal to 100%.")
+                messagebox.showerror("Error",
+                                     "Tolerance must be a positive number "
+                                     "less than or equal to 100%.")
             try:
                 break_point = int(self.max_ent.get())
             except ValueError:
-                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")            
-            self.data_cont.monte(seed, conf, tol, high_iters=break_point)
+                messagebox.showerror("Error",
+                                     "The maximum number of iterations must be an integer value.")
+            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
+                                      "\nPlease be patient while they compute.",
+                                      seed, conf, tol, break_point)
+            #self.data_cont.monte(seed, conf, tol, high_iters=break_point)
             run_u_main_page(self.data_cont)
         else:
-            messagebox.showerror("Error", "You must select whether to use uncertainty inputs in your analysis.")
+            messagebox.showerror("Error",
+                                 "You must select whether to use "
+                                 "uncertainty inputs in your analysis.")
 
     def document(self, uncert):
         """Calls docx export."""
@@ -163,22 +176,31 @@ class AnalysisInfo(tk.Frame):
             except ValueError:
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
-                messagebox.showerror("Error", "Confidence must be a positive number less than or equal to 100%.")
+                messagebox.showerror("Error",
+                                     "Confidence must be a positive number "
+                                     "less than or equal to 100%.")
             try:
                 tol = float(self.tol_ent.get())
                 assert 0 < tol <= 100
             except ValueError:
                 messagebox.showerror("Error", "Tolerance must be a number.")
             except AssertionError:
-                messagebox.showerror("Error", "Tolerance must be a positive number less than or equal to 100%.")
+                messagebox.showerror("Error",
+                                     "Tolerance must be a positive number "
+                                     "less than or equal to 100%.")
             try:
                 break_point = int(self.max_ent.get())
             except ValueError:
-                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")
-            self.data_cont.monte(seed, conf, tol, max_iters=break_point)
+                messagebox.showerror("Error",
+                                     "The maximum number of iterations must be an integer value.")
+            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
+                                      "\nPlease be patient while they compute.",
+                                      seed, conf, tol, break_point)
             self.data_cont.word_export_uncert()
         else:
-            messagebox.showerror("Error", "You must select whether to use uncertainty inputs in your analysis.")
+            messagebox.showerror("Error",
+                                 "You must select whether to use "
+                                 "uncertainty inputs in your analysis.")
 
     def commas(self, uncert):
         """Calls csv export."""
@@ -196,23 +218,30 @@ class AnalysisInfo(tk.Frame):
             except ValueError:
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
-                messagebox.showerror("Error", "Confidence must be a positive number less than or equal to 100%.")
+                messagebox.showerror("Error",
+                                     "Confidence must be a positive number "
+                                     "less than or equal to 100%.")
             try:
                 tol = float(self.tol_ent.get())
                 assert 0 < tol <= 100
             except ValueError:
                 messagebox.showerror("Error", "Tolerance must be a number.")
             except AssertionError:
-                messagebox.showerror("Error", "Tolerance must be a positive number less than or equal to 100%.")
+                messagebox.showerror("Error",
+                                     "Tolerance must be a positive number "
+                                     "less than or equal to 100%.")
             try:
                 break_point = int(self.max_ent.get())
             except ValueError:
-                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")
-            messagebox.showinfo("Please be patient", "The Monte-Carlo simulations will take some time to run. Please be patient while they compute.")
-            self.data_cont.monte(seed, conf, tol, high_iters=break_point)
+                messagebox.showerror("Error",
+                                     "The maximum number of iterations must be an integer value.")
+            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run.\nPlease be patient while they compute.",
+                                      seed, conf, tol, break_point)
             self.data_cont.csv_export_uncert()
         else:
-            messagebox.showerror("Error", "You must select whether to use uncertainty inputs in your analysis.")
+            messagebox.showerror("Error",
+                                 "You must select whether to use "
+                                 "uncertainty inputs in your analysis.")
 
     def both(self, uncert):
         """Calls docx and csv export."""
@@ -231,24 +260,54 @@ class AnalysisInfo(tk.Frame):
             except ValueError:
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
-                messagebox.showerror("Error", "Confidence must be a positive number less than or equal to 100%.")
+                messagebox.showerror("Error",
+                                     "Confidence must be a positive number "
+                                     "less than or equal to 100%.")
             try:
                 tol = float(self.tol_ent.get())
                 assert 0 < tol <= 100
             except ValueError:
                 messagebox.showerror("Error", "Tolerance must be a number.")
             except AssertionError:
-                messagebox.showerror("Error", "Tolerance must be a positive number less than or equal to 100%.")
+                messagebox.showerror("Error",
+                                     "Tolerance must be a positive number "
+                                     "less than or equal to 100%.")
             try:
                 break_point = int(self.max_ent.get())
             except ValueError:
-                messagebox.showerror("Error", "The maximum number of iterations must be an integer value.")
-            self.data_cont.monte(seed, conf, tol, high_iters=break_point)
+                messagebox.showerror("Error",
+                                     "The maximum number of iterations must be an integer value.")
+            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run.\n"
+                                      "Please be patient while they compute.",
+                                      seed, conf, tol, break_point)
+            #self.data_cont.monte(seed, conf, tol, high_iters=break_point)
             self.data_cont.word_export_uncert()
             self.data_cont.csv_export_uncert()
         else:
-            messagebox.showerror("Error", "You must select whether to use uncertainty inputs in your analysis.")
+            messagebox.showerror("Error",
+                                 "You must select whether to use "
+                                 "uncertainty inputs in your analysis.")
 
+
+    def processingPleaseWait(self, text, seed, conf, tol, break_point):
+        """ Pops up a field to let you know to wait on the computation."""
+        window = tk.Toplevel()
+        window.minsize(width=150, height=200)
+        # code before computation starts
+        label = tk.Label(window, text=text, font=NORM_FONT)
+        label.pack()
+        def call():
+            """ Calls monte-Carlo."""
+            self.data_cont.monte(seed, conf, tol, high_iters=break_point)
+
+        thread = threading.Thread(target=call)
+        thread.start() # start parallel computation
+        while thread.is_alive():
+            # code while computing
+            window.update()
+            time.sleep(0.01)
+        # code when computation is done
+        window.destroy()
 
     def on_trace_change(self, _name, _index, _mode):
         """ Passes to allow on_trace_change for other pages."""
