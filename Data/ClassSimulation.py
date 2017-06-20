@@ -169,9 +169,12 @@ class Simulation():
             file_name = file_name + '.csv'
         new_file = open(file_name, 'w')
         new_file.write('Outputs of Economic Evaluation: [' + self.title + ']\n')
-        new_file.write('NOTE: All bounds on uncertainties are given from ' + str(num_runs)
-                       + ' Monte Carlo simulations with a ' + str(self.confidence)
-                       + '% confidence interval.\n')
+        new_file.write('NOTE: All bounds on uncertainties are given with a ' + str(self.confidence)
+                        + '% confidence interval. The number of runs was determined with a '
+                        + str(self.tolerance) + '% tolerance.\n')
+        for plan in self.plan_list:
+            new_file.write('For ' + plan.name + ' (Alternative ' + str(plan.id_assign) + ') '
+                           + str(plan.mc_iters) + ' Monte-Carlo simulations were run.\n')
         new_file.write('The random number seed for these runs was ' + str(self.seed) + '.\n')
         new_file.write(',Base Case,Lower Bound,Upper Bound')
         for i in range(1, self.num_plans):
@@ -874,6 +877,7 @@ class Simulation():
         """ Runs the monte-carlo everything."""
         self.seed = new_seed
         self.confidence = confidence
+        self.tolerance = tol
         tol_percent = tol/100
         num_iters = low_iters
         ### NOTE: It's mad about this call, claiming it will pull an error. It doesn't
@@ -963,6 +967,7 @@ class Simulation():
                 #print('Net:', plan.net_range)
                 #print(cost_ben_net)
                 #input()
+            plan.mc_iters = num_iters / 2
 
     def one_iter(self, my_plan):
         delta_plan = Plan(my_plan.id_assign, my_plan.name, [my_plan.recurr_dist, my_plan.recurr_range],

@@ -41,13 +41,16 @@ class AnalysisInfo(tk.Frame):
         """
             Creates the widgets for the GUI.
         """
+        info_button = ttk.Button(self, text="More Information", command=self.info)
+        info_button.grid(row=0, sticky="e")
 
         # With or without uncertainty group
         choice_group = ttk.LabelFrame(self, text="With or without uncertainty?")
         choice_group.grid(row=2, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
         self.uncert_select = tk.StringVar()
         self.uncert_select.set("1")
-        point_rad = ttk.Radiobutton(choice_group, text="Point estimate calculations",
+        point_rad = ttk.Radiobutton(choice_group,
+                                    text="Point estimate calculations (without uncertainty)",
                                     variable=self.uncert_select, value="point")
         point_rad.grid(row=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         uncert_rad = ttk.Radiobutton(choice_group, text="Uncertainty calculations",
@@ -116,6 +119,30 @@ class AnalysisInfo(tk.Frame):
         menu_button = ttk.Button(self, text="View Directory",
                                  command=lambda: controller.show_frame('DirectoryPage'))
         menu_button.grid(row=5, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
+    def info(self):
+        """Provides information to the user"""
+        messagebox.showinfo("More Information",
+                            "If you wish to view or export your analysis without uncertainties, "
+                            "select 'Point estimate calculations (without uncertainty)' and click "
+                            "on the appropriate button.\n\nIf you wish to use uncertainty, you may "
+                            "also set:\n"
+                            "    Seed: The starting number of the random number generator for the "
+                            " simulations. If you use the same seed, the same results will output."
+                            "\n    Confidence Interval: The percentage of the potential results "
+                            "that fall between the given upper and lower bounds.\n"
+                            "    Monte Carlo Bounds Tolerance: We will continue running "
+                            "simulations until the bounds fall within this percent of the point"
+                            " estimate for Total Costs, Total Benefits, and Net Costs. This is a "
+                            "measure of how accurate we believe the bounds are.\n"
+                            "    Maximum number of runs: If your results do not converge to the "
+                            "given tolerance within this many runs we will stop. This field helps "
+                            "put a limit on the maximum time spent waiting for calculations or "
+                            "to avoid your computer running out of memory.\n\n"
+                            "If you wish to export your analysis from the 'View Analysis' setting,"
+                            " you may find the buttons there. Furthermore, if you have already run"
+                            " with or without uncertainty, you may run again to get the other.")
+
 
 
     def view(self, uncert):
