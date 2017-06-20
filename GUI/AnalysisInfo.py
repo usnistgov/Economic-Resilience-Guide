@@ -80,36 +80,47 @@ class AnalysisInfo(tk.Frame):
         # Uncertainty Information Group
         uncert_group = ttk.LabelFrame(self, text="Information on Monte-Carlo calculations")
         uncert_group.grid(row=4, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
+        #self.tol_select = tk.StringVar()
+        #self.tol_select.set("1")
+        #point_rad = ttk.Radiobutton(uncert_group,
+        #                            text="Stop Monte Carlo based on bounds tolerance",
+        #                            variable=self.tol_select, value="tol")
+        #point_rad.grid(row=0, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        #tol_rad = ttk.Radiobutton(uncert_group, text="Stop Monte Carlo after a given number of runs",
+        #                             variable=self.tol_select, value="uncert")
+        #tol_rad.grid(row=0, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
         ttk.Label(uncert_group, text="Seed",
-                  font=SMALL_FONT).grid(row=0, column=0, sticky="e",
+                  font=SMALL_FONT).grid(row=1, column=0, sticky="e",
                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.seed_ent = tk.Entry(uncert_group, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.seed_ent.insert(tk.END, str(random.randrange(sys.maxsize)))
-        self.seed_ent.grid(row=0, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.seed_ent.grid(row=1, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         ttk.Label(uncert_group, text="Confidence Interval",
-                  font=SMALL_FONT).grid(row=1, column=0, sticky="e",
+                  font=SMALL_FONT).grid(row=2, column=0, sticky="e",
                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.conf_ent = tk.Entry(uncert_group, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.conf_ent.insert(tk.END, '95')
-        self.conf_ent.grid(row=1, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.conf_ent.grid(row=2, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         ttk.Label(uncert_group, text="%",
-                  font=SMALL_FONT).grid(row=1, column=2, sticky="w",
+                  font=SMALL_FONT).grid(row=2, column=2, sticky="w",
                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
         ttk.Label(uncert_group, text="Monte Carlo Bounds Tolerance",
-                  font=SMALL_FONT).grid(row=2, column=0, sticky="e",
+                  font=SMALL_FONT).grid(row=3, column=0, sticky="e",
                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.tol_ent = tk.Entry(uncert_group, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.tol_ent.insert(tk.END, '0.1')
-        self.tol_ent.grid(row=2, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.tol_ent.grid(row=3, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         ttk.Label(uncert_group, text="% of point estimate",
-                  font=SMALL_FONT).grid(row=2, column=2, sticky="w",
+                  font=SMALL_FONT).grid(row=3, column=2, sticky="w",
                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         ttk.Label(uncert_group, text="Maximum number of runs",
-                  font=SMALL_FONT).grid(row=3, column=0, sticky="e",
+                  font=SMALL_FONT).grid(row=4, column=0, sticky="e",
                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.max_ent = tk.Entry(uncert_group, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.max_ent.insert(tk.END, '102400')
-        self.max_ent.grid(row=3, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        self.max_ent.grid(row=4, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         # Changes presence of uncertainty choices based on whether or not uncertainty is selected
         # For now deemed unnecessary since the page is fairly clean with choices
