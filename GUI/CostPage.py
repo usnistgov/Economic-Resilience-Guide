@@ -172,7 +172,7 @@ class CostPage(tk.Frame):
         self.omr_selection = tk.StringVar()
         self.omr_selection.set("1")
         one_time_rad = ttk.Radiobutton(self.group5, text="One-Time Occurrence",
-                                       variable=self.omr_selection, value="one-titme")
+                                       variable=self.omr_selection, value="one-time")
         one_time_rad.grid(row=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         recurring_rad = ttk.Radiobutton(self.group5, text="Recurring",
                                         variable=self.omr_selection, value="recurring")
@@ -443,10 +443,10 @@ class CostPage(tk.Frame):
         if old_cost.cost_type == "omr":
             self.omr_selection.set(old_cost.omr_type)
             self.year_start_ent.delete(0, tk.END)
-            self.year_start_ent.insert(tk.END, old_cost.omr_times[0])
+            self.year_start_ent.insert(tk.END, old_cost.times[0])
             if old_cost.omr_type == "recurring":
                 self.year_rate_ent.delete(0, tk.END)
-                self.year_rate_ent.insert(tk.END, old_cost.omr_times[1])
+                self.year_rate_ent.insert(tk.END, old_cost.times[1])
 
 
     def edit_cost(self):
@@ -606,7 +606,7 @@ class CostPage(tk.Frame):
         self.plan6.deselect()
         # === Temporarily sets these so that further fields can be returned to default state
         self.choice.set("omr")
-        self.omr_selection.set("Recurring")
+        self.omr_selection.set("recurring")
         self.year_start_ent.delete(0, tk.END)
         self.year_start_ent.insert(tk.END, "<enter # of years after build year>")
         self.year_rate_ent.delete(0, tk.END)

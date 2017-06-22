@@ -25,6 +25,7 @@ import numpy as np
 
 class Simulation():
     """ Holds all of the plans and does all of the larger calculations. """
+    parties = ['developer', 'title holder(s)', 'lender(s)', 'tenants', 'users', 'community']
     def __init__(self):
         self.title = ""
         self.plan_list = []
@@ -49,7 +50,7 @@ class Simulation():
             elif 'Plan' in line[0]:
                 build_list = [list(line)]
                 next_plan = Plan(line[0][-1], line[1], [line[2], list(line[3:9])], [line[9], list(line[10:17])],
-                                 self.discount_rate, self.horizon, self.stat_life)
+                                 self.discount_rate, self.horizon, self.stat_life, self.parties)
             elif line[0] == "":
                 build_list.append(list(line))
             elif line[0] == 'END PLAN':
@@ -270,15 +271,15 @@ class Simulation():
         doc.add_heading('Economic Evaluation Complete Report\n' + self.title, 0)
 
         doc.add_heading('Analysis Base Information\n', 1)
-        doc.add_paragraph(TAB + 'Number of Alternatives: ' + str(self.num_plans-1))
-        doc.add_paragraph(TAB + 'Planning Horizon: ' + str(self.horizon) + ' years')
-        doc.add_paragraph(TAB + 'Discount Rate: ' + str(self.discount_rate) + '%')
+        doc.add_paragraph('Number of Alternatives: ' + str(self.num_plans-1), style='ListBullet')
+        doc.add_paragraph('Planning Horizon: ' + str(self.horizon) + ' years', style='ListBullet')
+        doc.add_paragraph('Discount Rate: ' + str(self.discount_rate) + '%', style='ListBullet')
         doc.add_paragraph()
-        doc.add_paragraph(TAB + 'Disaster Rate: Every ' + str(self.get_disaster_rate()[0]) + ' years')
-        doc.add_paragraph(TAB + 'Disaster Magnitude: ' + str(self.get_disaster_magnitude()[0]) + '% of build cost')
-        doc.add_paragraph(TAB + 'Risk Preference: ' + str(self.risk_pref))
+        doc.add_paragraph('Disaster Rate: Every ' + str(self.get_disaster_rate()[0]) + ' years', style='ListBullet')
+        doc.add_paragraph('Disaster Magnitude: ' + str(self.get_disaster_magnitude()[0]) + '% of build cost', style='ListBullet')
+        doc.add_paragraph('Risk Preference: ' + str(self.risk_pref), style='ListBullet')
         doc.add_paragraph()
-        doc.add_paragraph(TAB + 'Statistical Value of a Life: '+'${:.0f}'.format(float(self.stat_life)))
+        doc.add_paragraph('Statistical Value of a Life: '+'${:.0f}'.format(float(self.stat_life)), style='ListBullet')
 
         doc.add_heading('Summary\n', 1)
         sum_table = doc.add_table(rows = len(self.plan_list) + 1, cols=8, style='Light List Accent 1')
@@ -314,245 +315,288 @@ class Simulation():
             doc.add_heading('Fatalities Averted\n', 2)
             doc.add_paragraph('Number of Statistical Lives Saved: ' + '{:,.2f}'.format(plan.fat.stat_averted))
             doc.add_paragraph('Value of Statistical Lives Saved: ' + '${:,.0f}'.format(plan.fat.stat_value_averted))
+            if plan.fat.desc != 'N/A':
+                doc.add_paragraph('Description: ' + plan.fat.desc)
             doc.add_heading('Disaster-Related Benefits\n', 2)
-            ben_table = doc.add_table(rows=len(plan.bens.indiv)+5, cols=4, style='Light List Accent 1')
+            # == BENEFITS
+            ben_table = doc.add_table(rows=len(plan.bens.indiv)+5, cols=3, style='Light List Accent 1')
             ben_index = 2
-            # Header
             ben_table.cell(0, 0).text = 'Title'
-            ben_table.cell(0, 1).text = 'Description'
-            ben_table.cell(0, 2).text = 'Amount ($)'
-            ben_table.cell(0, 3).text = 'Effective Present Value ($)'
-            ben_table.cell(1, 0).merge(ben_table.cell(1,2))
+            ben_table.cell(0, 1).text = 'Amount ($)'
+            ben_table.cell(0, 2).text = 'Effective Present Value ($)'
             ben_table.cell(1, 0).text = 'Response and Recovery Cost Reductions'
-            ben_table.cell(1, 3).text = '{:,.0f}'.format(plan.bens.r_sum)
-            ben_table.cell(1, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(1, 2).text = '{:,.0f}'.format(plan.bens.r_sum)
+            ben_table.cell(1, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ben in plan.bens.indiv:
                 if ben.ben_type == "res-rec":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
-                    ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
-            ben_table.cell(ben_index, 0).merge(ben_table.cell(ben_index, 2))
             ben_table.cell(ben_index, 0).text = 'Direct Losses Prevented'
-            ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.d_sum)
-            ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.d_sum)
+            ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ben_index += 1
             for ben in plan.bens.indiv:
                 if ben.ben_type == "direct":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
-                    ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
-            ben_table.cell(ben_index, 0).merge(ben_table.cell(ben_index, 2))
             ben_table.cell(ben_index, 0).text = 'Indirect Losses Prevented'
-            ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.i_sum)
-            ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.i_sum)
+            ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ben_index += 1
             for ben in plan.bens.indiv:
                 if ben.ben_type == "indirect":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
-                    ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
             ben_table.cell(ben_index, 0).text = 'Total'
-            ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.total)
-            ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.total)
+            ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
+            for ben in plan.bens.indiv:
+                if ben.desc != 'N/A':
+                    doc.add_paragraph(ben.title + ': ' + ben.desc)
+
+            # == NON-D BENEFITS
             doc.add_heading('Resilience Dividend\n', 2)
-            ben_table = doc.add_table(rows=len(plan.nond_bens.indiv)+4, cols=6, style='Light List Accent 1')
+            ben_table = doc.add_table(rows=len(plan.nond_bens.indiv)+4, cols=5, style='Light List Accent 1')
             ben_index = 2
             # Header
             ben_table.cell(0, 0).text = 'Title'
-            ben_table.cell(0, 1).text = 'Description'
-            ben_table.cell(0, 2).text = 'Start Year'
-            ben_table.cell(0, 3).text = 'Recurrence (Years)'
-            ben_table.cell(0, 4).text = 'Amount ($)'
-            ben_table.cell(0, 5).text = 'Effective Present Value ($)'
-            ben_table.cell(1, 0).merge(ben_table.cell(1,2))
+            ben_table.cell(0, 1).text = 'Start Year'
+            ben_table.cell(0, 2).text = 'Recurrence (Years)'
+            ben_table.cell(0, 3).text = 'Amount ($)'
+            ben_table.cell(0, 4).text = 'Effective Present Value ($)'
             ben_table.cell(1, 0).text = 'One Time Cost Reductions'
-            ben_table.cell(1, 5).text = '{:,.0f}'.format(plan.nond_bens.one_sum)
-            ben_table.cell(1, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(1, 4).text = '{:,.0f}'.format(plan.nond_bens.one_sum)
+            ben_table.cell(1, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ben in plan.nond_bens.indiv:
                 if ben.ben_type == "one-time":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = str(ben.times[0])
+                    ben_table.cell(ben_index, 1).text = str(ben.times[0])
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = 'N/A'
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = 'N/A'
+                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(float(ben.amount))
                     ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(float(ben.amount))
+                    ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.calc_one_time(ben.amount, ben.times[0]))
                     ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 5).text = '{:,.0f}'.format(plan.nond_bens.calc_one_time(ben.amount, ben.times[0]))
-                    ben_table.cell(ben_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
-            ben_table.cell(ben_index, 0).merge(ben_table.cell(ben_index, 2))
             ben_table.cell(ben_index, 0).text = 'Recurring Cost Reductions'
-            ben_table.cell(ben_index, 5).text = '{:,.0f}'.format(plan.nond_bens.r_sum)
-            ben_table.cell(ben_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.r_sum)
+            ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ben_index += 1
             for ben in plan.nond_bens.indiv:
                 if ben.ben_type == "recurring":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = str(ben.times[0])
+                    ben_table.cell(ben_index, 1).text = str(ben.times[0])
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = str(ben.times[1])
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = str(ben.times[1])
+                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(float(ben.amount))
                     ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(float(ben.amount))
+                    ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.calc_recur(ben.amount, ben.times[0], ben.times[1]))
                     ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 5).text = '{:,.0f}'.format(plan.nond_bens.calc_recur(ben.amount, ben.times[0], ben.times[1]))
-                    ben_table.cell(ben_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
             ben_table.cell(ben_index, 0).text = 'Total'
-            ben_table.cell(ben_index, 5).text = '{:,.0f}'.format(plan.nond_bens.total)
-            ben_table.cell(ben_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.total)
+            ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            for ben in plan.nond_bens.indiv:
+                if ben.desc != 'N/A':
+                    doc.add_paragraph(ben.title + ': ' + ben.desc)
 
+            # == COSTS
             doc.add_heading('Costs\n', 2)
-            cost_table = doc.add_table(rows=len(plan.costs.indiv)+6, cols=6, style='Light List Accent 1')
+            cost_table = doc.add_table(rows=len(plan.costs.indiv)+6, cols=5, style='Light List Accent 1')
             cost_index = 2
             # Header
             cost_table.cell(0, 0).text = 'Title'
-            cost_table.cell(0, 1).text = 'Description'
-            cost_table.cell(0, 2).text = 'Start Year'
-            cost_table.cell(0, 3).text = 'Recurrence (Years)'
-            cost_table.cell(0, 4).text = 'Amount ($)'
-            cost_table.cell(0, 5).text = 'Effective Present Value ($)'
-            cost_table.cell(1, 0).merge(cost_table.cell(1, 2))
+            cost_table.cell(0, 1).text = 'Start Year'
+            cost_table.cell(0, 2).text = 'Recurrence (Years)'
+            cost_table.cell(0, 3).text = 'Amount ($)'
+            cost_table.cell(0, 4).text = 'Effective Present Value ($)'
             cost_table.cell(1, 0).text = 'Direct Costs'
-            cost_table.cell(1, 5).text = '{:,.0f}'.format(plan.costs.d_sum)
-            cost_table.cell(1, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(1, 4).text = '{:,.0f}'.format(plan.costs.d_sum)
+            cost_table.cell(1, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for cost in plan.costs.indiv:
                 if cost.cost_type == "direct":
                     cost_table.cell(cost_index, 0).text = cost.title
-                    cost_table.cell(cost_index, 1).text = cost.desc
-                    cost_table.cell(cost_index, 2).text = 'Start-Up'
+                    cost_table.cell(cost_index, 1).text = 'Start-Up'
+                    cost_table.cell(cost_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    cost_table.cell(cost_index, 2).text = 'N/A'
                     cost_table.cell(cost_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 3).text = 'N/A'
+                    cost_table.cell(cost_index, 3).text = '{:,.0f}'.format(cost.amount)
                     cost_table.cell(cost_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(cost.amount)
+                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, cost.times[0]))
                     cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, cost.times[0]))
-                    cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     cost_index += 1
-            cost_table.cell(cost_index, 0).merge(cost_table.cell(cost_index, 2))
             cost_table.cell(cost_index, 0).text = 'Indirect Costs'
-            cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.i_sum)
-            cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.i_sum)
+            cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             cost_index += 1
             for cost in plan.costs.indiv:
                 if cost.cost_type == "indirect":
                     cost_table.cell(cost_index, 0).text = cost.title
-                    cost_table.cell(cost_index, 1).text = cost.desc
-                    cost_table.cell(cost_index, 2).text = 'Start-Up'
+                    cost_table.cell(cost_index, 1).text = 'Start-Up'
+                    cost_table.cell(cost_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    cost_table.cell(cost_index, 2).text = 'N/A'
                     cost_table.cell(cost_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 3).text = 'N/A'
+                    cost_table.cell(cost_index, 3).text = '{:,.0f}'.format(cost.amount)
                     cost_table.cell(cost_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(cost.amount)
+                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, cost.times[0]))
                     cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, cost.times[0]))
-                    cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     cost_index += 1
-            cost_table.cell(cost_index, 0).merge(cost_table.cell(cost_index, 2))
             cost_table.cell(cost_index, 0).text = 'OMR Costs: One-Time'
-            cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.omr_1_sum)
-            cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.omr_1_sum)
+            cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             cost_index += 1
             for cost in plan.costs.indiv:
                 if (cost.cost_type == "omr") & (cost.omr_type == "one-time"):
                     cost_table.cell(cost_index, 0).text = cost.title
-                    cost_table.cell(cost_index, 1).text = cost.desc
-                    cost_table.cell(cost_index, 2).text = str(cost.times[0])
+                    cost_table.cell(cost_index, 1).text = str(cost.times[0])
+                    cost_table.cell(cost_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    cost_table.cell(cost_index, 2).text = 'N/A'
                     cost_table.cell(cost_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 3).text = 'N/A'
+                    cost_table.cell(cost_index, 3).text = '{:,.0f}'.format(cost.amount)
                     cost_table.cell(cost_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(cost.amount)
+                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, float(cost.times[0])))
                     cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, float(cost.times[0])))
-                    cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     cost_index += 1
-            cost_table.cell(cost_index, 0).merge(cost_table.cell(cost_index, 2))
             cost_table.cell(cost_index, 0).text = 'OMR Costs: Recurring'
-            cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.omr_r_sum)
-            cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.omr_r_sum)
+            cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             cost_index += 1
             for cost in plan.costs.indiv:
                 if (cost.cost_type == "omr") & (cost.omr_type == "recurring"):
                     cost_table.cell(cost_index, 0).text = cost.title
-                    cost_table.cell(cost_index, 1).text = cost.desc
-                    cost_table.cell(cost_index, 2).text = str(cost.times[0])
+                    cost_table.cell(cost_index, 1).text = str(cost.times[0])
+                    cost_table.cell(cost_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    cost_table.cell(cost_index, 2).text = str(cost.times[1])
                     cost_table.cell(cost_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 3).text = str(cost.times[1])
+                    cost_table.cell(cost_index, 3).text = '{:,.0f}'.format(cost.amount)
                     cost_table.cell(cost_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(cost.amount)
+                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.calc_recur(cost.amount, cost.times[0], cost.times[1]))
                     cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.calc_recur(cost.amount, cost.times[0], cost.times[1]))
-                    cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     cost_index += 1
             cost_table.cell(cost_index, 0).text = 'Total'
-            cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.total)
-            cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.total)
+            cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            for cost in plan.costs.indiv:
+                if cost.desc != 'N/A':
+                    doc.add_paragraph(cost.title + ': ' + cost.desc)
 
+            # == EXTERNALITIES
             doc.add_heading('Externalities\n', 2)
-            ext_table = doc.add_table(rows=len(plan.exts.indiv)+4, cols=6, style='Light List Accent 1')
+            ext_table = doc.add_table(rows=len(plan.exts.indiv)+6, cols=5, style='Light List Accent 1')
             #ext_table.style = 'TableGrid'
             ext_index = 2
             # Header
             ext_table.cell(0, 0).text = 'Title'
-            ext_table.cell(0, 1).text = 'Description'
-            ext_table.cell(0, 2).text = 'Start Year'
-            ext_table.cell(0, 3).text = 'Recurrence (Years)'
-            ext_table.cell(0, 4).text = 'Amount ($)'
-            ext_table.cell(0, 5).text = 'Effective Present Value ($)'
-            ext_table.cell(1, 0).merge(ext_table.cell(1,2))
-            ext_table.cell(1, 0).text = 'One Time Externalities'
-            ext_table.cell(1, 5).text = '{:,.0f}'.format(plan.exts.one_sum_n)
-            ext_table.cell(1, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_table.cell(0, 1).text = 'Start Year'
+            ext_table.cell(0, 2).text = 'Recurrence (Years)'
+            ext_table.cell(0, 3).text = 'Amount ($)'
+            ext_table.cell(0, 4).text = 'Effective Present Value ($)'
+            ext_table.cell(1, 0).text = 'One Time Positive Externalities'
+            ext_table.cell(1, 4).text = '{:,.0f}'.format(plan.exts.one_sum_p)
+            ext_table.cell(1, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ext in plan.exts.indiv:
-                if ext.ext_type == "one-time":
+                if (ext.ext_type == "one-time") & (ext.pm == "+"):
                     ext_table.cell(ext_index, 0).text = ext.title
-                    ext_table.cell(ext_index, 1).text = ext.desc
-                    ext_table.cell(ext_index, 2).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 2).text = 'N/A'
                     ext_table.cell(ext_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 3).text = 'N/A'
+                    ext_table.cell(ext_index, 3).text = '{:,.0f}'.format(float(ext.amount))
                     ext_table.cell(ext_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(float(ext.amount))
+                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.calc_one_time(ext.amount, ext.times[0]))
                     ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.calc_one_time(ext.amount, ext.times[0]))
-                    ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ext_index += 1
-            ext_table.cell(ext_index, 0).merge(ext_table.cell(ext_index, 2))
-            ext_table.cell(ext_index, 0).text = 'Recurring Externalities'
-            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.r_sum_n)
-            ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_table.cell(ext_index, 0).text = 'Recurring Positive Externalities'
+            ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.r_sum_p)
+            ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ext_index += 1
             for ext in plan.exts.indiv:
-                if ext.ext_type == "recurring":
+                if (ext.ext_type == "recurring") & (ext.pm == "+"):
                     ext_table.cell(ext_index, 0).text = ext.title
-                    ext_table.cell(ext_index, 1).text = ext.desc
-                    ext_table.cell(ext_index, 2).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 2).text = str(ext.times[1])
                     ext_table.cell(ext_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 3).text = str(ext.times[1])
+                    ext_table.cell(ext_index, 3).text = '{:,.0f}'.format(float(ext.amount))
                     ext_table.cell(ext_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(float(ext.amount))
+                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.calc_recur(ext.amount, ext.times[0], ext.times[1]))
                     ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.calc_recur(ext.amount, ext.times[0], ext.times[1]))
-                    ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_index += 1
+            ext_table.cell(ext_index, 0).text = 'One Time Negative Externalities'
+            ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.one_sum_n)
+            ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_index += 1
+            for ext in plan.exts.indiv:
+                if (ext.ext_type == "one-time") & (ext.pm == "-"):
+                    ext_table.cell(ext_index, 0).text = ext.title
+                    ext_table.cell(ext_index, 1).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 2).text = 'N/A'
+                    ext_table.cell(ext_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 3).text = '{:,.0f}'.format(float(ext.amount))
+                    ext_table.cell(ext_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.calc_one_time(ext.amount, ext.times[0]))
+                    ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_index += 1
+            ext_table.cell(ext_index, 0).text = 'Recurring Negative Externalities'
+            ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.r_sum_n)
+            ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_index += 1
+            for ext in plan.exts.indiv:
+                if (ext.ext_type == "recurring") & (ext.pm == "-"):
+                    ext_table.cell(ext_index, 0).text = ext.title
+                    ext_table.cell(ext_index, 1).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 2).text = str(ext.times[1])
+                    ext_table.cell(ext_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 3).text = '{:,.0f}'.format(float(ext.amount))
+                    ext_table.cell(ext_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.calc_recur(ext.amount, ext.times[0], ext.times[1]))
+                    ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ext_index += 1
             ext_table.cell(ext_index, 0).text = 'Total'
-            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.total_n)
-            ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.total_p - plan.exts.total_n)
+            ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            for ext in plan.exts.indiv:
+                if ext.desc != 'N/A':
+                    doc.add_paragraph(ext.title + ': ' + ext.desc)
 
 
         doc.save(file_name)
+
+    def uncert_string(self, uncert, values):
+        """Creates a nice string given a certain uncertainty type and the associated values."""
+        values = list(values)
+        try:
+            if (uncert in {'tri', 'rect'}) & (str(values[2]) == str(0)):
+                values[2] = values[1]
+        except IndexError:
+            pass
+        if uncert == "none":
+            return "N/A"
+        elif uncert == "gauss":
+            return "Gaussian distribution with variance of " + str(values[0])
+        elif uncert == "tri":
+            return "Triangular distribution with a min of " + str(values[0]) + " and a max of " + str(values[2])
+        elif uncert == "rect":
+            return "Rectangular distribution with a min of " + str(values[0]) + " and a max of " + str(values[2])
+        elif uncert == "discrete":
+            return str(values[3]) + "% chance of " + str(values[0]) + ", " + str(values[4]) + "% chance of " + str(values[1]) + ", and " + str(values[5]) + "% chance of " + str(values[2])
 
     def word_export_uncert(self):
         my_formats = [('Microsoft Word Document', '*.docx'),]
@@ -561,23 +605,28 @@ class Simulation():
             file_name = file_name + '.docx'
 
         doc = docx.Document()
-        section = doc.sections[-1]
-        new_width, new_height = section.page_height, section.page_width
-        section.orientation = WD_ORIENTATION.LANDSCAPE
-        section.page_width = new_width
-        section.page_height = new_height
         doc.add_heading('Economic Evaluation Complete Report\n' + self.title, 0)
+        doc.add_paragraph('NOTE: All bounds on uncertainties are given with a ' + str(self.confidence)
+                        + '% confidence interval. The number of runs was determined with a '
+                        + str(self.tolerance) + '% tolerance.')
+        for plan in self.plan_list:
+            doc.add_paragraph('For ' + plan.name + ' (Alternative ' + str(plan.id_assign) + ') '
+                           + str(plan.mc_iters) + ' Monte-Carlo simulations were run.')
+        doc.add_paragraph('The random number seed for these runs was ' + str(self.seed) + '.')
+
 
         doc.add_heading('Analysis Base Information\n', 1)
-        doc.add_paragraph(TAB + 'Number of Alternatives: ' + str(self.num_plans-1))
-        doc.add_paragraph(TAB + 'Planning Horizon: ' + str(self.horizon) + ' years')
-        doc.add_paragraph(TAB + 'Discount Rate: ' + str(self.discount_rate) + '%')
+        doc.add_paragraph('Number of Alternatives: ' + str(self.num_plans-1), style='ListBullet')
+        doc.add_paragraph('Planning Horizon: ' + str(self.horizon) + ' years', style='ListBullet')
+        doc.add_paragraph('Discount Rate: ' + str(self.discount_rate) + '%', style='ListBullet')
         doc.add_paragraph()
-        doc.add_paragraph(TAB + 'Disaster Rate: Every ' + str(self.get_disaster_rate()[0]) + ' years')
-        doc.add_paragraph(TAB + 'Disaster Magnitude: ' + str(self.get_disaster_magnitude()[0]) + '% of build cost')
-        doc.add_paragraph(TAB + 'Risk Preference: ' + str(self.risk_pref))
+        doc.add_paragraph('Disaster Rate: Every ' + str(self.get_disaster_rate()[0]) + ' years', style='ListBullet')
+        doc.add_paragraph('Uncertainty in Disaster Rate: ' + self.uncert_string(self.get_disaster_rate()[2], self.get_disaster_rate()[1]), style='ListBullet')
+        doc.add_paragraph('Disaster Magnitude: ' + str(self.get_disaster_magnitude()[0]) + '% of build cost', style='ListBullet')
+        doc.add_paragraph('Uncertainty in Disaster Magnitude: ' + self.uncert_string(self.get_disaster_magnitude()[2], self.get_disaster_magnitude()[1]), style='ListBullet')
+        doc.add_paragraph('Risk Preference: ' + str(self.risk_pref), style='ListBullet')
         doc.add_paragraph()
-        doc.add_paragraph(TAB + 'Statistical Value of a Life: '+'${:.0f}'.format(float(self.stat_life)))
+        doc.add_paragraph('Statistical Value of a Life: '+'${:.0f}'.format(float(self.stat_life)), style='ListBullet')
 
         doc.add_heading('Summary\n', 1)
         sum_table = doc.add_table(rows = len(self.plan_list) + 1, cols=8, style='Light List Accent 1')
@@ -613,242 +662,274 @@ class Simulation():
             doc.add_heading('Fatalities Averted\n', 2)
             doc.add_paragraph('Number of Statistical Lives Saved: ' + '{:,.2f}'.format(plan.fat.stat_averted))
             doc.add_paragraph('Value of Statistical Lives Saved: ' + '${:,.0f}'.format(plan.fat.stat_value_averted))
+            if plan.fat.desc != 'N/A':
+                doc.add_paragraph('Description: ' + plan.fat.desc)
             doc.add_heading('Disaster-Related Benefits\n', 2)
-            ben_table = doc.add_table(rows=len(plan.bens.indiv)+5, cols=4, style='Light List Accent 1')
+            # == BENEFITS
+            ben_table = doc.add_table(rows=len(plan.bens.indiv)+5, cols=3, style='Light List Accent 1')
             ben_index = 2
-            # Header
             ben_table.cell(0, 0).text = 'Title'
-            ben_table.cell(0, 1).text = 'Description'
-            ben_table.cell(0, 2).text = 'Amount ($)'
-            ben_table.cell(0, 3).text = 'Effective Present Value ($)'
-            ben_table.cell(1, 0).merge(ben_table.cell(1,2))
+            ben_table.cell(0, 1).text = 'Amount ($)'
+            ben_table.cell(0, 2).text = 'Effective Present Value ($)'
             ben_table.cell(1, 0).text = 'Response and Recovery Cost Reductions'
-            ben_table.cell(1, 3).text = '{:,.0f}'.format(plan.bens.r_sum)
-            ben_table.cell(1, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(1, 2).text = '{:,.0f}'.format(plan.bens.r_sum)
+            ben_table.cell(1, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ben in plan.bens.indiv:
                 if ben.ben_type == "res-rec":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
-                    ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
-            ben_table.cell(ben_index, 0).merge(ben_table.cell(ben_index, 2))
             ben_table.cell(ben_index, 0).text = 'Direct Losses Prevented'
-            ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.d_sum)
-            ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.d_sum)
+            ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ben_index += 1
             for ben in plan.bens.indiv:
                 if ben.ben_type == "direct":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
-                    ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
-            ben_table.cell(ben_index, 0).merge(ben_table.cell(ben_index, 2))
             ben_table.cell(ben_index, 0).text = 'Indirect Losses Prevented'
-            ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.i_sum)
-            ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.i_sum)
+            ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ben_index += 1
             for ben in plan.bens.indiv:
                 if ben.ben_type == "indirect":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).text = '{:,.0f}'.format(ben.amount)
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.on_dis_occ(ben.amount, plan.horizon, plan.recurrence, self.discount_rate))
-                    ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
             ben_table.cell(ben_index, 0).text = 'Total'
-            ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(plan.bens.total)
-            ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 2).text = '{:,.0f}'.format(plan.bens.total)
+            ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
+            for ben in plan.bens.indiv:
+                if ben.dist != 'none':
+                    doc.add_paragraph(ben.title + ': ' + self.uncert_string(ben.dist, ben.range))
+                if ben.desc != 'N/A':
+                    doc.add_paragraph(ben.title + ': ' + ben.desc)
+
+            # == NON-D BENEFITS
             doc.add_heading('Resilience Dividend\n', 2)
-            ben_table = doc.add_table(rows=len(plan.nond_bens.indiv)+4, cols=6, style='Light List Accent 1')
+            ben_table = doc.add_table(rows=len(plan.nond_bens.indiv)+4, cols=5, style='Light List Accent 1')
             ben_index = 2
             # Header
             ben_table.cell(0, 0).text = 'Title'
-            ben_table.cell(0, 1).text = 'Description'
-            ben_table.cell(0, 2).text = 'Start Year'
-            ben_table.cell(0, 3).text = 'Recurrence (Years)'
-            ben_table.cell(0, 4).text = 'Amount ($)'
-            ben_table.cell(0, 5).text = 'Effective Present Value ($)'
-            ben_table.cell(1, 0).merge(ben_table.cell(1,2))
+            ben_table.cell(0, 1).text = 'Start Year'
+            ben_table.cell(0, 2).text = 'Recurrence (Years)'
+            ben_table.cell(0, 3).text = 'Amount ($)'
+            ben_table.cell(0, 4).text = 'Effective Present Value ($)'
             ben_table.cell(1, 0).text = 'One Time Cost Reductions'
-            ben_table.cell(1, 5).text = '{:,.0f}'.format(plan.nond_bens.one_sum)
-            ben_table.cell(1, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(1, 4).text = '{:,.0f}'.format(plan.nond_bens.one_sum)
+            ben_table.cell(1, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ben in plan.nond_bens.indiv:
                 if ben.ben_type == "one-time":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = str(ben.times[0])
+                    ben_table.cell(ben_index, 1).text = str(ben.times[0])
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = 'N/A'
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = 'N/A'
+                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(float(ben.amount))
                     ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(float(ben.amount))
+                    ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.calc_one_time(ben.amount, ben.times[0]))
                     ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 5).text = '{:,.0f}'.format(plan.nond_bens.calc_one_time(ben.amount, ben.times[0]))
-                    ben_table.cell(ben_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
-            ben_table.cell(ben_index, 0).merge(ben_table.cell(ben_index, 2))
             ben_table.cell(ben_index, 0).text = 'Recurring Cost Reductions'
-            ben_table.cell(ben_index, 5).text = '{:,.0f}'.format(plan.nond_bens.r_sum)
-            ben_table.cell(ben_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.r_sum)
+            ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ben_index += 1
             for ben in plan.nond_bens.indiv:
                 if ben.ben_type == "recurring":
                     ben_table.cell(ben_index, 0).text = ben.title
-                    ben_table.cell(ben_index, 1).text = ben.desc
-                    ben_table.cell(ben_index, 2).text = str(ben.times[0])
+                    ben_table.cell(ben_index, 1).text = str(ben.times[0])
+                    ben_table.cell(ben_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ben_table.cell(ben_index, 2).text = str(ben.times[1])
                     ben_table.cell(ben_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 3).text = str(ben.times[1])
+                    ben_table.cell(ben_index, 3).text = '{:,.0f}'.format(float(ben.amount))
                     ben_table.cell(ben_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(float(ben.amount))
+                    ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.calc_recur(ben.amount, ben.times[0], ben.times[1]))
                     ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ben_table.cell(ben_index, 5).text = '{:,.0f}'.format(plan.nond_bens.calc_recur(ben.amount, ben.times[0], ben.times[1]))
-                    ben_table.cell(ben_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ben_index += 1
             ben_table.cell(ben_index, 0).text = 'Total'
-            ben_table.cell(ben_index, 5).text = '{:,.0f}'.format(plan.nond_bens.total)
-            ben_table.cell(ben_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.total)
+            ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            for ben in plan.nond_bens.indiv:
+                #if ben.dist != 'none':
+                #    doc.add_paragraph(self.uncert_string(ben.dist, ben.range))
+                if ben.desc != 'N/A':
+                    doc.add_paragraph(ben.title + ': ' + ben.desc)
 
+            # == COSTS
             doc.add_heading('Costs\n', 2)
-            cost_table = doc.add_table(rows=len(plan.costs.indiv)+6, cols=6, style='Light List Accent 1')
+            cost_table = doc.add_table(rows=len(plan.costs.indiv)+6, cols=5, style='Light List Accent 1')
             cost_index = 2
             # Header
             cost_table.cell(0, 0).text = 'Title'
-            cost_table.cell(0, 1).text = 'Description'
-            cost_table.cell(0, 2).text = 'Start Year'
-            cost_table.cell(0, 3).text = 'Recurrence (Years)'
-            cost_table.cell(0, 4).text = 'Amount ($)'
-            cost_table.cell(0, 5).text = 'Effective Present Value ($)'
-            cost_table.cell(1, 0).merge(cost_table.cell(1, 2))
+            cost_table.cell(0, 1).text = 'Start Year'
+            cost_table.cell(0, 2).text = 'Recurrence (Years)'
+            cost_table.cell(0, 3).text = 'Amount ($)'
+            cost_table.cell(0, 4).text = 'Effective Present Value ($)'
             cost_table.cell(1, 0).text = 'Direct Costs'
-            cost_table.cell(1, 5).text = '{:,.0f}'.format(plan.costs.d_sum)
-            cost_table.cell(1, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(1, 4).text = '{:,.0f}'.format(plan.costs.d_sum)
+            cost_table.cell(1, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for cost in plan.costs.indiv:
                 if cost.cost_type == "direct":
                     cost_table.cell(cost_index, 0).text = cost.title
-                    cost_table.cell(cost_index, 1).text = cost.desc
-                    cost_table.cell(cost_index, 2).text = 'Start-Up'
+                    cost_table.cell(cost_index, 1).text = 'Start-Up'
+                    cost_table.cell(cost_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    cost_table.cell(cost_index, 2).text = 'N/A'
                     cost_table.cell(cost_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 3).text = 'N/A'
+                    cost_table.cell(cost_index, 3).text = '{:,.0f}'.format(cost.amount)
                     cost_table.cell(cost_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(cost.amount)
+                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, cost.times[0]))
                     cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, cost.times[0]))
-                    cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     cost_index += 1
-            cost_table.cell(cost_index, 0).merge(cost_table.cell(cost_index, 2))
             cost_table.cell(cost_index, 0).text = 'Indirect Costs'
-            cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.i_sum)
-            cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.i_sum)
+            cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             cost_index += 1
             for cost in plan.costs.indiv:
                 if cost.cost_type == "indirect":
                     cost_table.cell(cost_index, 0).text = cost.title
-                    cost_table.cell(cost_index, 1).text = cost.desc
-                    cost_table.cell(cost_index, 2).text = 'Start-Up'
+                    cost_table.cell(cost_index, 1).text = 'Start-Up'
+                    cost_table.cell(cost_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    cost_table.cell(cost_index, 2).text = 'N/A'
                     cost_table.cell(cost_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 3).text = 'N/A'
+                    cost_table.cell(cost_index, 3).text = '{:,.0f}'.format(cost.amount)
                     cost_table.cell(cost_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(cost.amount)
+                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, cost.times[0]))
                     cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, cost.times[0]))
-                    cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     cost_index += 1
-            cost_table.cell(cost_index, 0).merge(cost_table.cell(cost_index, 2))
             cost_table.cell(cost_index, 0).text = 'OMR Costs: One-Time'
-            cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.omr_1_sum)
-            cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.omr_1_sum)
+            cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             cost_index += 1
             for cost in plan.costs.indiv:
                 if (cost.cost_type == "omr") & (cost.omr_type == "one-time"):
                     cost_table.cell(cost_index, 0).text = cost.title
-                    cost_table.cell(cost_index, 1).text = cost.desc
-                    cost_table.cell(cost_index, 2).text = str(cost.times[0])
+                    cost_table.cell(cost_index, 1).text = str(cost.times[0])
+                    cost_table.cell(cost_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    cost_table.cell(cost_index, 2).text = 'N/A'
                     cost_table.cell(cost_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 3).text = 'N/A'
+                    cost_table.cell(cost_index, 3).text = '{:,.0f}'.format(cost.amount)
                     cost_table.cell(cost_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(cost.amount)
+                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, float(cost.times[0])))
                     cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.calc_one_time(cost.amount, float(cost.times[0])))
-                    cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     cost_index += 1
-            cost_table.cell(cost_index, 0).merge(cost_table.cell(cost_index, 2))
             cost_table.cell(cost_index, 0).text = 'OMR Costs: Recurring'
-            cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.omr_r_sum)
-            cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.omr_r_sum)
+            cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             cost_index += 1
             for cost in plan.costs.indiv:
                 if (cost.cost_type == "omr") & (cost.omr_type == "recurring"):
                     cost_table.cell(cost_index, 0).text = cost.title
-                    cost_table.cell(cost_index, 1).text = cost.desc
-                    cost_table.cell(cost_index, 2).text = str(cost.times[0])
+                    cost_table.cell(cost_index, 1).text = str(cost.times[0])
+                    cost_table.cell(cost_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    cost_table.cell(cost_index, 2).text = str(cost.times[1])
                     cost_table.cell(cost_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 3).text = str(cost.times[1])
+                    cost_table.cell(cost_index, 3).text = '{:,.0f}'.format(cost.amount)
                     cost_table.cell(cost_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(cost.amount)
+                    cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.calc_recur(cost.amount, cost.times[0], cost.times[1]))
                     cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.calc_recur(cost.amount, cost.times[0], cost.times[1]))
-                    cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     cost_index += 1
             cost_table.cell(cost_index, 0).text = 'Total'
-            cost_table.cell(cost_index, 5).text = '{:,.0f}'.format(plan.costs.total)
-            cost_table.cell(cost_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            cost_table.cell(cost_index, 4).text = '{:,.0f}'.format(plan.costs.total)
+            cost_table.cell(cost_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            for cost in plan.costs.indiv:
+                if cost.dist != 'none':
+                    doc.add_paragraph(cost.title + ': ' + self.uncert_string(cost.dist, cost.range))
+                if cost.desc != 'N/A':
+                    doc.add_paragraph(cost.title + ': ' + cost.desc)
 
+            # == EXTERNALITIES
             doc.add_heading('Externalities\n', 2)
-            ext_table = doc.add_table(rows=len(plan.exts.indiv)+4, cols=6, style='Light List Accent 1')
+            ext_table = doc.add_table(rows=len(plan.exts.indiv)+6, cols=5, style='Light List Accent 1')
             #ext_table.style = 'TableGrid'
             ext_index = 2
             # Header
             ext_table.cell(0, 0).text = 'Title'
-            ext_table.cell(0, 1).text = 'Description'
-            ext_table.cell(0, 2).text = 'Start Year'
-            ext_table.cell(0, 3).text = 'Recurrence (Years)'
-            ext_table.cell(0, 4).text = 'Amount ($)'
-            ext_table.cell(0, 5).text = 'Effective Present Value ($)'
-            ext_table.cell(1, 0).merge(ext_table.cell(1,2))
-            ext_table.cell(1, 0).text = 'One Time Externalities'
-            ext_table.cell(1, 5).text = '{:,.0f}'.format(plan.exts.one_sum_n)
-            ext_table.cell(1, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_table.cell(0, 1).text = 'Start Year'
+            ext_table.cell(0, 2).text = 'Recurrence (Years)'
+            ext_table.cell(0, 3).text = 'Amount ($)'
+            ext_table.cell(0, 4).text = 'Effective Present Value ($)'
+            ext_table.cell(1, 0).text = 'One Time Positive Externalities'
+            ext_table.cell(1, 4).text = '{:,.0f}'.format(plan.exts.one_sum_p)
+            ext_table.cell(1, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ext in plan.exts.indiv:
-                if ext.ext_type == "one-time":
+                if (ext.ext_type == "one-time") & (ext.pm == "+"):
                     ext_table.cell(ext_index, 0).text = ext.title
-                    ext_table.cell(ext_index, 1).text = ext.desc
-                    ext_table.cell(ext_index, 2).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 2).text = 'N/A'
                     ext_table.cell(ext_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 3).text = 'N/A'
+                    ext_table.cell(ext_index, 3).text = '{:,.0f}'.format(float(ext.amount))
                     ext_table.cell(ext_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(float(ext.amount))
+                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.calc_one_time(ext.amount, ext.times[0]))
                     ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.calc_one_time(ext.amount, ext.times[0]))
-                    ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ext_index += 1
-            ext_table.cell(ext_index, 0).merge(ext_table.cell(ext_index, 2))
-            ext_table.cell(ext_index, 0).text = 'Recurring Externalities'
-            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.r_sum_n)
-            ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_table.cell(ext_index, 0).text = 'Recurring Positive Externalities'
+            ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.r_sum_p)
+            ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             ext_index += 1
             for ext in plan.exts.indiv:
-                if ext.ext_type == "recurring":
+                if (ext.ext_type == "recurring") & (ext.pm == "+"):
                     ext_table.cell(ext_index, 0).text = ext.title
-                    ext_table.cell(ext_index, 1).text = ext.desc
-                    ext_table.cell(ext_index, 2).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 2).text = str(ext.times[1])
                     ext_table.cell(ext_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 3).text = str(ext.times[1])
+                    ext_table.cell(ext_index, 3).text = '{:,.0f}'.format(float(ext.amount))
                     ext_table.cell(ext_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(float(ext.amount))
+                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.calc_recur(ext.amount, ext.times[0], ext.times[1]))
                     ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                    ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.calc_recur(ext.amount, ext.times[0], ext.times[1]))
-                    ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_index += 1
+            ext_table.cell(ext_index, 0).text = 'One Time Negative Externalities'
+            ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.one_sum_n)
+            ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_index += 1
+            for ext in plan.exts.indiv:
+                if (ext.ext_type == "one-time") & (ext.pm == "-"):
+                    ext_table.cell(ext_index, 0).text = ext.title
+                    ext_table.cell(ext_index, 1).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 2).text = 'N/A'
+                    ext_table.cell(ext_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 3).text = '{:,.0f}'.format(float(ext.amount))
+                    ext_table.cell(ext_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.calc_one_time(ext.amount, ext.times[0]))
+                    ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_index += 1
+            ext_table.cell(ext_index, 0).text = 'Recurring Negative Externalities'
+            ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.r_sum_n)
+            ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_index += 1
+            for ext in plan.exts.indiv:
+                if (ext.ext_type == "recurring") & (ext.pm == "-"):
+                    ext_table.cell(ext_index, 0).text = ext.title
+                    ext_table.cell(ext_index, 1).text = str(ext.times[0])
+                    ext_table.cell(ext_index, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 2).text = str(ext.times[1])
+                    ext_table.cell(ext_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 3).text = '{:,.0f}'.format(float(ext.amount))
+                    ext_table.cell(ext_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                    ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.calc_recur(ext.amount, ext.times[0], ext.times[1]))
+                    ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
                     ext_index += 1
             ext_table.cell(ext_index, 0).text = 'Total'
-            ext_table.cell(ext_index, 5).text = '{:,.0f}'.format(plan.exts.total_n)
-            ext_table.cell(ext_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.total_p - plan.exts.total_n)
+            ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            for ext in plan.exts.indiv:
+                #if ext.dist != 'none':
+                #    doc.add_paragraph(self.uncert_string(ext.dist, ext.range))
+                if ext.desc != 'N/A':
+                    doc.add_paragraph(ext.title + ': ' + ext.desc)
 
 
         doc.save(file_name)
@@ -908,18 +989,18 @@ class Simulation():
 
                 for i in range(old_iters, num_iters):
                     similar_list.append(self.one_iter(plan))
-                for new_plan in similar_list:
-                    new_plan.sum_it(self.horizon)
-                    ben_direct_totals.append(new_plan.bens.d_sum)
-                    ben_indirect_totals.append(new_plan.bens.i_sum)
-                    cost_direct_totals.append(new_plan.costs.d_sum)
-                    cost_indirect_totals.append(new_plan.costs.i_sum)
-                    cost_omr_1_totals.append(new_plan.costs.omr_1_sum)
-                    cost_omr_r_totals.append(new_plan.costs.omr_r_sum)
-                    res_rec_totals.append(new_plan.bens.r_sum)
-                    ben_totals.append(new_plan.total_bens)
-                    cost_totals.append(new_plan.total_costs)
-                    net_totals.append(new_plan.net)
+                #for new_plan in similar_list:
+                    similar_list[i].sum_it(self.horizon)
+                    ben_direct_totals.append(similar_list[i].bens.d_sum)
+                    ben_indirect_totals.append(similar_list[i].bens.i_sum)
+                    cost_direct_totals.append(similar_list[i].costs.d_sum)
+                    cost_indirect_totals.append(similar_list[i].costs.i_sum)
+                    cost_omr_1_totals.append(similar_list[i].costs.omr_1_sum)
+                    cost_omr_r_totals.append(similar_list[i].costs.omr_r_sum)
+                    res_rec_totals.append(similar_list[i].bens.r_sum)
+                    ben_totals.append(similar_list[i].total_bens)
+                    cost_totals.append(similar_list[i].total_costs)
+                    net_totals.append(similar_list[i].net)
                 ben_direct_totals.sort()
                 ben_indirect_totals.sort()
                 cost_direct_totals.sort()
@@ -932,7 +1013,8 @@ class Simulation():
                 net_totals.sort()
 
                 first_num = math.floor(num_iters*(1-confidence/100)/2)
-                last_num = num_iters - first_num
+                last_num = math.ceil(num_iters - num_iters*(1-confidence/100)/2)#num_iters - first_num
+                #print(first_num, similar_list.index(plan), last_num, num_iters)
 
                 plan.bens.direct_range = [ben_direct_totals[first_num], ben_direct_totals[last_num]]
                 plan.bens.indirect_range = [ben_indirect_totals[first_num], ben_indirect_totals[last_num]]
@@ -972,7 +1054,7 @@ class Simulation():
     def one_iter(self, my_plan):
         delta_plan = Plan(my_plan.id_assign, my_plan.name, [my_plan.recurr_dist, my_plan.recurr_range],
                           [my_plan.mag_dist, my_plan.mag_range], self.discount_rate, self.horizon,
-                          self.stat_life)
+                          self.stat_life, self.parties)
         delta_plan.bens = delta_plan.bens.one_iter(my_plan.bens.indiv)
         delta_plan.exts = my_plan.exts
         delta_plan.costs = delta_plan.costs.one_iter(my_plan.costs.indiv)
@@ -984,7 +1066,7 @@ class Plan():
     """ Has all of the aspects of the plan. """
     tol = 1E-7
     def __init__(self, plan_id, plan_name, disaster_recurrence, disaster_magnitude,
-                 discount_rate, horizon, stat_life):
+                 discount_rate, horizon, stat_life, parties):
         # Basic Information
         self.id_assign = int(plan_id)
         self.name = plan_name
@@ -1000,12 +1082,12 @@ class Plan():
             self.recurr_uncert = list(disaster_recurrence)
             self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
         else:
-            self.recurr_uncert = list(disaster_recurrence)
+            self.recurr_uncert = list(disaster_recurrence[1])
             self.recurrence = [disaster_recurrence[1][1]]
         self.mag_dist = disaster_magnitude[0]
         self.mag_range = disaster_magnitude[1]
         if self.mag_dist == "none":
-            self.mag_uncert = 0
+            self.mag_uncert = [0]
             self.magnitude = [disaster_magnitude[1][0]]
         elif self.mag_dist == "gauss":
             self.mag_uncert = disaster_magnitude[1][1]
@@ -1014,13 +1096,13 @@ class Plan():
             self.mag_uncert = list(disaster_magnitude)
             self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2], disaster_magnitude[1][3]])
         else:
-            self.mag_uncert = list([disaster_magnitude[1][0], disaster_magnitude[1][3]])
+            self.mag_uncert = list(disaster_magnitude[1])
             self.magnitude = disaster_magnitude[1][1]
         self.horizon = horizon
 
         # Specific pieces
         self.costs = Costs(discount_rate, horizon)
-        self.exts = Externalities(discount_rate, horizon)
+        self.exts = Externalities(discount_rate, horizon, parties)
         self.bens = Benefits(self.recurrence, discount_rate, horizon)
         self.fat = Fatalities(self.recurrence, discount_rate, stat_life, horizon)
         self.nond_bens = NonDBens(discount_rate, horizon)

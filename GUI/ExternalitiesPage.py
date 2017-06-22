@@ -114,7 +114,7 @@ class ExternalitiesPage(tk.Frame):
             """ Adds a new party to the list."""
             self.data_cont.plan_list[0].exts.parties.append(self.party_ent.get())
 
-            self.third_parties.configure(values=self.data_cont.plan_list[0].exts.parties)
+            self.third_parties.configure(values=self.data_cont.parties)
 
 
         group3 = ttk.LabelFrame(self, text="Third Party Affected")
@@ -129,7 +129,7 @@ class ExternalitiesPage(tk.Frame):
         self.new_party = tk.StringVar()
         self.third_parties = ttk.Combobox(group3, textvariable=self.new_party, font=SMALL_FONT,
                                           width=ENTRY_WIDTH,
-                                          values=self.data_cont.plan_list[0].exts.parties)
+                                          values=self.data_cont.parties)
         self.third_parties.grid(row=3, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         # ===== Interact with previously inputted externalities

@@ -65,7 +65,7 @@ class AnalysisInfo(tk.Frame):
         analysis_button.grid(row=0, columnspan=3, sticky="ew",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         docx_button = ttk.Button(button_group, text="Export as .docx",
-                                 command=lambda: self.document)
+                                 command=lambda: self.document(self.uncert_select.get()))
         docx_button.grid(row=1, column=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
         docx_button.grid_columnconfigure(0, weight=1)
         csv_button = ttk.Button(button_group, text="Export as .csv",
