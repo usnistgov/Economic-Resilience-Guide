@@ -4,6 +4,9 @@
     2017-05
 """
 import math
+import numpy as np
+
+from Data.distributions import uniDistInv, triDistInv, gauss_dist_inv, none_dist, discrete_dist_inv
 
 class Externalities():
     """ Holds a list of all of the externalities
@@ -24,7 +27,10 @@ class Externalities():
 
     def new_ext(self, line):
         """ Makes a new externality and adds it to the list of externality types. """
-        if line[0] == "positive":
+        if line[0] == 'Uncertainty':
+            self.indiv[-1].dist = line[1]
+            self.indiv[-1].range = list(line[2:8])
+        elif line[0] == "positive":
             self.indiv[-1].pm = '+'
             self.indiv[-1].set_party(line[1])
         elif line[0] == "negative":
@@ -179,6 +185,22 @@ class Externalities():
         else:
             return [valid, blank, err_messages]
 
+    def one_iter(self, old_ext_list):
+        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
+        delta_ext = Externalities(self.discount_rate, self.horizon, self.parties)
+        for ext in old_ext_list:
+            ext_dict = {'title': ext.title,
+                        'ext_type': ext.ext_type,
+                        'times': ext.times,
+                        'pm': ext.pm,
+                        'new_party': ext.third_party,
+                        'parties': ext.parties,
+                        'desc': ext.desc}
+            ext_dict['amount'] = dist_dict[ext.dist](np.random.uniform(), ext.amount, ext.range)
+            delta_ext.indiv.append(Externality(**ext_dict))
+
+        return delta_ext
+
 class Externality():
     """ Holds all of the information about externalities. """
     def __init__(self, title="none", amount=0, ext_type='none', times=[0, 0, 0], pm='none',
@@ -195,6 +217,19 @@ class Externality():
             self.desc += bit
         self.parties = parties
         self.third_party = self.set_party(new_party)
+        self.range = ['<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>',
+                      '<insert uncertainty>']
+        self.dist = "none"
+
+    def add_uncertainty(self, new_range, distribution):
+        """ Adds uncertainty to a specific benefit."""
+
+        self.range = new_range
+        self.dist = distribution
 
     def set_party(self, new_party):
         if (new_party == 'none') | (new_party == ''):

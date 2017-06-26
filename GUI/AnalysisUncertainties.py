@@ -216,18 +216,45 @@ def run_u_main_page(data):
                       font=NORM_FONT).grid(row=e_index + 1, column=0, sticky="w", **pad_opts)
             ttk.Label(group0, text=my_tab + "One-Time",
                       font=SMALL_FONT).grid(row=e_index + 2, column=0, sticky="w", **pad_opts)
-            ttk.Label(group0, text=my_tab + "Recurring",
-                      font=SMALL_FONT).grid(row=e_index + 3, column=0, sticky="w", **pad_opts)
-            ttk.Label(group0, text="Negative",
-                      font=NORM_FONT).grid(row=e_index + 4, column=0, sticky="w", **pad_opts)
-            ttk.Label(group0, text=my_tab + "One-Time",
-                      font=SMALL_FONT).grid(row=e_index + 5, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                      font=SMALL_FONT).grid(row=e_index+3, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                      font=BOLD_FONT).grid(row=e_index+4, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                      font=SMALL_FONT).grid(row=e_index+5, column=0, sticky="w", **pad_opts)
+
             ttk.Label(group0, text=my_tab + "Recurring",
                       font=SMALL_FONT).grid(row=e_index + 6, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                      font=SMALL_FONT).grid(row=e_index+7, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                      font=BOLD_FONT).grid(row=e_index+8, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                      font=SMALL_FONT).grid(row=e_index+9, column=0, sticky="w", **pad_opts)
+
+            ttk.Label(group0, text="Negative",
+                      font=NORM_FONT).grid(row=e_index + 10, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + "One-Time",
+                      font=SMALL_FONT).grid(row=e_index + 11, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                      font=SMALL_FONT).grid(row=e_index+12, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                      font=BOLD_FONT).grid(row=e_index+13, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                      font=SMALL_FONT).grid(row=e_index+14, column=0, sticky="w", **pad_opts)
+
+            ttk.Label(group0, text=my_tab + "Recurring",
+                      font=SMALL_FONT).grid(row=e_index + 15, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                      font=SMALL_FONT).grid(row=e_index+16, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                      font=BOLD_FONT).grid(row=e_index+17, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                      font=SMALL_FONT).grid(row=e_index+18, column=0, sticky="w", **pad_opts)
 
 
             # ===== Totals
-            tot_index = e_index + 7
+            tot_index = e_index + 19
             total_label = ttk.Label(group0, text="Totals", font=SMALL_FONT, foreground="blue")
             total_label.grid(row=tot_index, column=0, sticky="w", **pad_opts)
 
@@ -349,20 +376,44 @@ def run_u_main_page(data):
 
                 # One-Time Extenalities Positive
                 ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_p_range[0]),
+                          font=SMALL_FONT).grid(row=e_index + 3, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum_p),
-                          font=SMALL_FONT).grid(row=e_index + 2, column=(i+1), sticky="e", **pad_opts)
+                          font=BOLD_FONT).grid(row=e_index + 4, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_p_range[1]),
+                          font=SMALL_FONT).grid(row=e_index + 5, column=(i+1), sticky="e", **pad_opts)
                 # Recurring Externalities Positive
                 ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_p_range[0]),
+                          font=SMALL_FONT).grid(row=e_index + 7, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum_p),
-                          font=SMALL_FONT).grid(row=e_index + 3, column=(i+1), sticky="e", **pad_opts)
+                          font=BOLD_FONT).grid(row=e_index + 8, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_p_range[1]),
+                          font=SMALL_FONT).grid(row=e_index + 9, column=(i+1), sticky="e", **pad_opts)
                 # One-Time Extenalities Negative
                 ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_n_range[0]),
+                          font=SMALL_FONT).grid(row=e_index + 12, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum_n),
-                          font=SMALL_FONT).grid(row=e_index + 5, column=(i+1), sticky="e", **pad_opts)
+                          font=BOLD_FONT).grid(row=e_index + 13, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_n_range[1]),
+                          font=SMALL_FONT).grid(row=e_index + 14, column=(i+1), sticky="e", **pad_opts)
                 # Recurring Externalities Negative
                 ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_n_range[0]),
+                          font=SMALL_FONT).grid(row=e_index + 17, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum_n),
-                          font=SMALL_FONT).grid(row=e_index + 6, column=(i+1), sticky="e", **pad_opts)
+                          font=BOLD_FONT).grid(row=e_index + 18, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_n_range[1]),
+                          font=SMALL_FONT).grid(row=e_index + 19, column=(i+1), sticky="e", **pad_opts)
 
                 # Non D Bens
                 ttk.Label(group0,

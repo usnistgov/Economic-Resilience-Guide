@@ -227,16 +227,20 @@ class Simulation():
             new_file.write(',$' + str(plan.costs.omr_r_range[0]) + ',$' + str(plan.costs.omr_r_range[1]))
         new_file.write('\nExternalities\nPositive\nOne-Time')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.one_sum_p)+',,')
+            new_file.write(',$' + str(plan.exts.one_sum_p))
+            new_file.write(',$' + str(plan.exts.one_p_range[0]) + ',$' + str(plan.exts.one_p_range[1]))
         new_file.write('\nRecurring')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.r_sum_p)+',,')
+            new_file.write(',$' + str(plan.exts.r_sum_p))
+            new_file.write(',$' + str(plan.exts.r_p_range[0]) + ',$' + str(plan.exts.r_p_range[1]))
         new_file.write('\nNegative\nOne-Time')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.one_sum_n)+',,')
+            new_file.write(',$' + str(plan.exts.one_sum_n))
+            new_file.write(',$' + str(plan.exts.one_n_range[0]) + ',$' + str(plan.exts.one_n_range[1]))
         new_file.write('\nRecurring')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.exts.r_sum_n)+',,')
+            new_file.write(',$' + str(plan.exts.r_sum_n))
+            new_file.write(',$' + str(plan.exts.r_n_range[0]) + ',$' + str(plan.exts.r_n_range[1]))
         new_file.write('\nTotal: Present Expected Value\nBenefits')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.total_bens))
@@ -928,8 +932,8 @@ class Simulation():
             ext_table.cell(ext_index, 4).text = '{:,.0f}'.format(plan.exts.total_p - plan.exts.total_n)
             ext_table.cell(ext_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ext in plan.exts.indiv:
-                #if ext.dist != 'none':
-                #    doc.add_paragraph(self.uncert_string(ext.dist, ext.range))
+                if ext.dist != 'none':
+                    doc.add_paragraph(ext.title + ': ' + self.uncert_string(ext.dist, ext.range))
                 if ext.desc != 'N/A':
                     doc.add_paragraph(ext.title + ': ' + ext.desc)
 
@@ -976,6 +980,10 @@ class Simulation():
             cost_omr_r_totals = []
             nond_1_totals = []
             nond_r_totals = []
+            ext_p_one_totals = []
+            ext_p_r_totals = []
+            ext_n_one_totals = []
+            ext_n_r_totals = []
 
             ben_totals = []
             cost_totals = []
@@ -1003,6 +1011,10 @@ class Simulation():
                     res_rec_totals.append(similar_list[i].bens.r_sum)
                     nond_1_totals.append(similar_list[i].nond_bens.one_sum)
                     nond_r_totals.append(similar_list[i].nond_bens.r_sum)
+                    ext_p_one_totals.append(similar_list[i].exts.one_sum_p)
+                    ext_p_r_totals.append(similar_list[i].exts.r_sum_p)
+                    ext_n_one_totals.append(similar_list[i].exts.one_sum_n)
+                    ext_n_r_totals.append(similar_list[i].exts.r_sum_n)
                     ben_totals.append(similar_list[i].total_bens)
                     cost_totals.append(similar_list[i].total_costs)
                     net_totals.append(similar_list[i].net)
@@ -1015,6 +1027,10 @@ class Simulation():
                 res_rec_totals.sort()
                 nond_1_totals.sort()
                 nond_r_totals.sort()
+                ext_p_one_totals.sort()
+                ext_p_r_totals.sort()
+                ext_n_one_totals.sort()
+                ext_n_r_totals.sort()
                 ben_totals.sort()
                 cost_totals.sort()
                 net_totals.sort()
@@ -1032,6 +1048,10 @@ class Simulation():
                 plan.costs.omr_r_range = [cost_omr_r_totals[first_num], cost_omr_r_totals[last_num]]
                 plan.nond_bens.one_range = [nond_1_totals[first_num], nond_1_totals[last_num]]
                 plan.nond_bens.r_range = [nond_r_totals[first_num], nond_r_totals[last_num]]
+                plan.exts.one_p_range = [ext_p_one_totals[first_num], ext_p_one_totals[last_num]]
+                plan.exts.one_n_range = [ext_n_one_totals[first_num], ext_n_one_totals[last_num]]
+                plan.exts.r_p_range = [ext_p_r_totals[first_num], ext_p_r_totals[last_num]]
+                plan.exts.r_n_range = [ext_n_r_totals[first_num], ext_n_r_totals[last_num]]
                 plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
                 plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
                 plan.net_range = [net_totals[first_num], net_totals[last_num]]                
@@ -1065,7 +1085,7 @@ class Simulation():
                           [my_plan.mag_dist, my_plan.mag_range], self.discount_rate, self.horizon,
                           self.stat_life, self.parties)
         delta_plan.bens = delta_plan.bens.one_iter(my_plan.bens.indiv)
-        delta_plan.exts = my_plan.exts
+        delta_plan.exts = delta_plan.exts.one_iter(my_plan.exts.indiv)
         delta_plan.costs = delta_plan.costs.one_iter(my_plan.costs.indiv)
         delta_plan.fat = my_plan.fat
         delta_plan.nond_bens = delta_plan.nond_bens.one_iter(my_plan.nond_bens.indiv)
@@ -1261,6 +1281,13 @@ class Plan():
             else:
                 new_file.write('negative,')
             new_file.write(ext.third_party + '\n')
+            new_file.write(',Externalities,Uncertainty,' + ben.dist)
+            for value in ext.range:
+                if value != '<insert uncertainty>':
+                    new_file.write(',' + str(value))
+                else:
+                    new_file.write(',0')
+            new_file.write('\n')
         for nond_ben in self.nond_bens.indiv:
             new_file.write(',Non-Disaster Benefits,' + nond_ben.title + ',' + nond_ben.ben_type + ',')
             for item in nond_ben.times:

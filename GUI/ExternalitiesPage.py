@@ -204,7 +204,7 @@ class ExternalitiesPage(tk.Frame):
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.
             If save unsuccessful asks user for verification to move on."""
-            go_to_place = 'BenefitsPage'
+            go_to_place = 'ExternalitiesUncertaintiesPage'
             moveon = self.add_ext(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)

@@ -17,6 +17,7 @@ from GUI.DirectoryPage import DirectoryPage
 from GUI.CostPage import CostPage
 from GUI.CostsUncertainties import CostsUncertaintiesPage
 from GUI.ExternalitiesPage import ExternalitiesPage
+from GUI.ExternalitiesUncertainties import ExternalitiesUncertaintiesPage
 from GUI.BenefitsPage import BenefitsPage
 from GUI.BenefitsUncertainties import BenefitsUncertaintiesPage
 from GUI.FatalitiesPage import FatalitiesPage
@@ -63,6 +64,7 @@ class Application(tk.Tk):
                       'CostPage': CostPage,
                       'CostsUncertaintiesPage': CostsUncertaintiesPage,
                       'ExternalitiesPage': ExternalitiesPage,
+                      'ExternalitiesUncertaintiesPage': ExternalitiesUncertaintiesPage,
                       'BenefitsPage': BenefitsPage,
                       'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
                       'FatalitiesPage': FatalitiesPage,
@@ -114,7 +116,7 @@ class StartPage(tk.Frame):
             controller.cont_list = [controller.data_cont]
 
             for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
-                         ExternalitiesPage,
+                         ExternalitiesPage, ExternalitiesUncertaintiesPage,
                          BenefitsPage, BenefitsUncertaintiesPage,
                          FatalitiesPage, NonDBensPage,
                          NonDBensUncertaintiesPage, AnalysisInfo):
@@ -131,7 +133,8 @@ class StartPage(tk.Frame):
                 controller.data_cont.file_read(file_name=filename)
                 controller.cont_list = [controller.data_cont]
                 for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
-                             ExternalitiesPage, BenefitsPage, BenefitsUncertaintiesPage,
+                             ExternalitiesPage, ExternalitiesUncertaintiesPage,
+                             BenefitsPage, BenefitsUncertaintiesPage,
                              FatalitiesPage, NonDBensPage,
                              NonDBensUncertaintiesPage, AnalysisInfo):
                     frame = page(controller.container.interior, controller, controller.cont_list)
