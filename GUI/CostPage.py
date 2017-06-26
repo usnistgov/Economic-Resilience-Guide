@@ -215,6 +215,14 @@ class CostPage(tk.Frame):
             moveon = self.add_cost(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)
+        
+        def menu():
+            """ Tries to save the input and sends the user to the Directory Page.
+            If save unsuccessful, asks user for verification to move on."""
+            go_to_place = 'DirectoryPage'
+            moveon = self.add_cost(moveon=True)
+            if moveon:
+                controller.show_frame(go_to_place)
 
 
         # ===== Manueverability/Information buttons
@@ -229,6 +237,7 @@ class CostPage(tk.Frame):
         back_button.grid(row=7, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=7, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Directory", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def hover(self, _event):
@@ -382,7 +391,7 @@ class CostPage(tk.Frame):
             err_messages += "Dollar value of the cost must be a number. Please enter an amount.\n\n"
             valid = False
         if "-" in self.cost_ent.get():
-            err_messages += "Cost must be a positive number. Are you sure this is not a benefit?\n"
+            err_messages += "Cost must be a positive number. Perhaps you should enter that as a benefit.\n"
             err_messages += "Please enter a positive amount.\n\n"
             valid = False
 

@@ -190,6 +190,14 @@ class NonDBensPage(tk.Frame):
             if moveon:
                 controller.show_frame(go_to_place)
 
+        def menu():
+            """ Tries to save the input and sends the user to the Directory Page.
+            If save unsuccessful, asks user for verification to move on."""
+            go_to_place = 'DirectoryPage'
+            moveon = self.add_ben(moveon=True)
+            if moveon:
+                controller.show_frame(go_to_place)
+
         # ===== Manueverability/Information buttons
         save_button = ttk.Button(self, text="Save Analysis",
                                  command=lambda: self.data_cont.file_save())
@@ -202,6 +210,8 @@ class NonDBensPage(tk.Frame):
         back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="View Analysis", command=save_and_next)
         finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Directory", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
 
     def hover(self, _event):
         """Updates prevList when mouse is hovered over the widget"""
@@ -365,7 +375,8 @@ class NonDBensPage(tk.Frame):
             err_messages += "Please enter an amount.\n\n"
             valid = False
         if "-" in self.ben_ent.get():
-            err_messages += "Benefit must be a positive number. Please enter a positive amount.\n\n"
+            err_messages += "Benefit must be a positive number. Perhaps you should enter that as a cost.\n"
+            err_messages += "Please enter a positive amount.\n\n"
             valid = False
 
         try:

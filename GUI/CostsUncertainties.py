@@ -84,6 +84,13 @@ class CostsUncertaintiesPage(tk.Frame):
             if moveon:
                 controller.show_frame(go_to_place)
 
+        def menu():
+            """ Tries to save the input and sends the user to the Directory Page.
+            If save unsuccessful, asks user for verification to move on."""
+            go_to_place = 'DirectoryPage'
+            moveon = self.add_uncertainty(moveon=True)
+            if moveon:
+                controller.show_frame(go_to_place)
 
         # ===== Manueverability/Information buttons
         save_button = ttk.Button(self, text="Save Analysis",
@@ -100,6 +107,8 @@ class CostsUncertaintiesPage(tk.Frame):
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=13, column=1, sticky="se",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Directory", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
 
     def show_info(self):
         """ Pulls up information for the Costs page."""
