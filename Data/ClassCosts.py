@@ -115,7 +115,10 @@ class Cost():
             self.desc += bit
         if self.omr_type != "none":
             for num in self.times:
-                num = float(num)
+                try:
+                    num = float(num)
+                except ValueError:
+                    num = 0
         else:
             self.times = [0, 0, 0]
 

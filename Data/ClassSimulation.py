@@ -1136,15 +1136,15 @@ class Plan():
             self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
         else:
             self.recurr_uncert = list(disaster_recurrence[1])
-            self.recurrence = [disaster_recurrence[1][1]]
+            self.recurrence = disaster_recurrence[1][1]
         self.mag_dist = disaster_magnitude[0]
         self.mag_range = disaster_magnitude[1]
         if self.mag_dist == "none":
-            self.mag_uncert = 0
-            self.magnitude = [disaster_magnitude[1][0]]
+            self.mag_uncert = [0]
+            self.magnitude = disaster_magnitude[1][0]
         elif self.mag_dist == "gauss":
             self.mag_uncert = disaster_magnitude[1][1]
-            self.magnitude = [disaster_magnitude[1][0]]
+            self.magnitude = disaster_magnitude[1][0]
         elif self.mag_dist == "discrete":
             self.mag_uncert = list(disaster_magnitude[1])
             self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2], disaster_magnitude[1][3]])
@@ -1226,14 +1226,20 @@ class Plan():
             new_file.write(str(cost.amount) + ',' + str(cost.desc) + '\n')
             new_file.write(',Costs,Uncertainty,' + cost.dist)
             for value in cost.range:
-                new_file.write(',' + str(value))
+                if value != '<insert uncertainty>':
+                    new_file.write(',' + str(value))
+                else:
+                    new_file.write(',0')
             new_file.write('\n')
         for ben in self.bens.indiv:
             new_file.write(',Benefits,' + ben.title + ',' + ben.ben_type + ',')
             new_file.write(str(ben.amount) + ',' + str(ben.desc) + '\n')
             new_file.write(',Benefits,Uncertainty,' + ben.dist)
             for value in ben.range:
-                new_file.write(',' + str(value))
+                if value != '<insert uncertainty>':
+                    new_file.write(',' + str(value))
+                else:
+                    new_file.write(',0')
             new_file.write('\n')
         for ext in self.exts.indiv:
             new_file.write(',Externalities,' + ext.title + ',' + ext.ext_type)
