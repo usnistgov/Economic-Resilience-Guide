@@ -113,8 +113,14 @@ class Cost():
         self.desc = ""
         for bit in desc:
             self.desc += bit
-        for num in self.times:
-            num = float(num)
+        if self.omr_type != "none":
+            for num in self.times:
+                try:
+                    num = float(num)
+                except ValueError:
+                    num = 0
+        else:
+            self.times = [0, 0, 0]
 
         self.range = ['<insert uncertainty>',
                       '<insert uncertainty>',

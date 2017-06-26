@@ -8,8 +8,7 @@ import math
 class Externalities():
     """ Holds a list of all of the externalities
         and performs the externality-related calculations."""
-    parties = ['developer', 'title holder(s)', 'lender(s)', 'tenants', 'users', 'community']
-    def __init__(self, discount_rate, horizon):
+    def __init__(self, discount_rate, horizon, parties):
         self.indiv = []
         self.one_sum_p = 0
         self.one_sum_n = 0
@@ -17,6 +16,8 @@ class Externalities():
         self.r_sum_n = 0
         self.total_p = self.one_sum_p + self.r_sum_p
         self.total_n = self.one_sum_n + self.r_sum_n
+
+        self.parties = parties
 
         self.discount_rate = float(discount_rate)
         self.horizon = float(horizon)

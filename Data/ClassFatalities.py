@@ -37,5 +37,8 @@ class Fatalities():
         value = float(value)
         eqn_lambda = 1/disaster_rate
         k = discount_rate/100
-        mult = eqn_lambda / math.fabs(1 - math.exp(-k))
-        return mult * (1 - math.exp(-k * horizon)) * value
+        try:
+            mult = eqn_lambda / math.fabs(1 - math.exp(-k))* (1 - math.exp(-k * horizon))
+        except ZeroDivisionError:
+            mult = eqn_lambda * horizon
+        return mult * value

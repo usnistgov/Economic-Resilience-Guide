@@ -331,24 +331,24 @@ class InfoPage(tk.Frame):
         # Fills data_cont with the values entered
         data = self.controller.data_cont
         data.title = self.name_ent.get()
-        data.num_plans = int(self.num_plans_ent.get())
+        data.num_plans = int(self.num_plans_ent.get()) + 1
         data.horizon = float(self.hor_ent.get())
         data.discount_rate = float(self.dis_ent.get())
         data.risk_preference = self.preference.get()
 
         dis_recurr = [entry.get() for entry in self.recur_range]
         dis_mag = [entry.get() for entry in self.mag_range]
-        
+
         if data.plan_list == []:
             data.plan_list.append(Plan(0, "Base",
                                     [self.recur_choice.get(), dis_recurr],
                                     [self.mag_choice.get(), dis_mag],
-                                    data.discount_rate, data.horizon, data.stat_life))
-            for i in range(data.num_plans):
-                data.plan_list.append(Plan(i+1, self.name_ents[i].get(),
+                                    data.discount_rate, data.horizon, data.stat_life, self.data_cont.parties))
+            for i in range(1, data.num_plans):
+                data.plan_list.append(Plan(i, self.name_ents[i-1].get(),
                                         [self.recur_choice.get(), dis_recurr],
                                         [self.mag_choice.get(), dis_mag],
-                                        data.discount_rate, data.horizon, data.stat_life))
+                                        data.discount_rate, data.horizon, data.stat_life, self.data_cont.parties))
         else:
             old_num_plans = len(data.plan_list)
             new_num_plans = data.num_plans + 1
@@ -365,7 +365,7 @@ class InfoPage(tk.Frame):
                     data.plan_list.append(Plan(i, self.name_ents[i-1].get(),
                                           [self.recur_choice.get(), dis_recurr],
                                           [self.mag_choice.get(), dis_mag],
-                                          data.discount_rate, data.horizon, data.stat_life))
+                                          data.discount_rate, data.horizon, data.stat_life, self.data_cont.parties))
             elif old_num_plans > new_num_plans:
                 data.plan_list[0].update(0, 'Base', [self.recur_choice.get(), dis_recurr],
                                          [self.mag_choice.get(), dis_mag],
