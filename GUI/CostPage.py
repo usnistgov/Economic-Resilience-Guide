@@ -382,7 +382,8 @@ class CostPage(tk.Frame):
             err_messages += "Dollar value of the cost must be a number. Please enter an amount.\n\n"
             valid = False
         if "-" in self.cost_ent.get():
-            err_messages += "Cost must be a positive number. Please enter a positive amount.\n\n"
+            err_messages += "Cost must be a positive number. Are you sure this is not a benefit?\n"
+            err_messages += "Please enter a positive amount.\n\n"
             valid = False
 
         # ===== Omr Fields must be filled if OMR is selected
@@ -397,17 +398,15 @@ class CostPage(tk.Frame):
                 err_messages += "Please enter a positive amount.\n\n"
                 valid = False
 
-            if self.omr_selection.get() == "Recurring":
+            if self.omr_selection.get() == "recurring":
                 try:
-                    float(self.year_rate_ent.get())
+                    if float(self.year_rate_ent.get()) <= 0:
+                        err_messages += "Recurring rate must be a positive number. "
+                        err_messages += "Please enter a positive amount.\n\n"
+                        valid = False
                 except ValueError:
                     err_messages += "Recurring rate must be a number. Please enter an amount.\n\n"
                     valid = False
-                if "-" in self.year_start_ent.get():
-                    err_messages += "Recurring rate must be a positive number. "
-                    err_messages += "Please enter a positive amount.\n\n"
-                    valid = False
-
 
         if (not valid) & printout:
             messagebox.showerror("ERROR", err_messages)

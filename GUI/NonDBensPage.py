@@ -380,13 +380,12 @@ class NonDBensPage(tk.Frame):
 
         if self.non_d_ben_recurr_selection.get() == "recurring":
             try:
-                float(self.year_rate_ent.get())
+                if float(self.year_rate_ent.get()) <= 0:
+                    err_messages += "Recurring rate must be a positive number. "
+                    err_messages += "Please enter a positive amount.\n\n"
+                    valid = False
             except ValueError:
-                err_messages += "recurring rate must be a number. Please enter an amount.\n\n"
-                valid = False
-            if "-" in self.year_start_ent.get():
-                err_messages += "recurring rate must be a positive number. "
-                err_messages += "Please enter a positive amount.\n\n"
+                err_messages += "Recurring rate must be a number. Please enter an amount.\n\n"
                 valid = False
 
         if (not valid) & printout:
