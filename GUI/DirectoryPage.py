@@ -69,6 +69,9 @@ class DirectoryPage(tk.Frame):
                                       command=lambda: controller.show_frame('NonDBensPage'))
         non_d_ben_button.grid(row=5, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
+        non_d_ben_button = ttk.Button(group, text="Non-Disaster Related Benefits Uncertainties",
+                                      command=lambda: controller.show_frame('NonDBensUncertaintiesPage'))
+        non_d_ben_button.grid(row=5, column=1, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         ana_button = ttk.Button(self, text="Analysis",
                                 command=lambda: controller.show_frame('AnalysisInfo'))

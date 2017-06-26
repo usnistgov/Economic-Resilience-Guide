@@ -177,7 +177,7 @@ class NonDBensPage(tk.Frame):
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.
             If save unsuccessful asks user for verification to move on."""
-            go_to_place = 'AnalysisInfo'
+            go_to_place = 'NonDBensUncertaintiesPage'
             moveon = self.add_ben(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)
@@ -208,7 +208,7 @@ class NonDBensPage(tk.Frame):
         did_info.grid(row=2, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         back_button = ttk.Button(self, text="<<Back", command=save_and_back)
         back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        finished_button = ttk.Button(self, text="View Analysis", command=save_and_next)
+        finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         ttk.Button(self, text="Directory", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 

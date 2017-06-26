@@ -11,8 +11,6 @@ from tkinter import messagebox
 from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT, BOLD_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 
-from monte_benefits import monte_carlo as m_bens
-
 def run_u_main_page(data):
     """Only creates a new window called "MainPage" once all calculations are finished"""
     class UMainPage(tk.Tk):
@@ -146,11 +144,25 @@ def run_u_main_page(data):
             non_d_ben_lbl.grid(row=ndrb_index, column=0, sticky="w", **pad_opts)
             ttk.Label(group0, text=my_tab + "One-Time",
                       font=SMALL_FONT).grid(row=ndrb_index + 1, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                      font=SMALL_FONT).grid(row=ndrb_index+2, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                      font=BOLD_FONT).grid(row=ndrb_index+3, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                      font=SMALL_FONT).grid(row=ndrb_index+4, column=0, sticky="w", **pad_opts)
+
             ttk.Label(group0, text=my_tab + "Recurring",
-                      font=SMALL_FONT).grid(row=ndrb_index + 2, column=0, sticky="w", **pad_opts)
+                      font=SMALL_FONT).grid(row=ndrb_index + 5, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                      font=SMALL_FONT).grid(row=ndrb_index+6, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                      font=BOLD_FONT).grid(row=ndrb_index+7, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                      font=SMALL_FONT).grid(row=ndrb_index+8, column=0, sticky="w", **pad_opts)
+
 
             # ===== Total Costs
-            cost_index = ndrb_index + 3
+            cost_index = ndrb_index + 9
             cost_label = ttk.Label(group0, text="Costs", font=SMALL_FONT, foreground="blue")
             cost_label.grid(row=cost_index, column=0, sticky="w", **pad_opts)
 
@@ -354,12 +366,24 @@ def run_u_main_page(data):
 
                 # Non D Bens
                 ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.one_range[0]),
+                          font=SMALL_FONT).grid(row=ndrb_index+2, column=i+1, sticky="e", **pad_opts)
+                ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.one_sum),
-                          font=SMALL_FONT).grid(row=ndrb_index+1, column=i+1, sticky="e", **pad_opts)
+                          font=BOLD_FONT).grid(row=ndrb_index+3, column=i+1, sticky="e", **pad_opts)
+                ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.one_range[1]),
+                          font=SMALL_FONT).grid(row=ndrb_index+4, column=i+1, sticky="e", **pad_opts)
+
+                ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.r_range[0]),
+                          font=SMALL_FONT).grid(row=ndrb_index+6, column=i+1, sticky="e", **pad_opts)
                 ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.r_sum),
-                          font=SMALL_FONT).grid(row=ndrb_index+2, column=i+1, sticky="e", **pad_opts)
-
+                          font=BOLD_FONT).grid(row=ndrb_index+7, column=i+1, sticky="e", **pad_opts)
+                ttk.Label(group0,
+                          text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.r_range[1]),
+                          font=SMALL_FONT).grid(row=ndrb_index+8, column=i+1, sticky="e", **pad_opts)
                 # Totals
                 ttk.Label(group0,
                           text='${:,.0f}'.format(self.data_cont.plan_list[i].ben_range[0]),

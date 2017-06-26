@@ -4,7 +4,7 @@ import numpy
 def triDistInv(rand, mid, inputs):
     """ Returns a vlue within the -tri- distribution."""
     a = float(inputs[0])
-    b = mid
+    b = float(mid)
     c = float(inputs[1])
     if a > b:
         return "a must be less than b"

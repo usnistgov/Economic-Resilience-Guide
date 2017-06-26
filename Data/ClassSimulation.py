@@ -203,10 +203,12 @@ class Simulation():
             new_file.write(',' + str(plan.fat.stat_averted)+',,')
         new_file.write('\nNon-disaster Related Benefits\nOne-Time')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.nond_bens.one_sum)+',,')
+            new_file.write(',$' + str(plan.nond_bens.one_sum))
+            new_file.write(',$' + str(plan.nond_bens.one_range[0]) + ',$' + str(plan.nond_bens.one_range[1]))
         new_file.write('\nRecurring')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.nond_bens.r_sum)+',,')
+            new_file.write(',$' + str(plan.nond_bens.r_sum))
+            new_file.write(',$' + str(plan.nond_bens.r_range[0]) + ',$' + str(plan.nond_bens.r_range[1]))
         new_file.write('\nCosts\nDirect Costs')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.costs.d_sum))
@@ -761,8 +763,8 @@ class Simulation():
             ben_table.cell(ben_index, 4).text = '{:,.0f}'.format(plan.nond_bens.total)
             ben_table.cell(ben_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             for ben in plan.nond_bens.indiv:
-                #if ben.dist != 'none':
-                #    doc.add_paragraph(self.uncert_string(ben.dist, ben.range))
+                if ben.dist != 'none':
+                    doc.add_paragraph(ben.title + ': ' + self.uncert_string(ben.dist, ben.range))
                 if ben.desc != 'N/A':
                     doc.add_paragraph(ben.title + ': ' + ben.desc)
 
@@ -972,6 +974,8 @@ class Simulation():
             cost_indirect_totals = []
             cost_omr_1_totals = []
             cost_omr_r_totals = []
+            nond_1_totals = []
+            nond_r_totals = []
 
             ben_totals = []
             cost_totals = []
@@ -989,7 +993,6 @@ class Simulation():
 
                 for i in range(old_iters, num_iters):
                     similar_list.append(self.one_iter(plan))
-                #for new_plan in similar_list:
                     similar_list[i].sum_it(self.horizon)
                     ben_direct_totals.append(similar_list[i].bens.d_sum)
                     ben_indirect_totals.append(similar_list[i].bens.i_sum)
@@ -998,6 +1001,8 @@ class Simulation():
                     cost_omr_1_totals.append(similar_list[i].costs.omr_1_sum)
                     cost_omr_r_totals.append(similar_list[i].costs.omr_r_sum)
                     res_rec_totals.append(similar_list[i].bens.r_sum)
+                    nond_1_totals.append(similar_list[i].nond_bens.one_sum)
+                    nond_r_totals.append(similar_list[i].nond_bens.r_sum)
                     ben_totals.append(similar_list[i].total_bens)
                     cost_totals.append(similar_list[i].total_costs)
                     net_totals.append(similar_list[i].net)
@@ -1008,6 +1013,8 @@ class Simulation():
                 cost_omr_1_totals.sort()
                 cost_omr_r_totals.sort()
                 res_rec_totals.sort()
+                nond_1_totals.sort()
+                nond_r_totals.sort()
                 ben_totals.sort()
                 cost_totals.sort()
                 net_totals.sort()
@@ -1023,6 +1030,8 @@ class Simulation():
                 plan.costs.indirect_range = [cost_indirect_totals[first_num], cost_indirect_totals[last_num]]
                 plan.costs.omr_one_range = [cost_omr_1_totals[first_num], cost_omr_1_totals[last_num]]
                 plan.costs.omr_r_range = [cost_omr_r_totals[first_num], cost_omr_r_totals[last_num]]
+                plan.nond_bens.one_range = [nond_1_totals[first_num], nond_1_totals[last_num]]
+                plan.nond_bens.r_range = [nond_r_totals[first_num], nond_r_totals[last_num]]
                 plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
                 plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
                 plan.net_range = [net_totals[first_num], net_totals[last_num]]                
@@ -1059,7 +1068,7 @@ class Simulation():
         delta_plan.exts = my_plan.exts
         delta_plan.costs = delta_plan.costs.one_iter(my_plan.costs.indiv)
         delta_plan.fat = my_plan.fat
-        delta_plan.nond_bens = my_plan.nond_bens
+        delta_plan.nond_bens = delta_plan.nond_bens.one_iter(my_plan.nond_bens.indiv)
         return delta_plan
 
 class Plan():
@@ -1257,6 +1266,13 @@ class Plan():
             for item in nond_ben.times:
                 new_file.write(str(item) + ',')
             new_file.write(str(nond_ben.amount) + ',' + str(nond_ben.desc) + '\n')
+            new_file.write(',Non-Disaster Benefits,Uncertainty,' + nond_ben.dist)
+            for value in nond_ben.range:
+                if value != '<insert uncertainty>':
+                    new_file.write(',' + str(value))
+                else:
+                    new_file.write(',0')
+            new_file.write('\n')
         new_file.write(',Fatalities,' + str(self.fat.averted) + ',' + str(self.fat.desc) + '\n')
 
     def sum_it(self, horizon):

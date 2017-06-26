@@ -21,6 +21,7 @@ from GUI.BenefitsPage import BenefitsPage
 from GUI.BenefitsUncertainties import BenefitsUncertaintiesPage
 from GUI.FatalitiesPage import FatalitiesPage
 from GUI.NonDBensPage import NonDBensPage
+from GUI.NonDBensUncertainties import NonDBensUncertaintiesPage
 from GUI.AnalysisInfo import AnalysisInfo
 
 from GUI.Constants import LARGE_FONT
@@ -66,6 +67,7 @@ class Application(tk.Tk):
                       'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
                       'FatalitiesPage': FatalitiesPage,
                       'NonDBensPage': NonDBensPage,
+                      'NonDBensUncertaintiesPage': NonDBensUncertaintiesPage,
                       'AnalysisInfo': AnalysisInfo}
         cont = frame_dict[cont_string]
         frame = self.frames[cont]
@@ -114,7 +116,8 @@ class StartPage(tk.Frame):
             for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
                          ExternalitiesPage,
                          BenefitsPage, BenefitsUncertaintiesPage,
-                         FatalitiesPage, NonDBensPage, AnalysisInfo):
+                         FatalitiesPage, NonDBensPage,
+                         NonDBensUncertaintiesPage, AnalysisInfo):
                 frame = page(controller.container.interior, controller, controller.cont_list)
                 controller.frames[page] = frame
                 frame.grid(row=0, column=0, sticky="nsew")
@@ -129,7 +132,8 @@ class StartPage(tk.Frame):
                 controller.cont_list = [controller.data_cont]
                 for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
                              ExternalitiesPage, BenefitsPage, BenefitsUncertaintiesPage,
-                             FatalitiesPage, NonDBensPage, AnalysisInfo):
+                             FatalitiesPage, NonDBensPage,
+                             NonDBensUncertaintiesPage, AnalysisInfo):
                     frame = page(controller.container.interior, controller, controller.cont_list)
                     controller.frames[page] = frame
                     frame.grid(row=0, column=0, sticky="nsew")
