@@ -23,6 +23,9 @@ class NonDBens():
         self.horizon = float(horizon)
         self.discount_rate = float(discount_rate)
 
+        self.one_range = [0, 0]
+        self.r_range = [0, 0]
+
     def new_ben(self, line):
         """ Makes a new benefit and adds it to the list of benefit types. """
         if line[0] == 'Uncertainty':

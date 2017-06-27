@@ -131,14 +131,26 @@ def run_u_main_page(data):
             fat_lbl = ttk.Label(group0, text=my_tab + "Value of Statistical Lives Saved",
                                 font=SMALL_FONT)
             fat_lbl.grid(row=dmb_index + 1, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                      font=SMALL_FONT).grid(row=dmb_index+2, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                      font=BOLD_FONT).grid(row=dmb_index+3, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                      font=SMALL_FONT).grid(row=dmb_index+4, column=0, sticky="w", **pad_opts)
             fat_lbl2 = ttk.Label(group0, text=my_tab + "Number of Statistical Lives Saved",
                                  font=SMALL_FONT)
-            fat_lbl2.grid(row=dmb_index + 2, column=0, sticky="w", **pad_opts)
+            fat_lbl2.grid(row=dmb_index + 5, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                      font=SMALL_FONT).grid(row=dmb_index+6, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                      font=BOLD_FONT).grid(row=dmb_index+7, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                      font=SMALL_FONT).grid(row=dmb_index+8, column=0, sticky="w", **pad_opts)
 
             # ===== Sums up the numbers
             self.data_cont.summer()
 
-            ndrb_index = dmb_index + 3
+            ndrb_index = dmb_index + 9
             non_d_ben_lbl = ttk.Label(group0, text="Non-Disaster Related Benefits",
                                       font=NORM_FONT)
             non_d_ben_lbl.grid(row=ndrb_index, column=0, sticky="w", **pad_opts)
@@ -325,11 +337,19 @@ def run_u_main_page(data):
                 ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].bens.indirect_range[1]),
                           font=SMALL_FONT).grid(row=deb_index+12, column=(i+1), sticky="e", **pad_opts)
                 # Fatalaties Value averted
+                ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].fat.value_range[0]),
+                          font=SMALL_FONT).grid(row=dmb_index + 2, column=(i + 1), sticky="e", **pad_opts)                
                 ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].fat.stat_value_averted),
-                          font=SMALL_FONT).grid(row=dmb_index + 1, column=(i + 1), sticky="e", **pad_opts)
+                          font=BOLD_FONT).grid(row=dmb_index + 3, column=(i + 1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].fat.value_range[1]),
+                          font=SMALL_FONT).grid(row=dmb_index + 4, column=(i + 1), sticky="e", **pad_opts)                
                 # Fatalaties number averted
+                ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].fat.num_range[0]),
+                          font=SMALL_FONT).grid(row=dmb_index + 7, column=(i + 1), sticky="e", **pad_opts)                
                 ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].fat.stat_averted),
-                          font=SMALL_FONT).grid(row=dmb_index + 2, column=(i+1), sticky="e", **pad_opts)
+                          font=BOLD_FONT).grid(row=dmb_index + 8, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].fat.num_range[1]),
+                          font=SMALL_FONT).grid(row=dmb_index + 9, column=(i + 1), sticky="e", **pad_opts)                
 
                 # Direct Costs
                 ttk.Label(group0,

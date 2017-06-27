@@ -25,6 +25,12 @@ class Externalities():
         self.discount_rate = float(discount_rate)
         self.horizon = float(horizon)
 
+        self.one_p_range = [0, 0]
+        self.one_n_range = [0, 0]
+        self.r_p_range = [0, 0]
+        self.r_n_range = [0, 0]
+
+
     def new_ext(self, line):
         """ Makes a new externality and adds it to the list of externality types. """
         if line[0] == 'Uncertainty':

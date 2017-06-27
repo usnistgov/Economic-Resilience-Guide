@@ -17,6 +17,9 @@ from Data.ClassFatalities import Fatalities
 from Data.ClassNonDBens import NonDBens
 from Data.ClassNonDBens import Benefit as NonDBenefit
 
+from Data.distributions import uniDistInv, triDistInv, gauss_dist_inv, none_dist, discrete_dist_inv
+
+
 from NewIRR import irr_for_all
 from GUI.Constants import TAB
 
@@ -197,10 +200,12 @@ class Simulation():
             new_file.write(',$' + str(plan.bens.indirect_range[0]) + ',$' + str(plan.bens.indirect_range[1]))
         new_file.write('\nDisaster Non-Market Benefits\nValue of Statistical Lives Saved')
         for plan in self.plan_list:
-            new_file.write(',$' + str(plan.fat.stat_value_averted)+',,')
+            new_file.write(',$' + str(plan.fat.stat_value_averted))
+            new_file.write(',$' + str(plan.fat.value_range[0]) + ',$' + str(plan.fat.value_range[1]))
         new_file.write('\nNumber of Statistical Lives Saved')
         for plan in self.plan_list:
-            new_file.write(',' + str(plan.fat.stat_averted)+',,')
+            new_file.write(',' + str(plan.fat.stat_averted))
+            new_file.write(',' + str(plan.fat.num_range[0]) + ',' + str(plan.fat.num_range[1]))
         new_file.write('\nNon-disaster Related Benefits\nOne-Time')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.nond_bens.one_sum))
@@ -974,6 +979,8 @@ class Simulation():
             ben_direct_totals = []
             ben_indirect_totals = []
             res_rec_totals = []
+            fat_num_totals = []
+            fat_value_totals = []
             cost_direct_totals = []
             cost_indirect_totals = []
             cost_omr_1_totals = []
@@ -1004,6 +1011,8 @@ class Simulation():
                     similar_list[i].sum_it(self.horizon)
                     ben_direct_totals.append(similar_list[i].bens.d_sum)
                     ben_indirect_totals.append(similar_list[i].bens.i_sum)
+                    fat_num_totals.append(similar_list[i].fat.stat_averted)
+                    fat_value_totals.append(similar_list[i].fat.stat_value_averted)
                     cost_direct_totals.append(similar_list[i].costs.d_sum)
                     cost_indirect_totals.append(similar_list[i].costs.i_sum)
                     cost_omr_1_totals.append(similar_list[i].costs.omr_1_sum)
@@ -1020,6 +1029,8 @@ class Simulation():
                     net_totals.append(similar_list[i].net)
                 ben_direct_totals.sort()
                 ben_indirect_totals.sort()
+                fat_num_totals.sort()
+                fat_value_totals.sort()
                 cost_direct_totals.sort()
                 cost_indirect_totals.sort()
                 cost_omr_1_totals.sort()
@@ -1042,6 +1053,8 @@ class Simulation():
                 plan.bens.direct_range = [ben_direct_totals[first_num], ben_direct_totals[last_num]]
                 plan.bens.indirect_range = [ben_indirect_totals[first_num], ben_indirect_totals[last_num]]
                 plan.bens.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
+                plan.fat.num_range = [fat_num_totals[first_num], fat_num_totals[last_num]]
+                plan.fat.value_range = [fat_value_totals[first_num], fat_value_totals[last_num]]
                 plan.costs.direct_range = [cost_direct_totals[first_num], cost_direct_totals[last_num]]
                 plan.costs.indirect_range = [cost_indirect_totals[first_num], cost_indirect_totals[last_num]]
                 plan.costs.omr_one_range = [cost_omr_1_totals[first_num], cost_omr_1_totals[last_num]]
@@ -1081,13 +1094,32 @@ class Simulation():
             plan.mc_iters = num_iters / 2
 
     def one_iter(self, my_plan):
-        delta_plan = Plan(my_plan.id_assign, my_plan.name, [my_plan.recurr_dist, my_plan.recurr_range],
-                          [my_plan.mag_dist, my_plan.mag_range], self.discount_rate, self.horizon,
+        """ Creates one plan that is within the uncertainty bounds of my_plan."""
+        def to_pass(dist, some_range):
+            """Returns the mid and range to pass the distributions given dist and some_range."""
+            if dist == "none":
+                mid = some_range[0]
+                new_range = [0, 0, 0, 0, 0, 0]
+            elif dist == "discrete":
+                mid = max(some_range[0:2])
+                new_range = list(some_range)
+            elif dist == "gauss":
+                mid = some_range[0]
+                new_range = [some_range[1], 0, 0, 0, 0, 0]
+            else:
+                mid = some_range[0]
+                new_range = [some_range[1], some_range[2], 0, 0, 0, 0]
+            return [mid, new_range]
+        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
+        new_recurr = dist_dict[my_plan.recurr_dist](np.random.uniform(), to_pass(my_plan.recurr_dist, my_plan.recurr_range)[0], to_pass(my_plan.recurr_dist, my_plan.recurr_range)[1])
+        new_mag = dist_dict[my_plan.mag_dist](np.random.uniform(), to_pass(my_plan.mag_dist, my_plan.mag_range)[0], to_pass(my_plan.mag_dist, my_plan.mag_range)[1])
+        delta_plan = Plan(my_plan.id_assign, my_plan.name, [my_plan.recurr_dist, [new_recurr, my_plan.recurr_range]],
+                          [my_plan.mag_dist, [new_mag, my_plan.mag_range]], self.discount_rate, self.horizon,
                           self.stat_life, self.parties)
         delta_plan.bens = delta_plan.bens.one_iter(my_plan.bens.indiv)
         delta_plan.exts = delta_plan.exts.one_iter(my_plan.exts.indiv)
         delta_plan.costs = delta_plan.costs.one_iter(my_plan.costs.indiv)
-        delta_plan.fat = my_plan.fat
+        delta_plan.fat.update(my_plan.fat.averted, my_plan.fat.desc)
         delta_plan.nond_bens = delta_plan.nond_bens.one_iter(my_plan.nond_bens.indiv)
         return delta_plan
 
