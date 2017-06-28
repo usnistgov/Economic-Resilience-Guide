@@ -83,6 +83,11 @@ def run_u_main_page(data):
             group0 = ttk.Frame(frame)
             group0.grid(row=2, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
+            any_ext = False
+            for plan in self.data_cont.plan_list:
+                if len(plan.exts.indiv) > 0:
+                    any_ext = True
+
             ttk.Label(group0, text=my_tab + "Base Case" + my_tab,
                       font=NORM_FONT).grid(row=0, column=1, **pad_opts)
             for i in range(1, self.data_cont.num_plans):
@@ -296,22 +301,31 @@ def run_u_main_page(data):
                       font=BOLD_FONT).grid(row=tot_index + 12, column=0, sticky="w", **pad_opts)
             ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
                       font=SMALL_FONT).grid(row=tot_index + 13, column=0, sticky="w", **pad_opts)
+            if any_ext:
+                ttk.Label(group0, text=my_tab + "Net with Externalities",
+                          font=BOLD_FONT).grid(row=tot_index + 14, column=0, sticky="w", **pad_opts)
+                ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
+                        font=SMALL_FONT).grid(row=tot_index + 15, column=0, sticky="w", **pad_opts)
+                ttk.Label(group0, text=my_tab + my_tab + "Point Estimate",
+                        font=BOLD_FONT).grid(row=tot_index + 16, column=0, sticky="w", **pad_opts)
+                ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
+                        font=SMALL_FONT).grid(row=tot_index + 17, column=0, sticky="w", **pad_opts)
 
             sir_lbl = ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio",
                                 font=SMALL_FONT)
-            sir_lbl.grid(row=tot_index + 14, column=0, sticky="w", **pad_opts)
+            sir_lbl.grid(row=tot_index + 18, column=0, sticky="w", **pad_opts)
             irr_lbl = ttk.Label(group0, text=my_tab + "Internal Rate of Return", font=SMALL_FONT)
-            irr_lbl.grid(row=tot_index + 15, column=0, sticky="w", **pad_opts)
+            irr_lbl.grid(row=tot_index + 19, column=0, sticky="w", **pad_opts)
             roi_lbl = ttk.Label(group0, text=my_tab + "Return on Investment", font=SMALL_FONT)
-            roi_lbl.grid(row=tot_index + 16, column=0, sticky="w", **pad_opts)
+            roi_lbl.grid(row=tot_index + 20, column=0, sticky="w", **pad_opts)
             non_d_roi = ttk.Label(group0, text=my_tab + "Non-Disaster ROI", font=SMALL_FONT)
-            non_d_roi.grid(row=tot_index + 17, column=0, sticky="w", **pad_opts)
+            non_d_roi.grid(row=tot_index + 21, column=0, sticky="w", **pad_opts)
             # === Places spaces to correct an unknown error with the window size
-            ttk.Label(group0, text=" ").grid(row=tot_index + 18)
-            ttk.Label(group0, text=" ").grid(row=tot_index + 19)
-            ttk.Label(group0, text=" ").grid(row=tot_index + 20)
-            ttk.Label(group0, text=" ").grid(row=tot_index + 21)
             ttk.Label(group0, text=" ").grid(row=tot_index + 22)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 23)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 24)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 25)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 26)
 
 
             for i in range(self.data_cont.num_plans):
@@ -497,26 +511,49 @@ def run_u_main_page(data):
                     ttk.Label(group0,
                               text='(' + '${:,.0f}'.format(self.data_cont.plan_list[i].net_range[1]) + ')',
                               font=SMALL_FONT).grid(row=tot_index + 13, column=(i + 1), sticky="e", **pad_opts)
+                if any_ext:
+                    if self.data_cont.plan_list[i].net_ext_range[0] >= 0:
+                        ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].net_ext_range[0]),
+                                font=SMALL_FONT).grid(row=tot_index + 15, column=(i + 1), sticky="e", **pad_opts)
+                    else:
+                        ttk.Label(group0,
+                                text='(' + '${:,.0f}'.format(self.data_cont.plan_list[i].net_ext_range[0]) + ')',
+                                font=SMALL_FONT).grid(row=tot_index + 15, column=(i + 1), sticky="e", **pad_opts)
+                    if self.data_cont.plan_list[i].net_w_ext >= 0:
+                        ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].net_w_ext),
+                                font=BOLD_FONT).grid(row=tot_index + 16, column=(i + 1), sticky="e", **pad_opts)
+                    else:
+                        ttk.Label(group0,
+                                text='(' + '${:,.0f}'.format(self.data_cont.plan_list[i].net_w_ext) + ')',
+                                font=BOLD_FONT).grid(row=tot_index + 16, column=(i + 1), sticky="e", **pad_opts)
+                    if self.data_cont.plan_list[i].net_ext_range[1] >= 0:
+                        ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].net_ext_range[1]),
+                                font=SMALL_FONT).grid(row=tot_index + 17, column=(i + 1), sticky="e", **pad_opts)
+                    else:
+                        ttk.Label(group0,
+                                text='(' + '${:,.0f}'.format(self.data_cont.plan_list[i].net_ext_range[1]) + ')',
+                                font=SMALL_FONT).grid(row=tot_index + 17, column=(i + 1), sticky="e", **pad_opts)
+
                 ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].sir()),
-                          font=SMALL_FONT).grid(row=tot_index + 14, column=(i + 1), sticky="e", **pad_opts)
+                          font=SMALL_FONT).grid(row=tot_index + 18, column=(i + 1), sticky="e", **pad_opts)
                 if type(self.data_cont.plan_list[i].irr()) == type("string"):
                     ttk.Label(group0, text=self.data_cont.plan_list[i].irr(),
-                              font=SMALL_FONT).grid(row=tot_index + 15, column=(i+1), sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_index + 19, column=(i+1), sticky="e", **pad_opts)
                 else:
                     ttk.Label(group0,
                               text='{:,.2f}'.format(self.data_cont.plan_list[i].irr()) + '%',
-                              font=SMALL_FONT).grid(row=tot_index + 15, column=(i + 1), sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_index + 19, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].roi()) + '%',
-                          font=SMALL_FONT).grid(row=tot_index + 16, column=(i + 1), sticky="e", **pad_opts)
+                          font=SMALL_FONT).grid(row=tot_index + 20, column=(i + 1), sticky="e", **pad_opts)
                 ttk.Label(group0,
                           text='{:,.2f}'.format(self.data_cont.plan_list[i].non_d_roi()) + '%',
-                          font=SMALL_FONT).grid(row=tot_index + 17, column=(i + 1), sticky="e", **pad_opts)
+                          font=SMALL_FONT).grid(row=tot_index + 21, column=(i + 1), sticky="e", **pad_opts)
             # === Places spaces to correct an unknown error with the window size
-            ttk.Label(group0, text=" ").grid(row=tot_index + 18)
-            ttk.Label(group0, text=" ").grid(row=tot_index + 19)
-            ttk.Label(group0, text=" ").grid(row=tot_index + 20)
-            ttk.Label(group0, text=" ").grid(row=tot_index + 21)
             ttk.Label(group0, text=" ").grid(row=tot_index + 22)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 23)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 24)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 25)
+            ttk.Label(group0, text=" ").grid(row=tot_index + 26)
 
             button_index = 6
             exp_button = ttk.Button(self, text="Export Summary", command=self.export)

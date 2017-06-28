@@ -150,7 +150,15 @@ class Simulation():
         new_file.write('\nNet')
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.net))
-        new_file.write('\n\nSavings-to-Investment Ratio')
+        any_ext = False
+        for plan in self.plan_list:
+            if len(plan.exts.indiv) > 0:
+                any_ext = True
+        if any_ext:
+            new_file.write('\nNet with Externalities')
+            for plan in self.plan_list:
+                new_file.write(',$' + str(plan.net_w_ext))
+        new_file.write('\nSavings-to-Investment Ratio')
         for plan in self.plan_list:
             new_file.write(',' + str(plan.sir()))
         new_file.write('\nInternal Rate of Return (%)')
@@ -258,7 +266,16 @@ class Simulation():
         for plan in self.plan_list:
             new_file.write(',$' + str(plan.net))
             new_file.write(',$' + str(plan.net_range[0]) + ',$' + str(plan.net_range[1]))
-        new_file.write('\n\nSavings-to-Investment Ratio')
+        any_ext = False
+        for plan in self.plan_list:
+            if len(plan.exts.indiv) > 0:
+                any_ext = True
+        if any_ext:
+            new_file.write('\nNet with Externalities')
+            for plan in self.plan_list:
+                new_file.write(',$' + str(plan.net_w_ext))
+                new_file.write(',$' + str(plan.net_ext_range[0]) + ',$' + str(plan.net_ext_range[1]))
+        new_file.write('\nSavings-to-Investment Ratio')
         for plan in self.plan_list:
             new_file.write(',' + str(plan.sir())+',,')
         new_file.write('\nInternal Rate of Return (%)')
@@ -278,6 +295,11 @@ class Simulation():
         if '.docx' != file_name[-5:]:
             file_name = file_name + '.docx'
 
+        any_ext = False
+        for plan in self.plan_list:
+            if len(plan.exts.indiv) > 0:
+                any_ext = True
+
         doc = docx.Document()
         doc.add_heading('Economic Evaluation Complete Report\n' + self.title, 0)
 
@@ -292,10 +314,15 @@ class Simulation():
         doc.add_paragraph()
         doc.add_paragraph('Statistical Value of a Life: '+'${:.0f}'.format(float(self.stat_life)), style='ListBullet')
 
+        if any_ext:
+            header_list = ['Plan Title', 'Total Benefits ($)', 'Total Costs ($)', 'Net ($)', 'Net with externalities ($)', 'SIR (%)', 'IRR (%)', 'ROI (%)', 'Non-Disaster ROI (%)']
+        else:
+            header_list = ['Plan Title', 'Total Benefits ($)', 'Total Costs ($)', 'Net ($)', 'SIR (%)', 'IRR (%)', 'ROI (%)', 'Non-Disaster ROI (%)']
+
         doc.add_heading('Summary\n', 1)
-        sum_table = doc.add_table(rows = len(self.plan_list) + 1, cols=8, style='Light List Accent 1')
-        header_list = ['Plan Title', 'Total Benefits ($)', 'Total Costs ($)', 'Net ($)', 'SIR (%)', 'IRR (%)', 'ROI (%)', 'Non-Disaster ROI (%)']
-        for i in range(8):
+        sum_table = doc.add_table(rows = len(self.plan_list) + 1, cols=len(header_list), style='Light List Accent 1')
+
+        for i in range(len(header_list)):
             sum_table.cell(0, i).text = header_list[i]
         sum_index = 1
         for plan in self.plan_list:
@@ -306,19 +333,36 @@ class Simulation():
             sum_table.cell(sum_index, 2).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_table.cell(sum_index, 3).text = '{:,.0f}'.format(plan.net)
             sum_table.cell(sum_index, 3).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_table.cell(sum_index, 4).text = '{:,.2f}'.format(plan.sir())
-            sum_table.cell(sum_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            if isinstance(plan.irr(), str):
-                sum_table.cell(sum_index, 5).text = plan.irr()
-                sum_table.cell(sum_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-            else:
-                sum_table.cell(sum_index, 5).text = '{:,.2f}'.format(plan.irr())
+            if any_ext:
+                sum_table.cell(sum_index, 4).text = '{:,.0f}'.format(plan.net_w_ext)
+                sum_table.cell(sum_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_table.cell(sum_index, 5).text = '{:,.2f}'.format(plan.sir())
                 sum_table.cell(sum_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_table.cell(sum_index, 6).text = '{:,.2f}'.format(plan.roi())
-            sum_table.cell(sum_index, 6).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_table.cell(sum_index, 7).text = '{:,.2f}'.format(plan.non_d_roi())
-            sum_table.cell(sum_index, 7).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_index += 1
+                if isinstance(plan.irr(), str):
+                    sum_table.cell(sum_index, 6).text = plan.irr()
+                    sum_table.cell(sum_index, 6).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+                else:
+                    sum_table.cell(sum_index, 6).text = '{:,.2f}'.format(plan.irr())
+                    sum_table.cell(sum_index, 6).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_table.cell(sum_index, 7).text = '{:,.2f}'.format(plan.roi())
+                sum_table.cell(sum_index, 7).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_table.cell(sum_index, 8).text = '{:,.2f}'.format(plan.non_d_roi())
+                sum_table.cell(sum_index, 8).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_index += 1
+            else:
+                sum_table.cell(sum_index, 4).text = '{:,.2f}'.format(plan.sir())
+                sum_table.cell(sum_index, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                if isinstance(plan.irr(), str):
+                    sum_table.cell(sum_index, 5).text = plan.irr()
+                    sum_table.cell(sum_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+                else:
+                    sum_table.cell(sum_index, 5).text = '{:,.2f}'.format(plan.irr())
+                    sum_table.cell(sum_index, 5).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_table.cell(sum_index, 6).text = '{:,.2f}'.format(plan.roi())
+                sum_table.cell(sum_index, 6).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_table.cell(sum_index, 7).text = '{:,.2f}'.format(plan.non_d_roi())
+                sum_table.cell(sum_index, 7).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_index += 1
 
         for plan in self.plan_list:
             doc.add_heading(plan.name, 1)
@@ -587,7 +631,10 @@ class Simulation():
                 if ext.desc != 'N/A':
                     doc.add_paragraph(ext.title + ': ' + ext.desc)
 
-
+        sections = doc.sections
+        for section in sections:
+            section.left_margin = 914400
+            section.right_margin = 914400
         doc.save(file_name)
 
     def uncert_string(self, uncert, values):
@@ -995,9 +1042,10 @@ class Simulation():
             ben_totals = []
             cost_totals = []
             net_totals = []
+            net_ext_totals = []
 
             similar_list = []
-            cost_ben_net = [False, False, False]
+            cost_ben_net = [False, False, False, False]
             old_iters = 0
             num_iters = low_iters
             while (not all(cost_ben_net)) and num_iters < high_iters:
@@ -1005,6 +1053,7 @@ class Simulation():
                 old_ben = list(plan.ben_range)
                 old_cost = list(plan.cost_range)
                 old_net = list(plan.net_range)
+                old_ext_net = list(plan.net_ext_range)
 
                 for i in range(old_iters, num_iters):
                     similar_list.append(self.one_iter(plan))
@@ -1027,6 +1076,7 @@ class Simulation():
                     ben_totals.append(similar_list[i].total_bens)
                     cost_totals.append(similar_list[i].total_costs)
                     net_totals.append(similar_list[i].net)
+                    net_ext_totals.append(similar_list[i].net_w_ext)
                 ben_direct_totals.sort()
                 ben_indirect_totals.sort()
                 fat_num_totals.sort()
@@ -1045,6 +1095,7 @@ class Simulation():
                 ben_totals.sort()
                 cost_totals.sort()
                 net_totals.sort()
+                net_ext_totals.sort()
 
                 first_num = math.floor(num_iters*(1-confidence/100)/2)
                 last_num = math.ceil(num_iters - num_iters*(1-confidence/100)/2)#num_iters - first_num
@@ -1067,7 +1118,8 @@ class Simulation():
                 plan.exts.r_n_range = [ext_n_r_totals[first_num], ext_n_r_totals[last_num]]
                 plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
                 plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
-                plan.net_range = [net_totals[first_num], net_totals[last_num]]                
+                plan.net_range = [net_totals[first_num], net_totals[last_num]]    
+                plan.net_ext_range = [net_ext_totals[first_num], net_ext_totals[last_num]]           
 
                 # Test costs
                 tol = plan.total_costs * tol_percent + 0.001
@@ -1080,6 +1132,10 @@ class Simulation():
                 # Test net
                 tol = plan.net * tol_percent + 0.001
                 if max(abs(plan.net_range[0] - old_net[0]), abs(plan.net_range[1] - old_net[1])) < tol:
+                    cost_ben_net[2] = True
+                # Test net with externalities
+                tol = plan.net_w_ext * tol_percent + 0.001
+                if max(abs(plan.net_ext_range[0] - old_ext_net[0]), abs(plan.net_ext_range[1] - old_ext_net[1])) < tol:
                     cost_ben_net[2] = True
 
                 old_iters = num_iters
@@ -1171,12 +1227,14 @@ class Plan():
         self.total_bens = 0
         self.total_costs = 0
         self.net = 0
+        self.net_w_ext = self.net
 
         self.annual_cash_flows = [0 for x in range(int(horizon) + 1)]
         self.annual_non_disaster_cash_flows = [0 for x in range(int(horizon) + 1)]
         self.ben_range = [0, 0]
         self.cost_range = [0, 0]
-        self.net_range = [0, 0]                
+        self.net_range = [0, 0]
+        self.net_ext_range = [0, 0]
 
 
     def update(self, plan_id, plan_name, disaster_recurrence, disaster_magnitude,
@@ -1396,6 +1454,7 @@ class Plan():
         self.total_bens = self.bens.total + self.fat.stat_value_averted + self.nond_bens.total
         self.total_costs = self.costs.total
         self.net = self.total_bens - self.total_costs
+        self.net_w_ext = self.total_bens + self.exts.total_p - self.total_costs - self.exts.total_n
 
     def sir(self):
         """Equation for the Savings-to-Investment Ratio"""
