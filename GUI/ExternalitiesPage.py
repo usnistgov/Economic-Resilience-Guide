@@ -323,18 +323,19 @@ class ExternalitiesPage(tk.Frame):
         new_type = self.recur_selection.get()
         new_times = [self.year_start_ent.get(), self.year_rate_ent.get(), 0]
         pm = self.sign_select.get()
+        party = self.new_party.get()
         if len(plan_num) == 0:
             err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
             plan = self.data_cont.plan_list[0]
             [valid, blank, err_messages] = plan.exts.save(new_title, new_desc, new_amount,
                                                           new_type, new_times,
-                                                          err_messages, pm, blank=True)
+                                                          err_messages, pm, party, blank=True)
         else:
             for i in plan_num:
                 plan = self.data_cont.plan_list[i]
                 [valid, blank, err_messages] = plan.exts.save(new_title, new_desc, new_amount,
                                                               new_type, new_times,
-                                                              err_messages, pm)
+                                                              err_messages, pm, party)
 
         if (not valid) & (not blank):
             messagebox.showerror("ERROR", err_messages)

@@ -94,7 +94,7 @@ class Externalities():
         return total
 
 
-    def save(self, title, desc, amount, new_type, times, err_messages, pm, blank=False):
+    def save(self, title, desc, amount, new_type, times, err_messages, pm, party, blank=False):
         """ Saves the fields if possible and returns applicable error messages if not."""
         field_dict = {}
         if blank:
@@ -173,8 +173,15 @@ class Externalities():
             field_dict['pm'] = pm
             blank = False
         else:
-            err_messages += "Must choose if this is a positive or negative externalitiy. \n\n"
+            err_messages += "Must choose if this is a positive or negative externality. \n\n"
             valid = False
+        # == PARTY
+        if party == "":
+            err_messages += "Must choose a party affected.\n\n"
+            valid = False
+        else:
+            field_dict['new_party'] = party
+            blank = False
         # == DESCRIPTION
         # No comma in description
         #if ',' in desc:
