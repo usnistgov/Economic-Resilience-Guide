@@ -201,7 +201,7 @@ class FatalitiesPage(tk.Frame):
         self.data_cont.stat_life = self.life_ent.get()
 
         for i in range(0, num_plans + 1):
-            self.data_cont.plan_list[i].fat.update(self.fat_plan_ents[i].get(), self.desc_plan_ents[i].get("1.0", "end-1c"))
+            self.data_cont.plan_list[i].fat.update(self.fat_plan_ents[i].get(), [self.desc_plan_ents[i].get("1.0", "end-1c")])
 
         if valid:
             messagebox.showinfo("Success",
@@ -215,13 +215,6 @@ class FatalitiesPage(tk.Frame):
         err_messages = ""
 
         valid = True
-
-        # === Fills non-mandatory description fields with filler if no description has been input
-        for entry in self.desc_plan_ents:
-            if "," in entry.get("1.0", "end-1c"):
-                err_messages += ("Description cannot have a comma \',\'. "
-                                 "Please change the description.\n\n")
-                valid = False
 
         # ===== Check for empty entries
         for entry in self.fat_plan_ents:

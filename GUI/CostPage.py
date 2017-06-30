@@ -276,40 +276,24 @@ class CostPage(tk.Frame):
         """Appends list of costs, clears page's entry widgets,
             and updates 'Previously Inputted Costs' section"""
         if moveon:
-            valid = self.check_page(printout=False)
-        else:
-            valid = self.check_page()
-        if not valid:
-            if moveon:
+            [valid, blank, err_messages] = self.check_page(printout=False)
+            if not (valid | blank):
                 checker = messagebox.askyesno('Move Forward?',
                                               'Your cost was not saved. '
                                               'Select \'No\' if you wish to continue editing '
                                               'and \'Yes\' if you wish to move to the next page.')
                 return checker
+            if blank:
+                return True
+        else:
+            [valid, blank, err_messages] = self.check_page()
+        if not valid:
             return False
-
-        plan_num = []            # === List that contains all selected plans
-        for i in range(len(self.bools)):
-            if self.bools[i].get():
-                plan_num.append(i)
-
-        cost_dict = {'title':self.title_ent.get(), 'cost_type':self.choice.get(),
-                     'amount':self.cost_ent.get(), 'desc': self.desc_ent.get('1.0', 'end-1c')}
-        if self.choice.get() == "omr":
-            cost_dict['omr_type'] = self.omr_selection.get()
-            try:
-                cost_dict['omr_times'] = [self.year_start_ent.get(), self.year_rate_ent.get(), 0]
-            except:
-                cost_dict['omr_times'] = [self.year_start_ent.get(), 0, 0]
-        this_cost = Cost(**cost_dict)
-        for index in plan_num:
-            self.data_cont.plan_list[index].costs.indiv.append(this_cost)
-
-        if valid:
+        else:
             # ===== Updates the page for the next cost
             self.clear_page()
             self.update_prev_list()
-            messagebox.showinfo("Success", "Cost has been successfully added!")
+            messagebox.showinfo("Success", err_messages)
             return True
 
     def update_prev_list(self):
@@ -336,90 +320,34 @@ class CostPage(tk.Frame):
 
         valid = True
 
-        # ===== Mandatory fields cannot be left blank or left alone
-        if self.title_ent.get() == "" or self.title_ent.get() == "<enter a title for this cost>":
-            err_messages += "Title field has been left empty!\n\n"
-            valid = False
-        if "," in self.desc_ent.get("1.0", "end-1c"):
-            err_messages += ("Description cannot have a comma \',\'."
-                             "Please change the decsription.\n\n")
-            valid = False
-        check_against = self.desc_ent.get("1.0", "end-1c")
-        if check_against == "" or check_against == "<enter a description for this cost>":
-            self.desc_ent.delete('1.0', tk.END)
-            self.desc_ent.insert(tk.END, "N/A")
-        bool_check = [self.bools[i].get() for i in range(len(self.bools))]
-        if not np.any(bool_check):
+        plan_num = []
+        for boolean in self.bools:
+            if boolean.get():
+                plan_num.append(self.bools.index(boolean))
+
+        new_title = self.title_ent.get()
+        new_desc = self.desc_ent.get("0.0", tk.END)
+        new_type = self.choice.get()
+        new_amount = self.cost_ent.get()
+        new_omr_type = self.omr_selection.get()
+        new_times = [self.year_start_ent.get(), self.year_rate_ent.get(), 0]
+
+        if len(plan_num) == 0:
             err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
-            valid = False
-        if self.choice.get() != "direct" and self.choice.get() != "indirect" and self.choice.get() != "omr":
-            err_messages += "A 'Cost Type' has not been selected!\n\n"
-            valid = False
-
-        # ===== Cost cannot have a duplicate title
-        plan_num = []  # === List that contains all selected plans
-
-        for i in range(1, len(self.bools)):
-            if self.bools[i].get():
-                plan_num.append(i)
-
-        for choice in self.choices:
-            if (choice)[:len(self.title_ent.get())] == self.title_ent.get():
-                if self.bools[0].get() and " - <Base Plan>" in choice:
-                    err_messages += ("\"" + self.title_ent.get() +
-                                     "\" is already used as a cost title for the Base Plan. "
-                                     "Please input a different title.\n\n")
-                    valid = False
-
-                for index in plan_num:
-                    if " - <Plan " + str(index) + ">" in choice:
-                        err_messages += ("\"" + self.title_ent.get()
-                                         + "\" is already used as a cost title for Plan "
-                                         + str(index) + ". Please input a different title."
-                                         + "\n\n")
-                        valid = False
-
-        # ===== Cost Title must not have a hyphen '-'
-        if "-" in self.title_ent.get():
-            err_messages += ("Title cannot have a hyphen \'-\'. Please change the title.\n\n")
-            valid = False
-
-        # ===== Cost must be a positive number
-        try:
-            float(self.cost_ent.get())
-        except ValueError:
-            err_messages += "Dollar value of the cost must be a number. Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.cost_ent.get():
-            err_messages += "Cost must be a positive number. Perhaps you should enter that as a benefit.\n"
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
-
-        # ===== Omr Fields must be filled if OMR is selected
-        if self.choice.get() == "omr":
-            try:
-                float(self.year_start_ent.get())
-            except ValueError:
-                err_messages += "Starting year must be number. Please enter an amount.\n\n"
-                valid = False
-            if "-" in self.year_start_ent.get():
-                err_messages += "Starting year must be a positive number. "
-                err_messages += "Please enter a positive amount.\n\n"
-                valid = False
-
-            if self.omr_selection.get() == "recurring":
-                try:
-                    if float(self.year_rate_ent.get()) <= 0:
-                        err_messages += "Recurring rate must be a positive number. "
-                        err_messages += "Please enter a positive amount.\n\n"
-                        valid = False
-                except ValueError:
-                    err_messages += "Recurring rate must be a number. Please enter an amount.\n\n"
-                    valid = False
+            plan = self.data_cont.plan_list[0]
+            [valid, blank, err_messages] = plan.costs.save(new_title, new_type, new_omr_type,
+                                                           new_amount, new_times, new_desc,
+                                                           err_messages, blank=True)
+        else:
+            for i in plan_num:
+                plan = self.data_cont.plan_list[i]
+                [valid, blank, err_messages] = plan.costs.save(new_title, new_type, new_omr_type,
+                                                           new_amount, new_times, new_desc,
+                                                           err_messages)
 
         if (not valid) & printout:
             messagebox.showerror("ERROR", err_messages)
-        return valid
+        return [valid, blank, err_messages]
 
     def copy_cost(self):
         """Duplicates information of chosen cost and pastes it on screen"""

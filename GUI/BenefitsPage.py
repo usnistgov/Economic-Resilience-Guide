@@ -167,7 +167,7 @@ class BenefitsPage(tk.Frame):
         def save_and_back():
             """ Tries to save the input and sends the user to the previous screen.
             If save unsuccessful asks user for verification to move on."""
-            go_to_place = 'ExternalitiesPage'
+            go_to_place = 'ExternalitiesUncertaintiesPage'
             moveon = self.add_ben(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)
@@ -233,30 +233,20 @@ class BenefitsPage(tk.Frame):
         """Appends list of benefits, clears page's entry widgets,
            and updates 'Previously Inputted Benefits' section"""
         if moveon:
-            valid = self.check_page(printout=False)
-        else:
-            valid = self.check_page()
-        if not valid:
-            if moveon:
+            [valid, blank, err_messages] = self.check_page(printout=False)
+            if not (valid | blank):
                 checker = messagebox.askyesno('Move Forward?',
                                               'Your benefit was not saved. '
                                               'Select \'No\' if you wish to continue editing'
                                               ' and \'Yes\' if you wish to move to the next page.')
                 return checker
+            if blank:
+                return True
+        else:
+            [valid, blank, err_messages] = self.check_page()
+        if not valid:
             return False
-
-        plan_num = []            # === List that contains all selected plans
-        for i in range(len(self.bools)):
-            if self.bools[i].get():
-                plan_num.append(i)
-
-        ben_dict = {'title': self.title_ent.get(), 'ben_type': self.choice.get(),
-                    'amount': self.ben_ent.get(), 'desc': self.desc_ent.get("1.0", "end-1c")}
-        this_ben = Benefit(**ben_dict)
-        for index in plan_num:
-            self.data_cont.plan_list[index].bens.indiv.append(this_ben)
-
-        if valid:
+        else:
             # ===== Updates the page for the next cost
             self.clear_page()
             self.update_prev_list()
@@ -287,69 +277,30 @@ class BenefitsPage(tk.Frame):
 
         valid = True
 
-        # ===== Mandatory fields cannot be left blank or left alone
-        if self.title_ent.get() == "" or self.title_ent.get() == "<enter a title for this benefit>":
-            err_messages += "Title field has been left empty!\n\n"
-            valid = False
-        d_text = "<enter a description for this benefit>"
-        if "," in self.desc_ent.get("1.0", "end-1c"):
-            err_messages += ("Description cannot have a comma \',\'."
-                             "Please change the decsription.\n\n")
-            valid = False
-        if self.desc_ent.get("1.0", "end-1c") == "" or self.desc_ent.get("1.0", "end-1c") == d_text:
-            self.desc_ent.delete('1.0', tk.END)
-            self.desc_ent.insert(tk.END, "N/A")
-        bool_check = [self.bools[i].get() for i in range(len(self.bools))]
-        if not np.any(bool_check):
+        # ===== Check which plan/plans to add to
+        plan_num = []            # === List that contains all selected plans
+        for boolean in self.bools:
+            if boolean.get():
+                plan_num.append(self.bools.index(boolean))
+
+        new_title = self.title_ent.get()
+        new_desc = self.desc_ent.get("0.0", tk.END)
+        new_amount = self.ben_ent.get()
+        new_type = self.choice.get()
+        if len(plan_num) == 0:
             err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
-            valid = False
-        if self.choice.get() not in ["direct", "indirect", "res-rec"]:
-            err_messages += "A 'Benefit Type' has not been selected!\n\n"
-            valid = False
+            plan = self.data_cont.plan_list[0]
+            [valid, blank, err_messages] = plan.bens.save(new_title, new_type, new_amount,
+                                                          new_desc, err_messages, blank=True)
+        else:
+            for i in plan_num:
+                plan = self.data_cont.plan_list[i]
+                [valid, blank, err_messages] = plan.bens.save(new_title, new_type, new_amount,
+                                                          new_desc, err_messages)
 
-        # ===== Benefit cannot have a duplicate title
-        plan_num = []  # === List that contains all selected plans
-
-        for i in range(1, len(self.bools)):
-            if self.bools[i].get():
-                plan_num.append(i)
-
-        for choice in self.choices:
-            if (choice)[:len(self.title_ent.get())] == self.title_ent.get():
-                if self.bools[0].get() and (choice)[len(self.title_ent.get()):] == " - <Base Plan>":
-                    err_messages += ("\"" + self.title_ent.get())
-                    err_messages += "\" is already used as a benefit title for the Base Plan. "
-                    err_messages += "Please input a different title.\n\n"
-                    valid = False
-
-                for index in plan_num:
-                    if (choice)[len(self.title_ent.get()):] == " - <Plan " + str(index) + ">":
-                        err_messages += ("\"" + self.title_ent.get() + "\" is already ")
-                        err_messages += "used as a benefit title for Plan " + str(index)
-                        err_messages += ". Please input a different title.\n\n"
-                        valid = False
-
-        # ===== Benefit Title must not have a hyphen '-'
-        if "-" in self.title_ent.get():
-            err_messages += ("Title cannot have a hyphen \'-\'. Please change the title.\n\n")
-            valid = False
-
-        # ===== Dollar Amount must be a positive number
-        try:
-            float(self.ben_ent.get())
-        except ValueError:
-            err_messages += "Dollar value of the benefit must be a number. "
-            err_messages += "Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.ben_ent.get():
-            err_messages += "Dollar value must be a positive number.\n."
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
-
-
-        if (not valid) & printout:
+        if (not valid) & (not blank):
             messagebox.showerror("ERROR", err_messages)
-        return valid
+        return [valid, blank, err_messages]
 
     def copy_ben(self):
         """Duplicates information of chosen cost and pastes it on screen"""

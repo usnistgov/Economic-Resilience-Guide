@@ -93,7 +93,6 @@ class Externalities():
             year += rate
         return total
 
-
     def save(self, title, desc, amount, new_type, times, err_messages, pm, party, blank=False):
         """ Saves the fields if possible and returns applicable error messages if not."""
         field_dict = {}
@@ -133,6 +132,7 @@ class Externalities():
         if "-" in amount:
             err_messages += "Dollar value of the externality must be positive. "
             err_messages += "Please enter a positive amount.\n\n"
+            blank = False
             valid = False
         field_dict['amount'] = amount
         # == TYPE
@@ -183,17 +183,13 @@ class Externalities():
             field_dict['new_party'] = party
             blank = False
         # == DESCRIPTION
-        # No comma in description
-        #if ',' in desc:
-        #    err_messages += "Description cannot have a comma. Please change the description.\n\n"
-        #    valid = False
         # Set blank description to N/A or non-blank description to dict
         if desc in {"", "<enter a description for this externality>\n"}:
             field_dict['desc'] = 'N/A'
         else:
             desc = desc.replace('\n', '')
-            print(desc)
-            field_dict['desc'] = desc
+            blank = False
+        field_dict['desc'] = [desc]
         if valid:
             self.indiv.append(Externality(**field_dict))
             return [valid, blank, "Externality has been successfully added!"]

@@ -93,6 +93,62 @@ class Benefits():
 
         return delta_ben
 
+    def save(self, title, ben_type, amount, desc, err_messages, blank=False):
+        """ Saves the fields if possible and returns applicable error messages if not."""
+        field_dict = {}
+        if blank:
+            valid = False
+        else:
+            valid = True
+        # ===== Mandatory fields cannot be left blank or left alone
+        if title == "" or title == "<enter a title for this benefit>":
+            err_messages += "Title field has been left empty!\n\n"
+            valid = False
+        else:
+            field_dict['title'] = title
+            blank = False
+        for plan in self.indiv:
+            if title == plan.title:
+                err_messages += title + " is already used as a benefit title for this plan. "
+                err_messages += "Please input a different title.\n\n"
+                valid = False
+        if desc in {"", "<enter a description for this benefit>\n"}:
+            desc = "N/A"
+        else:
+            desc = desc.replace('\n', '')
+            blank = False
+        field_dict['desc'] = [desc]
+        if ben_type not in ["direct", "indirect", "res-rec"]:
+            err_messages += "A 'Benefit Type' has not been selected!\n\n"
+            valid = False
+        else:
+            field_dict['ben_type'] = ben_type
+            blank = False
+        # ===== Benefit Title must not have a hyphen '-'
+        if "-" in title:
+            err_messages += ("Title cannot have a hyphen \'-\'. Please change the title.\n\n")
+            valid = False
+
+        # ===== Dollar Amount must be a positive number
+        try:
+            field_dict['amount'] = float(amount)
+        except ValueError:
+            if amount not in {"", "<enter dollar value for this benefit>"}:
+                blank = False
+            err_messages += "Dollar value of the benefit must be a number. "
+            err_messages += "Please enter an amount.\n\n"
+            valid = False
+        if "-" in amount:
+            err_messages += "Dollar value must be a positive number.\n."
+            err_messages += "Please enter a positive amount.\n\n"
+            valid = False
+        if valid:
+            self.indiv.append(Benefit(**field_dict))
+            return [valid, blank, "Benefit has been successfully added!"]
+        else:
+            return [valid, blank, err_messages]
+
+
 class Benefit():
     """ Holds all of the information about benefits. """
     types = ["direct", "indirect", "res-rec"]
@@ -106,8 +162,10 @@ class Benefit():
         self.ben_type = ben_type
         self.amount = float(amount)
         self.desc = ""
-        for bit in desc:
-            self.desc += bit
+        for i in range(len(desc)):
+            if i != 0:
+                self.desc += ','
+            self.desc += desc[i]
 
         self.range = ['<insert uncertainty>',
                       '<insert uncertainty>',

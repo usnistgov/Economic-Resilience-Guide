@@ -212,7 +212,7 @@ class ExternalitiesPage(tk.Frame):
         def save_and_back():
             """ Tries to save the input and sends the user to the previous screen.
             If save unsuccessful asks user for verification to move on."""
-            go_to_place = 'CostUncertainties'
+            go_to_place = 'CostUncertaintiesPage'
             moveon = self.add_ext(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)

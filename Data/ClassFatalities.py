@@ -29,8 +29,10 @@ class Fatalities():
         """ Makes a new fatality and adds it to the list of fatality types. """
         self.averted = float(averted)
         self.desc = ""
-        for bit in desc:
-            self.desc += bit
+        for i in range(len(desc)):
+            if i != 0:
+                self.desc += ','
+            self.desc += desc[i]
 
         self.stat_value_averted = self.on_dis_occ(self.stat_value*self.averted, self.horizon, self.disaster_rate, self.discount_rate)
         self.stat_averted = 1/self.disaster_rate * self.horizon * self.averted

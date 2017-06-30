@@ -83,6 +83,89 @@ class Costs():
             year += rate
         return total
 
+    def save(self, title, cost_type, omr_type, amount, omr_times, desc, err_messages, blank=False):
+        """ Saves the fields if possible and returns applicable error messages if not."""
+        field_dict = {}
+        if blank:
+            valid = False
+        else:
+            valid = True
+        # ===== Mandatory fields cannot be left blank or left alone
+        if title == "" or title == "<enter a title for this cost>":
+            err_messages += "Title field has been left empty!\n\n"
+            valid = False
+        else:
+            blank = False
+
+        if cost_type != "direct" and cost_type != "indirect" and cost_type != "omr":
+            err_messages += "A 'Cost Type' has not been selected!\n\n"
+            valid = False
+        else:
+            field_dict['cost_type'] = cost_type
+
+        # ===== Cost cannot have a duplicate title
+        for plan in self.indiv:
+            if title == plan.title:
+                err_messages += title + " is already used as an cost title for this plan. "
+                err_messages += "Please input a different title.\n\n"
+                valid = False
+        # No hyphen in title
+        if "-" in title:
+            err_messages += "Title cannot have a hyphen. Please change the title.\n\n"
+            valid = False
+        # Set title in dict
+        field_dict['title'] = title
+
+        # ===== Cost must be a positive number
+        try:
+            float(amount)
+            field_dict['amount'] = amount
+        except ValueError:
+            if amount not in {"", "<enter an amount for this cost>"}:
+                blank = False
+            err_messages += "Dollar value of the cost must be a number. Please enter an amount.\n\n"
+            valid = False
+        if "-" in amount:
+            err_messages += "Cost must be a positive number. Perhaps you should enter that as a benefit.\n"
+            err_messages += "Please enter a positive amount.\n\n"
+            blank = False
+            valid = False
+
+        # ===== Omr Fields must be filled if OMR is selected
+        if cost_type == "omr":
+            try:
+                float(omr_times[0])
+            except ValueError:
+                err_messages += "Starting year must be number. Please enter an amount.\n\n"
+                valid = False
+            if "-" in omr_times[0]:
+                err_messages += "Starting year must be a positive number. "
+                err_messages += "Please enter a positive amount.\n\n"
+                blank = False
+                valid = False
+
+            if omr_type == "recurring":
+                try:
+                    if float(omr_times[1]) <= 0:
+                        err_messages += "Recurring rate must be a positive number. "
+                        err_messages += "Please enter a positive amount.\n\n"
+                        valid = False
+                except ValueError:
+                    err_messages += "Recurring rate must be a number. Please enter an amount.\n\n"
+                    valid = False
+        field_dict['omr_times'] = omr_times
+        # Set blank description to N/A or non-blank description to dict
+        if desc in {"", "<enter a description for this externality>\n"}:
+            field_dict['desc'] = 'N/A'
+        else:
+            desc = desc.replace('\n', '')
+            field_dict['desc'] = [desc]
+        if valid:
+            self.indiv.append(Cost(**field_dict))
+            return [valid, blank, "Cost has been successfully added!"]
+        else:
+            return [valid, blank, err_messages]
+
     def one_iter(self, old_cost_list):
         dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
         delta_cost = Costs(self.discount_rate, self.horizon)
@@ -111,8 +194,10 @@ class Cost():
         self.amount = float(amount)
         self.times = omr_times
         self.desc = ""
-        for bit in desc:
-            self.desc += bit
+        for i in range(len(desc)):
+            if i != 0:
+                self.desc += ','
+            self.desc += desc[i]
         if self.omr_type != "none":
             for num in self.times:
                 try:

@@ -241,52 +241,24 @@ class NonDBensPage(tk.Frame):
         """Appends list of NonDBens, clears page's entry widgets,
            and updates 'Previously Inputted NonDBens' section"""
         if moveon:
-            valid = self.check_page(printout=False)
-        else:
-            valid = self.check_page()
-        if not valid:
-            if moveon:
+            [valid, blank, err_messages] = self.check_page(printout=False)
+            if not (valid | blank):
                 checker = messagebox.askyesno('Move Forward?',
                                               'Your benefit was not saved. '
                                               'Select \'No\' if you wish to continue editing and'
                                               ' \'Yes\' if you wish to move to the next page.')
                 return checker
+            if blank:
+                return True
+        else:
+            [valid, blank, err_messages] = self.check_page()
+        if not valid:
             return False
-
-        # === List that contains all selected plans
-        plan_num = []
-        if self.b_bool.get():
-            plan_num.append(0)
-        if self.p1_bool.get():
-            plan_num.append(1)
-        if self.p2_bool.get():
-            plan_num.append(2)
-        if self.p3_bool.get():
-            plan_num.append(3)
-        if self.p4_bool.get():
-            plan_num.append(4)
-        if self.p5_bool.get():
-            plan_num.append(5)
-        if self.p6_bool.get():
-            plan_num.append(6)
-
-        ben_dict = {'title': self.title_ent.get(), 'ben_type': self.non_d_ben_recurr_selection.get(),
-                    'amount': self.ben_ent.get(), 'desc': self.desc_ent.get("1.0", "end-1c")}
-        if self.non_d_ben_recurr_selection.get() == "one-time":
-            ben_dict['times'] = list([self.year_start_ent.get(), 0, 0])
-        elif self.non_d_ben_recurr_selection.get() == "recurring":
-            ben_dict['times'] = list([self.year_start_ent.get(), self.year_rate_ent.get(), 0])
-        this_ben = Benefit(**ben_dict)
-
-        for index in plan_num:
-            self.data_cont.plan_list[index].nond_bens.indiv.append(this_ben)
-
-        if valid:
+        else:
             # ===== Updates the page for the next NonDBen
             self.clear_page()
             self.update_prev_list()
-            messagebox.showinfo("Success",
-                                "Non-disaster Related Benefit has been successfully added!")
+            messagebox.showinfo("Success", err_messages)
             return True
 
     def update_prev_list(self):
@@ -311,25 +283,7 @@ class NonDBensPage(tk.Frame):
         err_messages = ""
         valid = True
 
-        # ===== Mandatory fields cannot be left blank or left alone
-        if self.title_ent.get() == "" or self.title_ent.get() == "<enter a title for this benefit>":
-            err_messages += "Title field has been left empty!\n\n"
-            valid = False
-        end = "end-1c"
-        if "," in self.desc_ent.get("1.0", "end-1c"):
-            err_messages += ("Description cannot have a comma \',\'. Please change the decsription.\n\n")
-            valid = False
-        ben_desc = "<enter a description for this benefit>"
-        if self.desc_ent.get("1.0", end) == "" or self.desc_ent.get("1.0", end) == ben_desc:
-            self.desc_ent.delete('1.0', tk.END)
-            self.desc_ent.insert(tk.END, "N/A")
-        any_plan_1 = self.p1_bool.get() or self.p2_bool.get() or self.p3_bool.get()
-        any_plan_2 = self.p4_bool.get() or self.p5_bool.get() or self.p6_bool.get()
-        if not (self.b_bool.get() or any_plan_1 or any_plan_2):
-            err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
-            valid = False
-
-        # ===== NonDBen cannot have a duplicate title
+        plan_num = []
         # === List that contains all selected plans
         plan_num = []
         if self.p1_bool.get():
@@ -345,63 +299,24 @@ class NonDBensPage(tk.Frame):
         if self.p6_bool.get():
             plan_num.append(6)
 
-        for i in range(len(self.choices)):
-            if (self.choices[i])[:len(self.title_ent.get())] == self.title_ent.get():
-                base_in = (self.choices[i])[len(self.title_ent.get()):] == " - <Base Plan>"
-                if self.b_bool.get() and base_in:
-                    err_messages += ("\"" + self.title_ent.get() + "\"")
-                    err_messages += "is already used as a benefit title for the Base Plan."
-                    err_messages += " Please input a different title.\n\n"
-                    valid = False
+        new_title = self.title_ent.get()
+        new_desc = self.desc_ent.get("0.0", tk.END)
+        new_type = self.non_d_ben_recurr_selection.get()
+        new_amount = self.ben_ent.get()
+        new_times = [self.year_start_ent.get(), self.year_rate_ent.get(), 0]
 
-                for j in range(len(plan_num)):
-                    plan_end = (self.choices[i])[len(self.title_ent.get()):]
-                    if plan_end == " - <Plan " + str(plan_num[j]) + ">":
-                        err_messages += ("\"" + self.title_ent.get() + "\"")
-                        err_messages += " is already used as a benefit title for Plan "
-                        err_messages += str(plan_num[j]) + ". Please input a different title.\n\n"
-                        valid = False
-
-        # ===== NonDBen Title must not have a hyphen '-'
-        if "-" in self.title_ent.get():
-            err_messages += ("Title cannot have a hyphen \'-\'. Please change the title.\n\n")
-            valid = False
-
-        # ===== Cost must be a positive number
-        try:
-            float(self.ben_ent.get())
-        except ValueError:
-            err_messages += "Dollar value of the benefit must be a number. "
-            err_messages += "Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.ben_ent.get():
-            err_messages += "Benefit must be a positive number. Perhaps you should enter that as a cost.\n"
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
-
-        try:
-            float(self.year_start_ent.get())
-        except ValueError:
-            err_messages += "Starting year must be number. Please enter an amount.\n\n"
-            valid = False
-        if "-" in self.year_start_ent.get():
-            err_messages += "Starting year must be a positive number. "
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
-
-        if self.non_d_ben_recurr_selection.get() == "recurring":
-            try:
-                if float(self.year_rate_ent.get()) <= 0:
-                    err_messages += "Recurring rate must be a positive number. "
-                    err_messages += "Please enter a positive amount.\n\n"
-                    valid = False
-            except ValueError:
-                err_messages += "Recurring rate must be a number. Please enter an amount.\n\n"
-                valid = False
-
+        if len(plan_num) == 0:
+            err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
+            plan = self.data_cont.plan_list[0]
+            [valid, blank, err_messages] = plan.nond_bens.save(new_title, new_times, new_type, new_amount, new_desc, err_messages, blank=True)
+        else:
+            for i in plan_num:
+                plan = self.data_cont.plan_list[i]
+                [valid, blank, err_messages] = plan.nond_bens.save(new_title, new_times, new_type, new_amount, new_desc, err_messages)
+                
         if (not valid) & printout:
             messagebox.showerror("ERROR", err_messages)
-        return valid
+        return [valid, blank, err_messages]
 
     def copy_ben(self):
         """Duplicates information of chosen benefit and pastes it on screen"""
