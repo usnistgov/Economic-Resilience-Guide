@@ -48,7 +48,7 @@ class Externalities():
             opts['ext_type'] = line[1]
             opts['times'] = [line[2], line[3], line[4]]
             opts['amount'] = line[5]
-            opts['desc'] = line[6]
+            opts['desc'] = line[6:]
             opts['parties'] = self.parties
             this_ext = Externality(**opts)
             self.indiv.append(this_ext)
@@ -191,6 +191,8 @@ class Externalities():
         if desc in {"", "<enter a description for this externality>\n"}:
             field_dict['desc'] = 'N/A'
         else:
+            desc = desc.replace('\n', '')
+            print(desc)
             field_dict['desc'] = desc
         if valid:
             self.indiv.append(Externality(**field_dict))
@@ -226,8 +228,10 @@ class Externality():
             self.times.append(float(item))
         self.pm = pm
         self.desc = ""
-        for bit in desc:
-            self.desc += bit
+        for i in range(len(desc)):
+            if i != 0:
+                self.desc += ','
+            self.desc += desc[i]
         self.parties = parties
         self.third_party = self.set_party(new_party)
         self.range = ['<insert uncertainty>',

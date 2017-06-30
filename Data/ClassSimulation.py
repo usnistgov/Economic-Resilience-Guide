@@ -93,6 +93,14 @@ class Simulation():
             file_name = file_name + '.csv'
         new_file = open(file_name, 'w')
         new_file.write('Outputs of Economic Evaluation: [' + self.title + ']\n')
+        new_file.write('Number of Alternatives: ' + str(self.num_plans-1) + '\n')
+        new_file.write('Planning Horizon: ' + str(self.horizon) + ' years' + '\n')
+        new_file.write('Discount Rate: ' + str(self.discount_rate) + '%' + '\n')
+        new_file.write('Disaster Rate: Every ' + str(self.get_disaster_rate()[0]) + ' years\n')
+        new_file.write('Disaster Magnitude: ' + str(self.get_disaster_magnitude()[0])
+                          + '% of build cost' + '\n')
+        new_file.write('Risk Preference: ' + str(self.risk_pref) + '\n')
+        new_file.write('Statistical Value of a Life: '+'${:.0f}'.format(float(self.stat_life))+'\n')
         new_file.write(',Base Case')
         for i in range(1, self.num_plans):
             new_file.write(',Alternative ' + str(i))
@@ -191,6 +199,15 @@ class Simulation():
             new_file.write('For ' + plan.name + ' (Alternative ' + str(plan.id_assign) + ') '
                            + str(plan.mc_iters) + ' Monte-Carlo simulations were run.\n')
         new_file.write('The random number seed for these runs was ' + str(self.seed) + '.\n')
+        new_file.write('Number of Alternatives: ' + str(self.num_plans-1) + '\n')
+        new_file.write('Planning Horizon: ' + str(self.horizon) + ' years' + '\n')
+        new_file.write('Discount Rate: ' + str(self.discount_rate) + '%' + '\n')
+        new_file.write('Disaster Rate: Every ' + str(self.get_disaster_rate()[0]) + ' years\n')
+        new_file.write('Disaster Magnitude: ' + str(self.get_disaster_magnitude()[0])
+                          + '% of build cost' + '\n')
+        new_file.write('Risk Preference: ' + str(self.risk_pref) + '\n')
+        new_file.write('Statistical Value of a Life: '+'${:.0f}'.format(float(self.stat_life))+'\n')
+
         new_file.write(',Base Case,Lower Bound,Upper Bound')
         for i in range(1, self.num_plans):
             new_file.write(',Alternative ' + str(i) + ',Lower Bound,Upper Bound')

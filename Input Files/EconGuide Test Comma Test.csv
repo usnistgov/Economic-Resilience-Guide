@@ -1,0 +1,67 @@
+Title,EconGuide Test 1,,Horizon,60
+Discount Rate,3,,Risk Prev,averse,,Value of Stat Life,7500000
+BEGIN PLANS
+Plan 0,Base,gauss,35,5,0,0,0,0,tri,5,15,50,0,0,0,
+,Fatalities,0.0,N/A
+END PLAN
+Plan 1,Alt 1,gauss,35,5,0,0,0,0,tri,5,15,50,0,0,0,
+,Costs,Alt  1 Direct,direct,none,0,0,0,2250000.0,N/A
+,Costs,Uncertainty,gauss,50000,0,0,0,0,
+,Costs,Alt 1 Indirect,indirect,none,0,0,0,425000.0,N/A
+,Costs,Uncertainty,none,,,,,,
+,Costs,Alt 1 OMR One-Time,omr,one-time,20,0,0,75000.0,N/A
+,Costs,Uncertainty,discrete,45000,50000,75000,10,40,50
+,Costs,Alt 1 OMR Recurring,omr,recurring,5,5,0,5000.0,N/A
+,Costs,Uncertainty,none,,,,,,
+,Benefits,Alt 1 Direct Reduction,direct,650000.0,N/A
+,Benefits,Uncertainty,tri,617500,682500,0,0,0,0
+,Benefits,Alt 1 Indirect Reduction,indirect,450000.0,N/A
+,Benefits,Uncertainty,tri,427500,472500,0,0,0,0
+,Benefits,Alt 1 R&R Reduction,res-rec,250000.0,N/A
+,Benefits,Uncertainty,tri,237500,262500,0,0,0,0
+,Externalities,Alt 1 One Time,one-time,5.0,0.0,0.0,50000.0,N/A
+,Externalities,positive,developer
+,Externalities,Uncertainty,tri,40000,75000,0,0,0,0
+,Externalities,Alt 1 Recurring,recurring,1.0,1.0,0.0,9000.0,N/A
+,Externalities,negative,users
+,Externalities,Uncertainty,tri,100,0,0,0,0,0
+,Non-Disaster Benefits,Alt 1 NDRB One Time,one-time,3,0,0,300000,N/A
+,Non-Disaster Benefits,Uncertainty,gauss,5000,0,0,0,0,0
+,Non-Disaster Benefits,Alt 1 NDRB Recurring,recurring,1,1,0,50000,N/A
+,Non-Disaster Benefits,Uncertainty,tri,40000,60000,0,0,0,0
+,Fatalities,0.2,N/A
+END PLAN
+Plan 2,Alt 2,gauss,35,5,0,0,0,0,tri,5,15,50,0,0,0,
+,Costs,Alt 2 Direct,direct,none,0,0,0,2800000.0,N/A
+,Costs,Uncertainty,none,0,0,0,0,0,0
+,Costs,Alt 2 Indirect,indirect,none,0,0,0,300000.0,N/A
+,Costs,Uncertainty,tri,200000,600000,0,0,0,0
+,Costs,Alt 2 OMR One-Time,omr,one-time,30,0,0,125000.0,N/A
+,Costs,Uncertainty,rect,70000,150000,0,0,0,0
+,Costs,Alt 2 OMR Recurring,omr,recurring,2,2,0,5000.0,N/A
+,Costs,Uncertainty,gauss,500,0,0,0,0,0
+,Benefits,Alt 2 Direct Reduction,direct,800000.0,N/A
+,Benefits,Uncertainty,rect,760000,840000,0,0,0,0
+,Benefits,Alt 2 Indirect Reduction,indirect,700000.0,N/A
+,Benefits,Uncertainty,rect,665000,735000,0,0,0,0
+,Benefits,Alt 2 R&R Reduction,res-rec,200000.0,N/A
+,Benefits,Uncertainty,rect,190000,210000,0,0,0,0
+,Externalities,Alt 2 OneTime,one-time,15.0,0.0,0.0,80000.0,N/A
+,Externalities,negative,community
+,Externalities,Uncertainty,rect,70000,81000,0,0,0,0
+,Externalities,Alt 2 Recurring,recurring,5.0,5.0,0.0,1000.0,N/A
+,Externalities,positive,mayor
+,Externalities,Uncertainty,rect,1000,1500,2000,50,40,10
+,Externalities,New Line Test,one-time,9.0,0.0,0.0,90.0,Some description
+,Externalities,positive,lender(s)
+,Externalities,Uncertainty,rect,0,0,0,0,0,0
+,Externalities,Comma Test,recurring,8.0,90.0,0.0,90000.0,My, comma, description test, is it working?
+,Externalities,positive,tenants
+,Externalities,Uncertainty,rect,0,0,0,0,0,0
+,Non-Disaster Benefits,Alt 2 NDRB One-Time,one-time,1,0,0,250000,N/A
+,Non-Disaster Benefits,Uncertainty,rect,150000,260000,0,0,0,0
+,Non-Disaster Benefits,Alt 2 NDRB Recurring,recurring,5,1,0,55000,N/A
+,Non-Disaster Benefits,Uncertainty,discrete,45000,55000,60000,15,45,40
+,Fatalities,0.25,N/A
+END PLAN
+END FILE
