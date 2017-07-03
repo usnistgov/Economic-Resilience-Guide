@@ -8,19 +8,20 @@
 import sys
 import random
 
-import tkinter as tk
-from tkinter import ttk     #for pretty buttons/labels
-from tkinter import messagebox
-
 import time
 import threading
 
+import tkinter as tk
+from tkinter import ttk     #for pretty buttons/labels
+from tkinter import messagebox
 
 from GUI.AnalysisPage import run_main_page
 from GUI.AnalysisUncertainties import run_u_main_page
 
 from GUI.Constants import SMALL_FONT, LARGE_FONT, ENTRY_WIDTH, NORM_FONT
 from GUI.Constants import FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
+
+from Data.Exports import csv_export, csv_export_uncert, word_export, word_export_uncert
 
 class AnalysisInfo(tk.Frame):
     """
@@ -80,15 +81,6 @@ class AnalysisInfo(tk.Frame):
         # Uncertainty Information Group
         uncert_group = ttk.LabelFrame(self, text="Information on Monte-Carlo calculations")
         uncert_group.grid(row=4, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
-        #self.tol_select = tk.StringVar()
-        #self.tol_select.set("1")
-        #point_rad = ttk.Radiobutton(uncert_group,
-        #                            text="Stop Monte Carlo based on bounds tolerance",
-        #                            variable=self.tol_select, value="tol")
-        #point_rad.grid(row=0, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        #tol_rad = ttk.Radiobutton(uncert_group, text="Stop Monte Carlo after a given number of runs",
-        #                             variable=self.tol_select, value="uncert")
-        #tol_rad.grid(row=0, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         ttk.Label(uncert_group, text="Seed",
                   font=SMALL_FONT).grid(row=1, column=0, sticky="e",
@@ -130,6 +122,12 @@ class AnalysisInfo(tk.Frame):
         menu_button = ttk.Button(self, text="View Directory",
                                  command=lambda: controller.show_frame('DirectoryPage'))
         menu_button.grid(row=5, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+
+        # Save analysis
+        ttk.Button(self, text="Save Analysis",
+                   command=lambda: self.data_cont.file_save()).grid(row=5, sticky="w",
+                                                                    padx=FIELDX_PADDING,
+                                                                    pady=FIELDY_PADDING)
 
     def info(self):
         """Provides information to the user"""
@@ -202,7 +200,8 @@ class AnalysisInfo(tk.Frame):
         """Calls docx export."""
         self.data_cont.summer()
         if uncert == "point":
-            self.data_cont.word_export()
+            word_export(self.data_cont)
+            #self.data_cont.word_export()
         elif uncert == "uncert":
             try:
                 seed = int(self.seed_ent.get())
@@ -234,7 +233,8 @@ class AnalysisInfo(tk.Frame):
             self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
                                       "\nPlease be patient while they compute.",
                                       seed, conf, tol, break_point)
-            self.data_cont.word_export_uncert()
+            word_export(self.data_cont)
+            #self.data_cont.word_export_uncert()
         else:
             messagebox.showerror("Error",
                                  "You must select whether to use "
@@ -244,7 +244,8 @@ class AnalysisInfo(tk.Frame):
         """Calls csv export."""
         self.data_cont.summer()
         if uncert == "point":
-            self.data_cont.csv_export()
+            csv_export(self.data_cont)
+            #self.data_cont.csv_export()
         elif uncert == "uncert":
             try:
                 seed = int(self.seed_ent.get())
@@ -273,9 +274,11 @@ class AnalysisInfo(tk.Frame):
             except ValueError:
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
-            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run.\nPlease be patient while they compute.",
+            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
+                                      "\nPlease be patient while they compute.",
                                       seed, conf, tol, break_point)
-            self.data_cont.csv_export_uncert()
+            csv_export_uncert(self.data_cont)
+            #self.data_cont.csv_export_uncert()
         else:
             messagebox.showerror("Error",
                                  "You must select whether to use "
@@ -285,8 +288,10 @@ class AnalysisInfo(tk.Frame):
         """Calls docx and csv export."""
         self.data_cont.summer()
         if uncert == "point":
-            self.data_cont.word_export()
-            self.data_cont.csv_export()
+            word_export(self.data_cont)
+            csv_export(self.data_cont)
+            #self.data_cont.word_export()
+            #self.data_cont.csv_export()
         elif uncert == "uncert":
             try:
                 seed = int(self.seed_ent.get())
@@ -318,9 +323,10 @@ class AnalysisInfo(tk.Frame):
             self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run.\n"
                                       "Please be patient while they compute.",
                                       seed, conf, tol, break_point)
-            #self.data_cont.monte(seed, conf, tol, high_iters=break_point)
-            self.data_cont.word_export_uncert()
-            self.data_cont.csv_export_uncert()
+            word_export_uncert(self.data_cont)
+            csv_export_uncert(self.data_cont)
+            #self.data_cont.word_export_uncert()
+            #self.data_cont.csv_export_uncert()
         else:
             messagebox.showerror("Error",
                                  "You must select whether to use "

@@ -1,7 +1,7 @@
 """ The fatalities package for the list of fatalities and the fatality class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-05
+    2017-07
 """
 
 import math
@@ -18,7 +18,8 @@ class Fatalities():
         self.horizon = float(horizon)
         self.stat_value = float(stat_value)
 
-        self.stat_value_averted = self.on_dis_occ(self.stat_value*self.averted, self.horizon, self.disaster_rate, self.discount_rate)
+        self.stat_value_averted = self.on_dis_occ(self.stat_value * self.averted, self.horizon,
+                                                  self.disaster_rate, self.discount_rate)
         self.stat_averted = 1/self.disaster_rate * self.horizon * self.averted
 
         self.num_range = [0, 0]
@@ -34,7 +35,8 @@ class Fatalities():
                 self.desc += ','
             self.desc += desc[i]
 
-        self.stat_value_averted = self.on_dis_occ(self.stat_value*self.averted, self.horizon, self.disaster_rate, self.discount_rate)
+        self.stat_value_averted = self.on_dis_occ(self.stat_value * self.averted, self.horizon,
+                                                  self.disaster_rate, self.discount_rate)
         self.stat_averted = 1/self.disaster_rate * self.horizon * self.averted
 
     def on_dis_occ(self, value, horizon, disaster_rate, discount_rate):

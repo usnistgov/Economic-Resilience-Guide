@@ -1,0 +1,44 @@
+Outputs of Economic Evaluation: [EconGuide Test 1]
+Number of Alternatives: 2
+Planning Horizon: 60 years
+Discount Rate: 3%
+Disaster Rate: Every 35 years
+Disaster Magnitude: 15% of build cost
+Risk Preference: averse
+Statistical Value of a Life: $7500000
+,Base Case,Alternative 1,Alternative 2
+,Base,Alt 1,Alt 2
+Benefits
+Disaster Economic Benefits
+Response and Recovery Costs,$0.0,$201734.34049986993,$161387.47239989595
+Direct Loss Reduction,$0.0,$524509.2852996618,$645622.5139621637
+Indirect Losses,$0.0,$363121.8128997659,$564856.1533996358
+Disaster Non-Market Benefits
+Value of Statistical Lives Saved,$0.0,$1210406.0429992196,$1513007.5537490244
+Number of Statistical Lives Saved,0.0,0.34285714285714286,0.42857142857142855
+Non-disaster Related Benefits
+One-Time,$0,$279874.6502316541,$242611.38338712705
+Recurring
+,$0,$1370405.3279101707,$1303227.4677995243
+Costs
+Direct Costs,$0,$2250000.0,$2890389.0
+Indirect Costs,$0,$425000.0,$300000.0
+OMR
+One-Time,$0,$41160.87270705199,$50821.207467574895
+Recurring,$0,$25788.766879821047,$67492.53947793852
+Externalities
+Positive
+One-Time,$0,$43035.39882125289,$68.70415449031678
+Recurring,$0,$0,$75954.26087195403
+Negative
+One-Time,$0,$0,$51010.252129741864
+Recurring,$0,$246672.95902383063,$0
+Total: Present Expected Value
+Benefits,$0.0,$3950051.459840342,$4430712.544697371
+Costs,$0,$2741949.6395868734,$3308702.7469455134
+Net,$0.0,$1208101.8202534686,$1122009.797751858
+Net with Externalities,$0.0,$1004464.2600508909,$1147022.5106485607
+Savings-to-Investment Ratio,0,0.45162684869288544,0.3516843236833684
+Internal Rate of Return (%),---,5.1361083984375,4.5928955078125
+Return on Investment (%),0,2.40099927609386,2.2318477882747554
+Non-Disaster ROI (%),0,1.003106180553624,0.7786731786920212

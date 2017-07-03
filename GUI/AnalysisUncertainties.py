@@ -11,6 +11,8 @@ from tkinter import messagebox
 from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT, BOLD_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 
+from Data.Exports import csv_export_uncert, word_export_uncert
+
 def run_u_main_page(data):
     """Only creates a new window called "MainPage" once all calculations are finished"""
     class UMainPage(tk.Tk):
@@ -572,18 +574,18 @@ def run_u_main_page(data):
             def document():
                 """Destroys popup and calls docx export."""
                 leavemini()
-                self.data_cont.word_export_uncert()
+                word_export_uncert(self.data_cont)
 
             def commas():
                 """Destroys popup and calls csv export."""
                 leavemini()
-                self.data_cont.csv_export_uncert()
+                csv_export_uncert(self.data_cont)
 
             def both():
                 """Destroys popup and calls docx and csv export."""
                 leavemini()
-                self.data_cont.word_export_uncert()
-                self.data_cont.csv_export_uncert()
+                word_export_uncert(self.data_cont)
+                csv_export_uncert(self.data_cont)
 
             popup.wm_title("Export")
             label = ttk.Label(popup, text="Which format would you like to export?", font=NORM_FONT)

@@ -1,7 +1,7 @@
 """ The externalities package for the list of externalities and the externality class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-05
+    2017-07
 """
 import math
 import numpy as np
@@ -197,7 +197,9 @@ class Externalities():
             return [valid, blank, err_messages]
 
     def one_iter(self, old_ext_list):
-        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
+        """ Creates one instance of Externalities with all exts within uncertainty ranges."""
+        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist,
+                     'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
         delta_ext = Externalities(self.discount_rate, self.horizon, self.parties)
         for ext in old_ext_list:
             ext_dict = {'title': ext.title,
@@ -245,6 +247,8 @@ class Externality():
         self.dist = distribution
 
     def set_party(self, new_party):
+        """ Sets the third party and appends to the list of parties if
+            this party is not already in the list."""
         if (new_party == 'none') | (new_party == ''):
             self.third_party = 'none'
         elif new_party in self.parties:

@@ -11,7 +11,7 @@ from tkinter import messagebox
 from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT, BOLD_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 
-from GUI.AnalysisUncertainties import run_u_main_page
+from Data.Exports import csv_export, word_export
 
 def run_main_page(data):
     """Only creates a new window called "MainPage" once all calculations are finished"""
@@ -66,20 +66,11 @@ def run_main_page(data):
 
         def create_widgets(self, frame):
             """Widgets include: menu bar, **temporary** home button"""
-
-            """
-            menubar = tk.Menu(container, tearoff=0)
-            filemenu = tk.Menu(menubar)
-
-            filemenu.add_separator()
-            filemenu.add_command(label="Exit", command=sys.exit)
-            menubar.add_cascade(label="File", menu=filemenu)
-
-            tk.Tk.config(self, menu=menubar)"""
-
             # ===== Labels the plans
             my_tab = " " * 5
             pad_opts = {'padx': FIELDX_PADDING, 'pady':FIELDY_PADDING}
+            title_opts = {'column':0, 'sticky':"w", 'padx': FIELDX_PADDING, 'pady':FIELDY_PADDING}
+            field_opts = {'sticky':"e", 'padx': FIELDX_PADDING, 'pady':FIELDY_PADDING}
 
             group0 = ttk.Frame(frame)
             group0.grid(row=2, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
@@ -97,92 +88,89 @@ def run_main_page(data):
                 ttk.Label(group0, text=self.data_cont.plan_list[i].name,
                           font=SMALL_FONT).grid(row=1, column=(i+1), **pad_opts)
 
-            ben_label = ttk.Label(group0, text="Benefits", font=SMALL_FONT, foreground="blue")
-            ben_label.grid(row=2, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text="Benefits", font=SMALL_FONT,
+                      foreground="blue").grid(row=2, **title_opts)
 
             # ===== Total Benefits
-            disaster_ben_lbl = ttk.Label(group0, text="Disaster Economic Benefits", font=NORM_FONT)
-            disaster_ben_lbl.grid(row=4, column=0, sticky="w", **pad_opts)
-            res_rec_lbl = ttk.Label(group0, text=my_tab + "Response and Recovery Costs",
-                                    font=SMALL_FONT)
-            res_rec_lbl.grid(row=5, column=0, sticky="w", **pad_opts)
-            dir_loss_lbl = ttk.Label(group0, text=my_tab + "Direct Losses", font=SMALL_FONT)
-            dir_loss_lbl.grid(row=6, column=0, sticky="w", **pad_opts)
-            id_loss_lbl = ttk.Label(group0, text=my_tab + "Indirect Losses", font=SMALL_FONT)
-            id_loss_lbl.grid(row=7, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text="Disaster Economic Benefits",
+                      font=NORM_FONT).grid(row=4, **title_opts)
+            ttk.Label(group0, text=my_tab + "Response and Recovery Costs",
+                      font=SMALL_FONT).grid(row=5, **title_opts)
+            ttk.Label(group0, text=my_tab + "Direct Losses",
+                      font=SMALL_FONT).grid(row=6, **title_opts)
+            ttk.Label(group0, text=my_tab + "Indirect Losses",
+                      font=SMALL_FONT).grid(row=7, **title_opts)
 
-            disaster_non_m_ben_lbl = ttk.Label(group0, text="Disaster Non-Market Benefits",
-                                               font=NORM_FONT)
-            disaster_non_m_ben_lbl.grid(row=8, column=0, sticky="w", **pad_opts)
-            fat_lbl = ttk.Label(group0, text=my_tab + "Value of Statistical Lives Saved",
-                                font=SMALL_FONT)
-            fat_lbl.grid(row=9, column=0, sticky="w", **pad_opts)
-            fat_lbl2 = ttk.Label(group0, text=my_tab + "Number of Statistical Lives Saved",
-                                 font=SMALL_FONT)
-            fat_lbl2.grid(row=10, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text="Disaster Non-Market Benefits",
+                      font=NORM_FONT).grid(row=8, **title_opts)
+            ttk.Label(group0, text=my_tab + "Value of Statistical Lives Saved",
+                      font=SMALL_FONT).grid(row=9, **title_opts)
+            ttk.Label(group0, text=my_tab + "Number of Statistical Lives Saved",
+                      font=SMALL_FONT).grid(row=10, **title_opts)
 
-            non_d_ben_lbl = ttk.Label(group0, text="Non-Disaster Related Benefits",
-                                      font=NORM_FONT)
-            non_d_ben_lbl.grid(row=11, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text="Non-Disaster Related Benefits",
+                      font=NORM_FONT).grid(row=11, **title_opts)
             ttk.Label(group0, text=my_tab + "One-Time",
-                      font=SMALL_FONT).grid(row=12, column=0, sticky="w", **pad_opts)
+                      font=SMALL_FONT).grid(row=12, **title_opts)
             ttk.Label(group0, text=my_tab + "Recurring",
-                      font=SMALL_FONT).grid(row=13, column=0, sticky="w", **pad_opts)
+                      font=SMALL_FONT).grid(row=13, **title_opts)
 
             # ===== Total Costs
-            cost_label = ttk.Label(group0, text="Costs", font=SMALL_FONT, foreground="blue")
-            cost_label.grid(row=14, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text="Costs", font=SMALL_FONT,
+                      foreground="blue").grid(row=14, **title_opts)
             ttk.Label(group0, text="Direct and Indirect Costs",
-                      font=NORM_FONT).grid(row=15, column=0, sticky="w", **pad_opts)
-            dir_lbl = ttk.Label(group0, text=my_tab + "Direct Costs" + " "*39, font=SMALL_FONT)
-            dir_lbl.grid(row=16, column=0, sticky="w", **pad_opts)
-            id_lbl = ttk.Label(group0, text=my_tab + "Indirect Costs", font=SMALL_FONT)
-            id_lbl.grid(row=17, column=0, sticky="w", **pad_opts)
-            omr_lbl = ttk.Label(group0, text="OMR Costs", font=NORM_FONT)
-            omr_lbl.grid(row=18, column=0, sticky="w", **pad_opts)
-            rec_lbl = ttk.Label(group0, text=my_tab + "One-Time", font=SMALL_FONT)
-            rec_lbl.grid(row=19, column=0, sticky="w", **pad_opts)
-            rec_lbl = ttk.Label(group0, text=my_tab + "Recurring", font=SMALL_FONT)
-            rec_lbl.grid(row=20, column=0, sticky="w", **pad_opts)
+                      font=NORM_FONT).grid(row=15, **title_opts)
+            ttk.Label(group0, text=my_tab + "Direct Costs" + " " * 39,
+                      font=SMALL_FONT).grid(row=16, **title_opts)
+            ttk.Label(group0, text=my_tab + "Indirect Costs",
+                      font=SMALL_FONT).grid(row=17, **title_opts)
+            ttk.Label(group0, text="OMR Costs",
+                      font=NORM_FONT).grid(row=18, **title_opts)
+            ttk.Label(group0, text=my_tab + "One-Time",
+                      font=SMALL_FONT).grid(row=19, **title_opts)
+            ttk.Label(group0, text=my_tab + "Recurring",
+                      font=SMALL_FONT).grid(row=20, **title_opts)
 
             ttk.Label(group0, text="Externalities", font=SMALL_FONT,
-                      foreground="blue").grid(row=21, column=0, sticky="w", **pad_opts)
-            ttk.Label(group0, text="Positive", font=NORM_FONT).grid(row=22, column=0, sticky="w", **pad_opts)
-            rec_ext_lbl = ttk.Label(group0, text=my_tab + "One-Time", font=SMALL_FONT)
-            rec_ext_lbl.grid(row=23, column=0, sticky="w", **pad_opts)
+                      foreground="blue").grid(row=21, **title_opts)
+            ttk.Label(group0, text="Positive",
+                      font=NORM_FONT).grid(row=22, **title_opts)
+            ttk.Label(group0, text=my_tab + "One-Time",
+                      font=SMALL_FONT).grid(row=23, **title_opts)
             ttk.Label(group0, text=my_tab + "Recurring",
-                      font=SMALL_FONT).grid(row=24, column=0, sticky="w", **pad_opts)
-            ttk.Label(group0, text="Negative", font=NORM_FONT).grid(row=25, column=0, sticky="w", **pad_opts)
-            rec_ext_lbl = ttk.Label(group0, text=my_tab + "One-Time", font=SMALL_FONT)
-            rec_ext_lbl.grid(row=26, column=0, sticky="w", **pad_opts)
+                      font=SMALL_FONT).grid(row=24, **title_opts)
+            ttk.Label(group0, text="Negative",
+                      font=NORM_FONT).grid(row=25, **title_opts)
+            ttk.Label(group0, text=my_tab + "One-Time",
+                      font=SMALL_FONT).grid(row=26, **title_opts)
             ttk.Label(group0, text=my_tab + "Recurring",
-                      font=SMALL_FONT).grid(row=27, column=0, sticky="w", **pad_opts)
+                      font=SMALL_FONT).grid(row=27, **title_opts)
 
             # ===== Totals
-            total_label = ttk.Label(group0, text="Totals", font=SMALL_FONT, foreground="blue")
-            total_label.grid(row=28, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text="Totals", font=SMALL_FONT,
+                      foreground="blue").grid(row=28, **title_opts)
 
-            tot_lbl = ttk.Label(group0, text="Total: Present Expected Value", font=NORM_FONT)
-            tot_lbl.grid(row=29, column=0, sticky="w", **pad_opts)
-            ben_lbl = ttk.Label(group0, text=my_tab + "Benefits" + " "*24, font=SMALL_FONT)
-            ben_lbl.grid(row=30, column=0, sticky="w", **pad_opts)
-            cost_lbl = ttk.Label(group0, text=my_tab + "Costs", font=SMALL_FONT)
-            cost_lbl.grid(row=31, column=0, sticky="w", **pad_opts)
-            net_lbl = ttk.Label(group0, text=my_tab + "Net", font=SMALL_FONT)
-            net_lbl.grid(row=32, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text="Total: Present Expected Value",
+                      font=NORM_FONT).grid(row=29, **title_opts)
+            ttk.Label(group0, text=my_tab + "Benefits" + " " * 24,
+                      font=SMALL_FONT).grid(row=30, **title_opts)
+            ttk.Label(group0, text=my_tab + "Costs",
+                      font=SMALL_FONT).grid(row=31, **title_opts)
+            ttk.Label(group0, text=my_tab + "Net",
+                      font=SMALL_FONT).grid(row=32, **title_opts)
             if any_ext:
-                ttk.Label(group0, text=my_tab + "Net with Externalities", font=SMALL_FONT).grid(row=33, column=0, sticky="w", **pad_opts)
+                ttk.Label(group0, text=my_tab + "Net with Externalities",
+                          font=SMALL_FONT).grid(row=33, **title_opts)
 
-            #ttk.Label(group0, text=" ").grid(row=24, **pad_opts)
-            sir_lbl = ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio",
-                                font=SMALL_FONT)
-            sir_lbl.grid(row=34, column=0, sticky="w", **pad_opts)
-            irr_lbl = ttk.Label(group0, text=my_tab + "Internal Rate of Return", font=SMALL_FONT)
-            irr_lbl.grid(row=35, column=0, sticky="w", **pad_opts)
-            roi_lbl = ttk.Label(group0, text=my_tab + "Return on Investment", font=SMALL_FONT)
-            roi_lbl.grid(row=36, column=0, sticky="w", **pad_opts)
-            non_d_roi = ttk.Label(group0, text=my_tab + "Non-Disaster ROI", font=SMALL_FONT)
-            non_d_roi.grid(row=37, column=0, sticky="w", **pad_opts)
+            ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio",
+                      font=SMALL_FONT).grid(row=34, **title_opts)
+            ttk.Label(group0, text=my_tab + "Internal Rate of Return",
+                      font=SMALL_FONT).grid(row=35, **title_opts)
+            ttk.Label(group0, text=my_tab + "Return on Investment",
+                      font=SMALL_FONT).grid(row=36, **title_opts)
+            ttk.Label(group0, text=my_tab + "Non-Disaster ROI",
+                      font=SMALL_FONT).grid(row=37, **title_opts)
+
             # === Places spaces to correct an unknown error with the window size
             ttk.Label(group0, text=" ").grid(row=38)
             ttk.Label(group0, text=" ").grid(row=39)
@@ -192,114 +180,106 @@ def run_main_page(data):
 
 
             for i in range(self.data_cont.num_plans):
+                plan = self.data_cont.plan_list[i]
                 # Response and Recovery
-                text_1 = self.data_cont.plan_list[i].bens.r_sum
-                ttk.Label(group0, text='${:,.0f}'.format(text_1),
-                          font=SMALL_FONT).grid(row=5, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='${:,.0f}'.format(plan.bens.r_sum),
+                          font=SMALL_FONT).grid(row=5, column=(i+1), **field_opts)
                 # Direct Benefits
-                text_2 = self.data_cont.plan_list[i].bens.d_sum
-                ttk.Label(group0, text='${:,.0f}'.format(text_2),
-                          font=SMALL_FONT).grid(row=6, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='${:,.0f}'.format(plan.bens.d_sum),
+                          font=SMALL_FONT).grid(row=6, column=(i+1), **field_opts)
                 # Indirect Benefits
-                text_3 = self.data_cont.plan_list[i].bens.i_sum
-                ttk.Label(group0, text='${:,.0f}'.format(text_3),
-                          font=SMALL_FONT).grid(row=7, column=(i + 1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='${:,.0f}'.format(plan.bens.i_sum),
+                          font=SMALL_FONT).grid(row=7, column=(i + 1), **field_opts)
 
                 # Fatalaties Value averted
-                text = self.data_cont.plan_list[i].fat.stat_value_averted
-                ttk.Label(group0, text='${:,.0f}'.format(text),
-                          font=SMALL_FONT).grid(row=9, column=(i + 1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='${:,.0f}'.format(plan.fat.stat_value_averted),
+                          font=SMALL_FONT).grid(row=9, column=(i + 1), **field_opts)
                 # Fatalaties number averted
-                text = self.data_cont.plan_list[i].fat.stat_averted
-                ttk.Label(group0, text='{:,.2f}'.format(text),
-                          font=SMALL_FONT).grid(row=10, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='{:,.2f}'.format(plan.fat.stat_averted),
+                          font=SMALL_FONT).grid(row=10, column=(i+1), **field_opts)
 
                 # Non D Bens
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.one_sum),
-                          font=SMALL_FONT).grid(row=12, column=i+1, sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.nond_bens.one_sum),
+                          font=SMALL_FONT).grid(row=12, column=i+1, **field_opts)
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].nond_bens.r_sum),
-                          font=SMALL_FONT).grid(row=13, column=i+1, sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.nond_bens.r_sum),
+                          font=SMALL_FONT).grid(row=13, column=i+1, **field_opts)
 
                 # Direct Costs
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].costs.d_sum),
-                          font=SMALL_FONT).grid(row=16, column=(i+1), sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.costs.d_sum),
+                          font=SMALL_FONT).grid(row=16, column=(i+1), **field_opts)
                 # Indirect Costs
-                ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].costs.i_sum),
-                          font=SMALL_FONT).grid(row=17, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='${:,.0f}'.format(plan.costs.i_sum),
+                          font=SMALL_FONT).grid(row=17, column=(i+1), **field_opts)
                 # One-Time OMR
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].costs.omr_1_sum),
-                          font=SMALL_FONT).grid(row=19, column=(i+1), sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.costs.omr_1_sum),
+                          font=SMALL_FONT).grid(row=19, column=(i+1), **field_opts)
                 # Recurring OMR
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].costs.omr_r_sum),
-                          font=SMALL_FONT).grid(row=20, column=(i+1), sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.costs.omr_r_sum),
+                          font=SMALL_FONT).grid(row=20, column=(i+1), **field_opts)
 
                 # Externalities
                 # One-Time Extenalities Positive
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum_p),
-                          font=SMALL_FONT).grid(row=23, column=(i+1), sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.exts.one_sum_p),
+                          font=SMALL_FONT).grid(row=23, column=(i+1), **field_opts)
                 # Recurring Externalities Positive
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum_p),
-                          font=SMALL_FONT).grid(row=24, column=(i+1), sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.exts.r_sum_p),
+                          font=SMALL_FONT).grid(row=24, column=(i+1), **field_opts)
                 # One-Time Extenalities Negative
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.one_sum_n),
-                          font=SMALL_FONT).grid(row=26, column=(i+1), sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.exts.one_sum_n),
+                          font=SMALL_FONT).grid(row=26, column=(i+1), **field_opts)
                 # Recurring Externalities Negative
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].exts.r_sum_n),
-                          font=SMALL_FONT).grid(row=27, column=(i+1), sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.exts.r_sum_n),
+                          font=SMALL_FONT).grid(row=27, column=(i+1), **field_opts)
 
                 # Totals
                 ttk.Label(group0,
-                          text='${:,.0f}'.format(self.data_cont.plan_list[i].total_bens),
-                          font=BOLD_FONT).grid(row=30, column=(i + 1), sticky="e", **pad_opts)
-                ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].total_costs),
-                          font=BOLD_FONT).grid(row=31, column=(i + 1), sticky="e", **pad_opts)
-                if self.data_cont.plan_list[i].net >= 0:
-                    ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].net),
-                              font=BOLD_FONT).grid(row=32, column=(i + 1), sticky="e", **pad_opts)
+                          text='${:,.0f}'.format(plan.total_bens),
+                          font=BOLD_FONT).grid(row=30, column=(i + 1), **field_opts)
+                ttk.Label(group0, text='${:,.0f}'.format(plan.total_costs),
+                          font=BOLD_FONT).grid(row=31, column=(i + 1), **field_opts)
+                if plan.net >= 0:
+                    ttk.Label(group0, text='${:,.0f}'.format(plan.net),
+                              font=BOLD_FONT).grid(row=32, column=(i + 1), **field_opts)
                 else:
                     ttk.Label(group0,
-                              text='(' + '${:,.0f}'.format(self.data_cont.plan_list[i].net) + ')',
-                              font=BOLD_FONT).grid(row=32, column=(i + 1), sticky="e", **pad_opts)
+                              text='(' + '${:,.0f}'.format(plan.net) + ')',
+                              font=BOLD_FONT).grid(row=32, column=(i + 1), **field_opts)
                 if any_ext:
-                    if self.data_cont.plan_list[i].net_w_ext >= 0:
-                        ttk.Label(group0, text='${:,.0f}'.format(self.data_cont.plan_list[i].net_w_ext),
-                                font=BOLD_FONT).grid(row=33, column=(i + 1), sticky="e", **pad_opts)
+                    if plan.net_w_ext >= 0:
+                        ttk.Label(group0, text='${:,.0f}'.format(plan.net_w_ext),
+                                  font=BOLD_FONT).grid(row=33, column=(i + 1), **field_opts)
                     else:
                         ttk.Label(group0,
-                                text='(' + '${:,.0f}'.format(self.data_cont.plan_list[i].net_w_ext) + ')',
-                                font=BOLD_FONT).grid(row=33, column=(i + 1), sticky="e", **pad_opts)
+                                  text='(' + '${:,.0f}'.format(plan.net_w_ext) + ')',
+                                  font=BOLD_FONT).grid(row=33, column=(i + 1), **field_opts)
 
-                ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].sir()),
-                          font=SMALL_FONT).grid(row=34, column=(i + 1), sticky="e", **pad_opts)
-                if type(self.data_cont.plan_list[i].irr()) == type("string"):
-                    ttk.Label(group0, text=self.data_cont.plan_list[i].irr(),
-                              font=SMALL_FONT).grid(row=35, column=(i+1), sticky="e", **pad_opts)
+                ttk.Label(group0, text='{:,.2f}'.format(plan.sir()),
+                          font=SMALL_FONT).grid(row=34, column=(i + 1), **field_opts)
+                if isinstance(plan.irr(), str):
+                    ttk.Label(group0, text=plan.irr(),
+                              font=SMALL_FONT).grid(row=35, column=(i+1), **field_opts)
                 else:
                     ttk.Label(group0,
-                              text='{:,.2f}'.format(self.data_cont.plan_list[i].irr()) + '%',
-                              font=SMALL_FONT).grid(row=35, column=(i + 1), sticky="e", **pad_opts)
-                ttk.Label(group0, text='{:,.2f}'.format(self.data_cont.plan_list[i].roi()) + '%',
-                          font=SMALL_FONT).grid(row=36, column=(i + 1), sticky="e", **pad_opts)
+                              text='{:,.2f}'.format(plan.irr()) + '%',
+                              font=SMALL_FONT).grid(row=35, column=(i + 1), **field_opts)
+                ttk.Label(group0, text='{:,.2f}'.format(plan.roi()) + '%',
+                          font=SMALL_FONT).grid(row=36, column=(i + 1), **field_opts)
                 ttk.Label(group0,
-                          text='{:,.2f}'.format(self.data_cont.plan_list[i].non_d_roi()) + '%',
-                          font=SMALL_FONT).grid(row=37, column=(i + 1), sticky="e", **pad_opts)
+                          text='{:,.2f}'.format(plan.non_d_roi()) + '%',
+                          font=SMALL_FONT).grid(row=37, column=(i + 1), **field_opts)
 
 
-            exp_button = ttk.Button(self, text="Export Summary", command=self.export)
-            exp_button.grid(row=6)
-            info_button = ttk.Button(self, text="More Information", command=self.info)
-            info_button.grid(row=6, sticky="w")
-            #uncert_button = ttk.Button(self, text="View Uncertainty", command=lambda:run_u_main_page(self.data_cont))
-            #uncert_button.grid(row=6, sticky="e")
+            ttk.Button(self, text="Export Summary", command=self.export).grid(row=6)
+            ttk.Button(self, text="More Information", command=self.info).grid(row=6, sticky="w")
 
         def export(self):
             """Prompts the user to select how to export the Analysis Summary"""
@@ -312,18 +292,18 @@ def run_main_page(data):
             def document():
                 """Destroys popup and calls docx export."""
                 leavemini()
-                self.data_cont.word_export()
+                word_export(self.data_cont)
 
             def commas():
                 """Destroys popup and calls csv export."""
                 leavemini()
-                self.data_cont.csv_export()
+                csv_export(self.data_cont)
 
             def both():
                 """Destroys popup and calls docx and csv export."""
                 leavemini()
-                self.data_cont.word_export()
-                self.data_cont.csv_export()
+                word_export(self.data_cont)
+                csv_export(self.data_cont)
 
             popup.wm_title("Export")
             label = ttk.Label(popup, text="Which format would you like to export?", font=NORM_FONT)

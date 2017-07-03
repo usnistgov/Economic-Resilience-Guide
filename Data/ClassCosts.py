@@ -1,7 +1,7 @@
 """ The costs package for the list of costs and the cost class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-05
+    2017-07
 """
 
 import math
@@ -126,7 +126,8 @@ class Costs():
             err_messages += "Dollar value of the cost must be a number. Please enter an amount.\n\n"
             valid = False
         if "-" in amount:
-            err_messages += "Cost must be a positive number. Perhaps you should enter that as a benefit.\n"
+            err_messages += "Cost must be a positive number."
+            err_messages += "Perhaps you should enter that as a benefit.\n"
             err_messages += "Please enter a positive amount.\n\n"
             blank = False
             valid = False
@@ -167,14 +168,16 @@ class Costs():
             return [valid, blank, err_messages]
 
     def one_iter(self, old_cost_list):
-        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
+        """ Creates one Cost instance with all costs within set uncertainty range."""
+        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist,
+                     'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
         delta_cost = Costs(self.discount_rate, self.horizon)
         for cost in old_cost_list:
             cost_dict = {'title': cost.title,
-                        'cost_type': cost.cost_type,
-                        'omr_type': cost.omr_type,
-                        'omr_times': cost.times,
-                        'desc': cost.desc}
+                         'cost_type': cost.cost_type,
+                         'omr_type': cost.omr_type,
+                         'omr_times': cost.times,
+                         'desc': cost.desc}
             cost_dict['amount'] = dist_dict[cost.dist](np.random.uniform(), cost.amount, cost.range)
             delta_cost.indiv.append(Cost(**cost_dict))
 
@@ -185,7 +188,7 @@ class Cost():
     types = ["direct", "indirect", "omr"]
     omr_types = ["none", "one-time", "recurring"]
     def __init__(self, title="none", cost_type="none", omr_type="none", amount=0,
-                 omr_times="none", desc="N/A"):
+                 omr_times=[0, 0, 0], desc="N/A"):
         assert cost_type in self.types
         assert omr_type in self.omr_types
         self.title = title
@@ -203,7 +206,7 @@ class Cost():
                 try:
                     num = float(num)
                 except ValueError:
-                    num = 0
+                    num = 0.
         else:
             self.times = [0, 0, 0]
 

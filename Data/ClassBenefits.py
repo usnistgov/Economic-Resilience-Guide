@@ -1,7 +1,7 @@
 """ The benefits package for the list of benefits and the benefit class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-05
+    2017-07
 """
 
 import math
@@ -82,7 +82,9 @@ class Benefits():
         return mult * value
 
     def one_iter(self, old_ben_list):
-        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
+        """ Creates one Benefit class within the range of uncertainties."""
+        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist,
+                     'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
         delta_ben = Benefits(self.dis_rate, self.disc_rate, self.horizon)
         for ben in old_ben_list:
             ben_dict = {'title': ben.title,

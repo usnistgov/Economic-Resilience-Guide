@@ -2,7 +2,7 @@
         and the non-disaster related benefits class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-05
+    2017-07
 """
 
 import math
@@ -73,7 +73,9 @@ class NonDBens():
         return total
 
     def one_iter(self, old_ben_list):
-        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist, 'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
+        """ Creates one instance of Benefits with all benefits within uncertainty ranges."""
+        dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist,
+                     'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
         delta_ben = NonDBens(self.discount_rate, self.horizon)
         for ben in old_ben_list:
             ben_dict = {'title': ben.title,
@@ -127,7 +129,8 @@ class NonDBens():
             err_messages += "Please enter an amount.\n\n"
             valid = False
         if "-" in amount:
-            err_messages += "Benefit must be a positive number. Perhaps you should enter that as a cost.\n"
+            err_messages += "Benefit must be a positive number. "
+            err_messages += "Perhaps you should enter that as a cost.\n"
             err_messages += "Please enter a positive amount.\n\n"
             blank = False
             valid = False
