@@ -51,7 +51,7 @@ def irr_for_all(cash_flows, horizon, inv_lambda, ben_list, value_stat_life, fat_
                 rate_list[2] = rate_list[index]
                 break
         if not sign_change:
-            print('The problem is here')
+            #print('The problem is here')
             raise ValueError
 
     return rate_list[1]

@@ -711,7 +711,6 @@ def word_export_uncert(sim):
     doc = docx.Document()
 
     if sim.num_plans > 4:
-        print('Im trying!')
         section = doc.sections[-1]
         new_width, new_height = section.page_height, section.page_width
         section.orientation = WD_ORIENT.LANDSCAPE

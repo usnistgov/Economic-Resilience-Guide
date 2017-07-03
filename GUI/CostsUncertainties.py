@@ -223,7 +223,7 @@ class CostsUncertaintiesPage(tk.Frame):
             row_index = 0
             self.groups.append(ttk.LabelFrame(self, text=plan.name))
             self.groups[-1].grid(row=4+plan.id_assign, sticky="ew",
-                            padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                                 padx=FIELDX_PADDING, pady=FIELDY_PADDING)
             rads.append([])
             self.ranges.append([])
             self.labels.append([])

@@ -217,7 +217,6 @@ class BenefitsUncertaintiesPage(tk.Frame):
     def on_trace_change(self, _name, _index, _mode):
         """Updates the number of plans with options dependent on number of benefits input."""
         for group in self.groups:
-            print(self.groups.index(group))
             group.grid_forget()
             group.destroy()
         self.groups = []

@@ -158,7 +158,7 @@ class Benefit():
         try:
             assert ben_type in self.types
         except AssertionError:
-            print(title, ben_type)
+            #print(title, ben_type)
             raise AssertionError
         self.title = title
         self.ben_type = ben_type

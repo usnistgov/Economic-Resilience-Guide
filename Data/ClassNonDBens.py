@@ -51,7 +51,8 @@ class NonDBens():
             elif ben.ben_type == "recurring":
                 self.r_sum += self.calc_recur(ben.amount, ben.times[0], ben.times[1])
             else:
-                print(ben.ben_type)
+                pass
+                #print(ben.ben_type)
         self.total = self.one_sum + self.r_sum
 
     def calc_one_time(self, value, time):
