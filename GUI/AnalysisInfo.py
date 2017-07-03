@@ -233,7 +233,7 @@ class AnalysisInfo(tk.Frame):
             self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
                                       "\nPlease be patient while they compute.",
                                       seed, conf, tol, break_point)
-            word_export(self.data_cont)
+            word_export_uncert(self.data_cont)
             #self.data_cont.word_export_uncert()
         else:
             messagebox.showerror("Error",

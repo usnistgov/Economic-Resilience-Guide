@@ -217,6 +217,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
     def on_trace_change(self, _name, _index, _mode):
         """Updates the number of plans with options dependent on number of benefits input."""
         for group in self.groups:
+            print(self.groups.index(group))
             group.grid_forget()
             group.destroy()
         self.groups = []
@@ -298,7 +299,6 @@ class BenefitsUncertaintiesPage(tk.Frame):
                         entry.grid_remove()
                     self.ranges[plan.id_assign][choice][0].grid(row=row_index+4, column=1)
                     self.ranges[plan.id_assign][choice][1].grid(row=row_index+4, column=3)
-                    row_index+= 5
+                    row_index += 5
                 for entry in self.ranges[plan.id_assign][choice]:
                     entry.insert(tk.END, ben.range[self.ranges[plan.id_assign][choice].index(entry)])
-

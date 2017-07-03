@@ -594,10 +594,10 @@ class Plan():
             the_irr = irr_for_all(cash_flows, self.horizon, self.recurrence, ben_list,
                                   self.fat.stat_life, self.fat.averted)
         except ValueError:
-            print('ValueError')
+            #print('ValueError')
             return 'No Valid IRR'
         except OverflowError:
-            print('OverflowError')
+            #print('OverflowError')
             return 'No Valid IRR'
         if the_irr == 0.5:
             return "---"

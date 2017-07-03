@@ -331,6 +331,7 @@ class InfoPage(tk.Frame):
         # Fills data_cont with the values entered
         data = self.controller.data_cont
         data.title = self.name_ent.get()
+        print(self.num_plans_ent.get())
         data.num_plans = int(self.num_plans_ent.get()) + 1
         data.horizon = float(self.hor_ent.get())
         data.discount_rate = float(self.dis_ent.get())
@@ -345,13 +346,14 @@ class InfoPage(tk.Frame):
                                     [self.mag_choice.get(), dis_mag],
                                     data.discount_rate, data.horizon, data.stat_life, self.data_cont.parties))
             for i in range(1, data.num_plans):
+                print(i, self.name_ents[i-1].get())
                 data.plan_list.append(Plan(i, self.name_ents[i-1].get(),
                                         [self.recur_choice.get(), dis_recurr],
                                         [self.mag_choice.get(), dis_mag],
                                         data.discount_rate, data.horizon, data.stat_life, self.data_cont.parties))
         else:
             old_num_plans = len(data.plan_list)
-            new_num_plans = data.num_plans + 1
+            new_num_plans = data.num_plans
             if old_num_plans <= new_num_plans:
                 data.plan_list[0].update(0, 'Base', [self.recur_choice.get(), dis_recurr],
                                          [self.mag_choice.get(), dis_mag],
@@ -375,8 +377,8 @@ class InfoPage(tk.Frame):
                                              [self.recur_choice.get(), dis_recurr],
                                              [self.mag_choice.get(), dis_mag],
                                              data.discount_rate, data.horizon, data.stat_life)
-                for j in range(new_num_plans, old_num_plans):
-                    data.plan_list.remove(data.plan_list[j])
+                for j in range(old_num_plans, new_num_plans, -1):
+                    data.plan_list.remove(data.plan_list[j-1])
 
         # TODO: Make file save possible
         data.file_save()
