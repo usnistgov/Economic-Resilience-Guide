@@ -1,61 +1,48 @@
-Title,Test Project,,Horizon,100
-Discount Rate,3.0,,Risk Prev,neutral,,Value of Stat Life,7500000
-BEGIN PLANS
-Plan 0,Base,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
-,Costs,Base Direct,direct,none,0,0,0,394.0,<enter a description for this cost>
-,Costs,Uncertainty,gauss,10,0,0,0,0,0
-,Benefits,A Base Ben,indirect,90.0,N/A
-,Benefits,Uncertainty,rect,45,100,0,0,0,0
-,Externalities,Base Positive One,one-time,1.0,0.0,0.0,93.0,<enter a description for this externality>
-
-,Externalities,positive,title holder(s)
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Fatalities,0.0,N/A
-END PLAN
-Plan 1,First Round 1,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
-,Costs,First Direct,direct,none,0,0,0,394.0,<enter a description for this cost>
-,Costs,Uncertainty,rect,0,500,0,0,0,0
-,Benefits,Multi Ben,direct,83.0,N/A
-,Benefits,Uncertainty,tri,80,90,0,0,0,0
-,Externalities,First Negative Recurr,recurring,6.0,89.0,0.0,839.0,Some comma based description, at this point I'm just testing things
-,Externalities,negative,My party
-,Externalities,Uncertainty,discrete,800,815,839,10,20,70
-,Fatalities,0.1,N/A
-END PLAN
-Plan 2,First Round 2,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
-,Costs,Second Direct,direct,none,0,0,0,395.0,<enter a description for this cost>
-,Costs,Uncertainty,tri,380,400,0,0,0,0
-,Benefits,Two Benefit,indirect,3333.0,N/A
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Multi Ben,direct,83.0,N/A
-,Benefits,Uncertainty,gauss,150,0,0,0,0,0
-,Non-Disaster Benefits,Some Ben,one-time,4,<enter rate of occurence in years>,0,900,N/A
-,Non-Disaster Benefits,Uncertainty,tri,875,1000,0,0,0,0
-,Fatalities,1.0,N/A
-END PLAN
-Plan 3,First Round 3,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
-,Costs,Third Direct,direct,none,0,0,0,328.0,<enter a description for this cost>
-,Costs,Uncertainty,discrete,300,328,1000,40,50,10
-,Benefits,Three Benefit,indirect,3333.0,N/A
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Multi Ben,direct,83.0,N/A
-,Benefits,Uncertainty,gauss,5,0,0,0,0,0
-,Non-Disaster Benefits,Some Ben,one-time,4,<enter rate of occurence in years>,0,900,N/A
-,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
-,Fatalities,0.5,N/A
-END PLAN
-Plan 4,First Round 4,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
-,Costs,Fourth Direct,direct,none,0,0,0,82.0,<enter a description for this cost>
-,Costs,Uncertainty,none,0,0,0,0,0,0
-,Benefits,The four ben,res-rec,394.0,N/A
-,Benefits,Uncertainty,rect,300,800,0,0,0,0
-,Benefits,Multi Ben,direct,83.0,N/A
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Base Positive One,one-time,1.0,0.0,0.0,93.0,<enter a description for this externality>
-,Externalities,positive,title holder(s)
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Non-Disaster Benefits,4 Ben,recurring,1,77,0,8293,N/A
-,Non-Disaster Benefits,Uncertainty,gauss,50,0,0,0,0,0
-,Fatalities,1.0,N/A
-END PLAN
-END FILE
+Outputs of Economic Evaluation: [Hospital V2]
+NOTE: All bounds on uncertainties are given with a 95.0% confidence interval. The number of runs was determined with a 0.1% tolerance.
+For Base (Alternative 0) 100.0 Monte-Carlo simulations were run.
+For Alt 1 (Alternative 1) 6400.0 Monte-Carlo simulations were run.
+For Alt 2 (Alternative 2) 400.0 Monte-Carlo simulations were run.
+The random number seed for these runs was 759190685.
+Number of Alternatives: 2
+Planning Horizon: 100 years
+Discount Rate: 8%
+Disaster Rate: Every 50 years
+Disaster Magnitude: 15% of build cost
+Risk Preference: averse
+Statistical Value of a Life: $7900000
+,Base Case,Lower Bound,Upper Bound,Alternative 1,Lower Bound,Upper Bound,Alternative 2,Lower Bound,Upper Bound
+,Base,,,Alt 1,,,Alt 2
+Benefits
+Disaster Economic Benefits
+Response and Recovery Costs,$0.0,$0.0,$0.0,$4700332.427973959,$4094911.267431888,$5308979.226803631,$4960378.482080402,$4343271.688709355,$5620267.58974476
+Direct Loss Reduction,$0.0,$0.0,$0.0,$5851036.217394969,$5075735.644415265,$6600264.231574881,$7151266.487927185,$6253933.034399214,$8129087.595725607
+Indirect Losses,$0.0,$0.0,$0.0,$65583614.84564495,$59360508.59123066,$71806200.48150858,$71044581.98188026,$65106936.5110167,$77371846.40145999
+Disaster Non-Market Benefits
+Value of Statistical Lives Saved,$0.0,$0.0,$0.0,$82174553.09763601,$82174553.09763601,$82174553.09763601,$82174553.09763601,$82174553.09763601,$82174553.09763601
+Number of Statistical Lives Saved,0.0,0.0,0.0,80.0,80.0,80.0,80.0,80.0,80.0
+Non-disaster Related Benefits
+One-Time,$0,$0,$0,$-29739969.226257026,$-29739969.226257026,$-29739969.226257026,$-31123388.744323503,$-31123388.744323503,$-31123388.744323503
+Recurring,$0,$0,$0,$300895589.4670254,$300895589.4670254,$300895589.4670254,$300253618.45536137,$300253618.45536137,$300253618.45536137
+Costs
+Direct Costs,$0,$0,$0,$60300000.0,$44019000.0,$108540000.0,$65670000.0,$58446300.0,$157608000.0
+Indirect Costs,$0,$0,$0,$18090000.0,$13205700.0,$32562000.0,$19700000.0,$17533890.0,$47282400.0
+OMR
+One-Time,$0,$0,$0,$1452298.0741473818,$1234453.3630252746,$2178447.1112210727,$1452298.0741473818,$1234453.3630252746,$2178447.1112210727
+Recurring,$0,$0,$0,$5768298.354805237,$4866717.584179206,$6703019.622830365,$5381227.597772475,$4811639.522727921,$5923402.849533266
+Externalities
+Positive
+One-Time,$0,$0,$0,$0,$0,$0,$0,$0,$0
+Recurring,$0,$0,$0,$0,$0,$0,$2867627.864602438,$2867627.864602438,$2867627.864602438
+Negative
+One-Time,$0,$0,$0,$2904596.1482947636,$2904596.1482947636,$2904596.1482947636,$0,$0,$0
+Recurring,$0,$0,$0,$0,$0,$0,$0,$0,$0
+Total: Present Expected Value
+Benefits,$0.0,$0.0,$0.0,$429465156.82941824,$423114993.6565193,$435764284.6898464,$434461009.7605617,$428310744.33412313,$441259651.64853215
+Costs,$0,$0,$0,$85610596.42895262,$64317033.418715335,$148536105.5594703,$92203525.67191987,$82742353.54351908,$211854414.9406965
+Net,$0.0,$0.0,$0.0,$343854560.4004656,$279803625.2707638,$367134056.932737,$342257484.0886418,$224271774.21897376,$354860796.3630988
+Net with Externalities,$0.0,$0.0,$0.0,$340949964.25217086,$276899029.12246907,$364229460.78444225,$345125111.95324427,$227139402.0835762,$357728424.22770125
+Savings-to-Investment Ratio,0,0,0,4.386459502493502,1.9829883720341583,6.4133182192944105,4.009107228401567,1.0945938619816924,4.661571468683782
+Internal Rate of Return (%),---,---,---,26.1749267578125,17.8863525390625,31.8450927734375,25.0823974609375,14.0350341796875,27.1331787109375
+Return on Investment (%),0,0,0,5.01649532585405,2.8858423282054257,6.690027190453199,4.711978274089736,2.0549838907699027,5.278163989900827
+Non-Disaster ROI (%),0,0,0,3.1673137619803606,1.8256043980924717,4.215960470034059,2.9188713528012102,1.2704568818217328,3.253082148853744
