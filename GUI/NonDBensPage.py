@@ -220,22 +220,25 @@ class NonDBensPage(tk.Frame):
     def show_info(self):
         """ Shows the information textbox for Non-Disaster related benefits."""
         messagebox.showinfo("More Information",
-                            "        Non-disaster related benefits are the inexplicit"
-                            " benefits of a particular project. They "
-                            "may affect the project or its "
-                            "stakeholders directly, but may generate benefits or "
-                            "conveniences that could increase the project's"
-                            " net worth to the wider community.\n\n"
-                            "Examples of such benefits "
-                            "include:\n    reduced traffic time,"
-                            "\n    increased 'green space',\n"
-                            "    increased public recreational activity "
-                            "options,\n    increased tourism, and so on.\n\n"
-                            "        This field is optional but is highly recommended"
-                            " as these benefits indeed generate "
-                            "notable advantages capable of increasing the overall"
-                            " worth of a project, especially to "
-                            "the environment and surrounding population.")
+                            "To add a non-disaster related benefit, a title and associated "
+                            "dollar value must be provided. The description field is optional. "
+                            "At least one ‘Plan Affected’ must be selected so that the benefit "
+                            "will be assigned to the respective plan(s).\n\n"
+                            "You may interact with previously inputted non-disaster related "
+                            "benefits on the right side by editing the associated information, "
+                            "copying the associated information (for ease), or deleting the "
+                            "externality all together.\n\n"
+                            "Non-disaster related benefits are the inexplicit benefits of a given "
+                            "project. These types of benefits may affect the project or its "
+                            "stakeholders directly, but may generate benefits or conveniences "
+                            "that could increase the project’s net worth to the wider community. "
+                            "These benefits accrue even in the absence of a disturbance "
+                            "occurrence.\n\n"
+                            "Examples of such benefits include:\n"
+                            "•	Reduced traffic time\n"
+                            "•	Increased ‘green space’\n"
+                            "•	Increased public recreational activity options,\n"
+                            "•	Increased tourism, etc.\n")
 
     def add_ben(self, moveon=False):
         """Appends list of NonDBens, clears page's entry widgets,

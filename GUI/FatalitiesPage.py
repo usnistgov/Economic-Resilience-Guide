@@ -172,20 +172,17 @@ class FatalitiesPage(tk.Frame):
     def show_info(self):
         """ Pulls up information for the Fatalities page."""
         messagebox.showinfo("More Information",
-                            "        'Fatalities Averted' refers to the average number "
-                            "of deaths avoided per disturbance occurrence "
-                            "as a result of implementing a corresponding plan. "
-                            "This number can be a decimal, "
-                            "representing injuries inflicted that cost a portion "
-                            "of the expected cost of a complete "
-                            "fatality.\n\n"
-                            "Statistical Life:\n        "
-                            "The calculated average value of a life. This value is subjected to "
-                            "change, but exists merely to assist in cost/benefit analysis. It is "
-                            "usually seen that lives saved should be taken "
-                            "into consideration in any "
-                            "project. For this reason, "
-                            "a default value of $7.5 M has been assigned.")
+                            "‘Fatalities Averted’ refers to the average expected number of deaths "
+                            "avoided per disturbance occurrence as a result of implementing a "
+                            "corresponding plan. This value can be defined as decimal, "
+                            "representing injuries inflicted that cost a portion of the expected "
+                            "cost of a (complete) fatality.\n\n"
+                            "Statistical Life: The calculated average expected value of a life. "
+                            "This value is subject to change, but exists merely to assist in the "
+                            "cost/benefit analysis. It is noted that lives saved should be taken "
+                            "into consideration in any BCA project, if possible. A default value "
+                            "of $7.5 M has been assigned for the statistical value of life in "
+                            "this Tool; the user may adjust this value as appropriate.\n")
     def do_nothing(self):
         """Used for the try/catch found in on_trace_change"""
         return

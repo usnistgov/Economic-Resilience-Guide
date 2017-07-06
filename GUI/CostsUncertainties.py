@@ -113,8 +113,43 @@ class CostsUncertaintiesPage(tk.Frame):
     def show_info(self):
         """ Pulls up information for the Costs page."""
         messagebox.showinfo("More Information",
-                            "Some cost information text.")
-        # TODO: Update Information Text
+                            "Uncertainty may surround exact cost point estimates. On this screen "
+                            "the costs associated with all defined alternative plans are "
+                            "summarized. The costs are listed by alterative. The point value "
+                            "dollar estimates previously defined are provided.\n\n"
+                            "For each cost please define the type of uncertainty distribution "
+                            "(below the cost description). If there is no uncertainty associated "
+                            "with a given cost or you prefer not to include this information, you "
+                            "may choose the ‘none’ option.\n\n"
+                            "Each type of uncertainty distribution requires specific user inputs. "
+                            "The uncertainty distributions and their associated required "
+                            "information are as follows:\n"
+                            "•	‘Gaussian’ is a common continuous probability distribution. "
+                            "The assumption is that the Gaussian distribution is symmetric in "
+                            "this Tool. The user needs to define the ‘variance ($)’ from the "
+                            "point estimate defined by the user for the cost.\n"
+                            "•	‘Triangle’ is a continuous probability distribution. This "
+                            "distribution can be defined to be symmetric or asymmetric around the "
+                            "cost point estimate. The user needs to provide a ‘Lower bound ($)’ "
+                            "and ‘Upper bound ($).’Be sure that the lower bound is indeed less "
+                            "than the point estimate, and that the point estimate is less than "
+                            "the upper bound value.\n"
+                            "•	‘Rectangle’ is a continuous probability distribution for which "
+                            "all intervals of the same length are equally probable. The "
+                            "rectangular distribution is sometimes referred to as a uniform "
+                            "distribution. The user needs to provide a ‘Lower bound ($)’ and "
+                            "‘Upper bound ($).’ Be sure that the lower bound is indeed less than "
+                            "the point estimate and that the point estimate is less than the "
+                            "upper bound value.\n"
+                            "•	‘Discrete’ is a distribution that is not continuous around the "
+                            "point estimate cost. The user needs to provide a ‘Lower bound ($),’ "
+                            "‘Middle bound ($),’ and ‘Upper bound ($).’ One of the three values "
+                            "must be the point estimate. Be sure that the lower bound is indeed "
+                            "less than the point estimate and that the point estimate is less "
+                            "than the upper bound value. The user needs to assign a probability "
+                            "of occurrence to each of the ‘Lower bound ($),’ ‘Middle bound ($),’ "
+                            "and ‘Upper bound ($)’. The sum of these probability values must be "
+                            "100%.\n")
 
     def add_uncertainty(self, moveon=False):
         """Appends list of costs, clears page's entry widgets,
