@@ -83,7 +83,6 @@ def old_irr_for_all(cash_flows, horizon, inv_lambda, ben_list, value_stat_life, 
             dcf_list.append([])
             year = 0  ## Added to keep track of year
             for item in cash_flows:
-                print(item)
                 dcf_list[index].append(item * math.exp(-rate_list[index]*year))  ## Changed cash_flows.index(item) to year
                 year += 1  ## Iterate on year
             ddrb_list.append(discount(rate_list[index], horizon, inv_lambda, ben_list,

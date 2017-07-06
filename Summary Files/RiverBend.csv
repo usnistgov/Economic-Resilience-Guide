@@ -1,4 +1,11 @@
 Outputs of Economic Evaluation: [Riverbend]
+Number of Alternatives: 2
+Planning Horizon: 50 years
+Discount Rate: 5%
+Disaster Rate: Every 25 years
+Disaster Magnitude: ['6']% of build cost
+Risk Preference: neutral
+Statistical Value of a Life: $7500000
 ,Base Case,Alternative 1,Alternative 2
 ,Base,Retrofit,Second Bridge
 Benefits

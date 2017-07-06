@@ -753,12 +753,22 @@ def word_export_uncert(sim):
                       style='ListBullet')
 
     if any_ext:
-        header_list = ['Plan Title', 'Total Benefits ($)', '(Lower Bound, Upper Bound) ($)', 'Total Costs ($)', 'Net ($)',
-                       'Net with externalities ($)', 'SIR (%)', 'IRR (%)', 'ROI (%)',
-                       'Non-Disaster ROI (%)']
+        header_list = ['', 'Total Benefits ($)', '(Lower Bound, Upper Bound) ($)',
+                       'Total Costs ($)', '(Lower Bound, Upper Bound) ($)', 'Net ($)',
+                       '(Lower Bound, Upper Bound) ($)', 'Net with externalities ($)',
+                       '(Lower Bound, Upper Bound) ($)', 'SIR (%)',
+                       '(Lower Bound, Upper Bound) (%)', 'IRR (%)',
+                       '(Lower Bound, Upper Bound) (%)', 'ROI (%)',
+                       '(Lower Bound, Upper Bound) (%)', 'Non-Disaster ROI (%)',
+                       '(Lower Bound, Upper Bound) (%)']
     else:
-        header_list = ['Plan Title', 'Total Benefits ($)', '(Lower Bound, Upper Bound) ($)', 'Total Costs ($)', 'Net ($)',
-                       'SIR (%)', 'IRR (%)', 'ROI (%)', 'Non-Disaster ROI (%)']
+        header_list = ['', 'Total Benefits ($)', '(Lower Bound, Upper Bound) ($)',
+                       'Total Costs ($)', '(Lower Bound, Upper Bound) ($)', 'Net ($)',
+                       '(Lower Bound, Upper Bound) ($)', 'SIR (%)',
+                       '(Lower Bound, Upper Bound) (%)', 'IRR (%)',
+                       '(Lower Bound, Upper Bound) (%)', 'ROI (%)',
+                       '(Lower Bound, Upper Bound) (%)', 'Non-Disaster ROI (%)',
+                       '(Lower Bound, Upper Bound) (%)']
 
     doc.add_heading('Summary\n', 1)
     sum_tab = doc.add_table(rows=len(header_list), cols=len(sim.plan_list) + 1,
@@ -766,7 +776,7 @@ def word_export_uncert(sim):
 
     for i in range(len(header_list)):
         sum_tab.cell(i, 0).text = header_list[i]
-        sum_tab.cell(i, 0).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        sum_tab.cell(i, 0).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.LEFT
 
     sum_index = 1
     for plan in sim.plan_list:
@@ -774,42 +784,81 @@ def word_export_uncert(sim):
         sum_tab.cell(0, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
         sum_tab.cell(1, sum_index).text = '{:,.0f}'.format(plan.total_bens)
         sum_tab.cell(1, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        sum_tab.cell(2, sum_index).text = ('(' + '{:,.0f}'.format(plan.ben_range[0]) + ', '
+        sum_tab.cell(2, sum_index).text = ('(' + '{:,.0f}'.format(plan.ben_range[0]) + '; '
                                            + '{:,.0f}'.format(plan.ben_range[1]) + ')')
         sum_tab.cell(2, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
         sum_tab.cell(3, sum_index).text = '{:,.0f}'.format(plan.total_costs)
         sum_tab.cell(3, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        sum_tab.cell(4, sum_index).text = '{:,.0f}'.format(plan.net)
+        sum_tab.cell(4, sum_index).text = ('(' + '{:,.0f}'.format(plan.cost_range[0]) + '; '
+                                           + '{:,.0f}'.format(plan.cost_range[1]) + ')')
         sum_tab.cell(4, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        sum_tab.cell(5, sum_index).text = '{:,.0f}'.format(plan.net)
+        sum_tab.cell(5, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        sum_tab.cell(6, sum_index).text = ('(' + '{:,.0f}'.format(plan.net_range[0]) + '; '
+                                           + '{:,.0f}'.format(plan.net_range[1]) + ')')
+        sum_tab.cell(6, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
         if any_ext:
-            sum_tab.cell(5, sum_index).text = '{:,.0f}'.format(plan.net_w_ext)
-            sum_tab.cell(5, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(6, sum_index).text = '{:,.2f}'.format(plan.sir())
-            sum_tab.cell(6, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            if isinstance(plan.irr(), str):
-                sum_tab.cell(7, sum_index).text = plan.irr()
-                sum_tab.cell(7, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-            else:
-                sum_tab.cell(7, sum_index).text = '{:,.2f}'.format(plan.irr())
-                sum_tab.cell(7, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(8, sum_index).text = '{:,.2f}'.format(plan.roi())
+            sum_tab.cell(7, sum_index).text = '{:,.0f}'.format(plan.net_w_ext)
+            sum_tab.cell(7, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(8, sum_index).text = ('(' + '{:,.0f}'.format(plan.net_ext_range[0]) + '; '
+                                            + '{:,.0f}'.format(plan.net_ext_range[1]) + ')')
             sum_tab.cell(8, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(9, sum_index).text = '{:,.2f}'.format(plan.non_d_roi())
+            sum_tab.cell(9, sum_index).text = '{:,.2f}'.format(plan.sir())
             sum_tab.cell(9, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(10, sum_index).text = ('(' + '{:,.0f}'.format(plan.sir_range[0]) + '; '
+                                            + '{:,.0f}'.format(plan.sir_range[1]) + ')')
+            sum_tab.cell(10, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            if isinstance(plan.irr(), str):
+                sum_tab.cell(11, sum_index).text = plan.irr()
+                sum_tab.cell(11, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_tab.cell(12, sum_index).text = ('(' + plan.irr_range[0] + '; '
+                                                + plan.irr_range[1] + ')')
+                sum_tab.cell(12, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            else:
+                sum_tab.cell(11, sum_index).text = '{:,.2f}'.format(plan.irr())
+                sum_tab.cell(11, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_tab.cell(12, sum_index).text = ('(' + '{:,.2f}'.format(plan.irr_range[0]) + '; '
+                                                + '{:,.2f}'.format(plan.irr_range[1]) + ')')
+                sum_tab.cell(12, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(13, sum_index).text = '{:,.2f}'.format(plan.roi())
+            sum_tab.cell(13, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(14, sum_index).text = ('(' + '{:,.2f}'.format(plan.roi_range[0]) + '; '
+                                            + '{:,.2f}'.format(plan.roi_range[1]) + ')')
+            sum_tab.cell(14, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(15, sum_index).text = '{:,.2f}'.format(plan.non_d_roi())
+            sum_tab.cell(15, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(16, sum_index).text = ('(' + '{:,.2f}'.format(plan.nond_roi_range[0]) + '; '
+                                            + '{:,.2f}'.format(plan.nond_roi_range[1]) + ')')
+            sum_tab.cell(16, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_index += 1
         else:
-            sum_tab.cell(5, sum_index).text = '{:,.2f}'.format(plan.sir())
-            sum_tab.cell(5, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            if isinstance(plan.irr(), str):
-                sum_tab.cell(6, sum_index).text = plan.irr()
-                sum_tab.cell(6, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
-            else:
-                sum_tab.cell(6, sum_index).text = '{:,.2f}'.format(plan.irr())
-                sum_tab.cell(6, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(7, sum_index).text = '{:,.2f}'.format(plan.roi())
+            sum_tab.cell(7, sum_index).text = '{:,.2f}'.format(plan.sir())
             sum_tab.cell(7, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(8, sum_index).text = '{:,.2f}'.format(plan.non_d_roi())
+            sum_tab.cell(8, sum_index).text = ('(' + '{:,.2f}'.format(plan.sir_range[0]) + '; '
+                                            + '{:,.2f}'.format(plan.sir_range[1]) + ')')
             sum_tab.cell(8, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            if isinstance(plan.irr(), str):
+                sum_tab.cell(9, sum_index).text = plan.irr()
+                sum_tab.cell(9, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_tab.cell(10, sum_index).text = ('(' + '{:,.2f}'.format(plan.irr_range[0]) + '; '
+                                                + '{:,.2f}'.format(plan.irr_range[1]) + ')')
+                sum_tab.cell(10, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            else:
+                sum_tab.cell(9, sum_index).text = '{:,.2f}'.format(plan.irr())
+                sum_tab.cell(9, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+                sum_tab.cell(10, sum_index).text = ('(' + '{:,.2f}'.format(plan.irr_range[0]) + '; '
+                                                + '{:,.2f}'.format(plan.irr_range[1]) + ')')
+                sum_tab.cell(10, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(11, sum_index).text = '{:,.2f}'.format(plan.roi())
+            sum_tab.cell(11, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(12, sum_index).text = ('(' + '{:,.2f}'.format(plan.roi_range[0]) + '; '
+                                            + '{:,.2f}'.format(plan.roi_range[1]) + ')')
+            sum_tab.cell(12, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(13, sum_index).text = '{:,.2f}'.format(plan.non_d_roi())
+            sum_tab.cell(13, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sum_tab.cell(14, sum_index).text = ('(' + '{:,.2f}'.format(plan.nond_roi_range[0]) + '; '
+                                            + '{:,.2f}'.format(plan.nond_roi_range[1]) + ')')
+            sum_tab.cell(14, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_index += 1
 
     for plan in sim.plan_list:
