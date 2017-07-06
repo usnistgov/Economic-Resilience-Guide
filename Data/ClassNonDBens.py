@@ -114,9 +114,9 @@ class NonDBens():
                 err_messages += "Please input a different title.\n\n"
                 valid = False
         # No hyphen in title
-        if "-" in title:
-            err_messages += "Title cannot have a hyphen. Please change the title.\n\n"
-            valid = False
+        #if "-" in title:
+        #    err_messages += "Title cannot have a hyphen. Please change the title.\n\n"
+        #    valid = False
         # Set title in dict
         field_dict['title'] = title
 

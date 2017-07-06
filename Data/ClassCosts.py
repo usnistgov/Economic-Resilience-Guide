@@ -110,9 +110,9 @@ class Costs():
                 err_messages += "Please input a different title.\n\n"
                 valid = False
         # No hyphen in title
-        if "-" in title:
-            err_messages += "Title cannot have a hyphen. Please change the title.\n\n"
-            valid = False
+        #if "-" in title:
+        #    err_messages += "Title cannot have a hyphen. Please change the title.\n\n"
+        #    valid = False
         # Set title in dict
         field_dict['title'] = title
 
@@ -154,6 +154,7 @@ class Costs():
                 except ValueError:
                     err_messages += "Recurring rate must be a number. Please enter an amount.\n\n"
                     valid = False
+            field_dict['omr_type'] = omr_type
         field_dict['omr_times'] = omr_times
         # Set blank description to N/A or non-blank description to dict
         if desc in {"", "<enter a description for this externality>\n"}:

@@ -1,0 +1,61 @@
+Title,Test Project,,Horizon,100
+Discount Rate,3.0,,Risk Prev,neutral,,Value of Stat Life,7500000
+BEGIN PLANS
+Plan 0,Base,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
+,Costs,Base Direct,direct,none,0,0,0,394.0,<enter a description for this cost>
+,Costs,Uncertainty,gauss,10,0,0,0,0,0
+,Benefits,A Base Ben,indirect,90.0,N/A
+,Benefits,Uncertainty,rect,45,100,0,0,0,0
+,Externalities,Base Positive One,one-time,1.0,0.0,0.0,93.0,<enter a description for this externality>
+
+,Externalities,positive,title holder(s)
+,Externalities,Uncertainty,none,0,0,0,0,0,0
+,Fatalities,0.0,N/A
+END PLAN
+Plan 1,First Round 1,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
+,Costs,First Direct,direct,none,0,0,0,394.0,<enter a description for this cost>
+,Costs,Uncertainty,rect,0,500,0,0,0,0
+,Benefits,Multi Ben,direct,83.0,N/A
+,Benefits,Uncertainty,tri,80,90,0,0,0,0
+,Externalities,First Negative Recurr,recurring,6.0,89.0,0.0,839.0,Some comma based description, at this point I'm just testing things
+,Externalities,negative,My party
+,Externalities,Uncertainty,discrete,800,815,839,10,20,70
+,Fatalities,0.1,N/A
+END PLAN
+Plan 2,First Round 2,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
+,Costs,Second Direct,direct,none,0,0,0,395.0,<enter a description for this cost>
+,Costs,Uncertainty,tri,380,400,0,0,0,0
+,Benefits,Two Benefit,indirect,3333.0,N/A
+,Benefits,Uncertainty,none,0,0,0,0,0,0
+,Benefits,Multi Ben,direct,83.0,N/A
+,Benefits,Uncertainty,gauss,150,0,0,0,0,0
+,Non-Disaster Benefits,Some Ben,one-time,4,<enter rate of occurence in years>,0,900,N/A
+,Non-Disaster Benefits,Uncertainty,tri,875,1000,0,0,0,0
+,Fatalities,1.0,N/A
+END PLAN
+Plan 3,First Round 3,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
+,Costs,Third Direct,direct,none,0,0,0,328.0,<enter a description for this cost>
+,Costs,Uncertainty,discrete,300,328,1000,40,50,10
+,Benefits,Three Benefit,indirect,3333.0,N/A
+,Benefits,Uncertainty,none,0,0,0,0,0,0
+,Benefits,Multi Ben,direct,83.0,N/A
+,Benefits,Uncertainty,gauss,5,0,0,0,0,0
+,Non-Disaster Benefits,Some Ben,one-time,4,<enter rate of occurence in years>,0,900,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Fatalities,0.5,N/A
+END PLAN
+Plan 4,First Round 4,gauss,95,5,0,0,0,0,none,["['30']"],0,0,0,0,0,
+,Costs,Fourth Direct,direct,none,0,0,0,82.0,<enter a description for this cost>
+,Costs,Uncertainty,none,0,0,0,0,0,0
+,Benefits,The four ben,res-rec,394.0,N/A
+,Benefits,Uncertainty,rect,300,800,0,0,0,0
+,Benefits,Multi Ben,direct,83.0,N/A
+,Benefits,Uncertainty,none,0,0,0,0,0,0
+,Externalities,Base Positive One,one-time,1.0,0.0,0.0,93.0,<enter a description for this externality>
+,Externalities,positive,title holder(s)
+,Externalities,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,4 Ben,recurring,1,77,0,8293,N/A
+,Non-Disaster Benefits,Uncertainty,gauss,50,0,0,0,0,0
+,Fatalities,1.0,N/A
+END PLAN
+END FILE
