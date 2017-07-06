@@ -28,6 +28,8 @@ Completed changes:
     - Additional Uncertainty Pages:
         - Benefits Uncertainties
         - Cost Uncertainties
+        - Externalities Uncertainties
+        - Non-Disaster Benefits Uncertainties
     - Externalities does calculations
 
 The approach is as follows:
@@ -37,6 +39,3 @@ The approach is as follows:
         - Calculations
         - Change Analysis page
         - Export
-
-A brief note on packaging:
-    For the sake of completeness, we have included packaging files with this program, however we have not tested packaging if downloaded from the GitHub source.
