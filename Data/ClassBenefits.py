@@ -126,11 +126,10 @@ class Benefits():
         else:
             field_dict['ben_type'] = ben_type
             blank = False
-        # ===== Benefit Title must not have a hyphen '-'
-        #if "-" in title:
-        #    err_messages += ("Title cannot have a hyphen \'-\'. Please change the title.\n\n")
-        #    valid = False
-
+        # ===== Benefit Title must not have a comma
+        if "," in title:
+            err_messages += ("Title cannot have a comma \',\'. Please change the title.\n\n")
+            valid = False
         # ===== Dollar Amount must be a positive number
         try:
             field_dict['amount'] = float(amount)

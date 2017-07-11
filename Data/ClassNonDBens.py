@@ -113,10 +113,10 @@ class NonDBens():
                 err_messages += title + " is already used as a benefit title for this plan. "
                 err_messages += "Please input a different title.\n\n"
                 valid = False
-        # No hyphen in title
-        #if "-" in title:
-        #    err_messages += "Title cannot have a hyphen. Please change the title.\n\n"
-        #    valid = False
+        # No comma in title
+        if "," in title:
+            err_messages += "Title cannot have a comma. Please change the title.\n\n"
+            valid = False
         # Set title in dict
         field_dict['title'] = title
 

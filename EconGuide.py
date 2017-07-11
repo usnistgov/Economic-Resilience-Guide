@@ -93,7 +93,9 @@ class StartPage(tk.Frame):
     def create_widgets(self, controller):
         """Widgets include: radio buttons, confirmation buttons, and Labels"""
 
-        photo = tk.PhotoImage(file="el_logo_small.gif")
+        photo = tk.PhotoImage(file="CR_Logo.png")
+        photo = photo.subsample(4, 4)
+        #photo = tk.PhotoImage(file="el_logo_small.gif")
         pic = ttk.Label(self, image=photo)
         pic.image = photo
         pic.grid(row=2, sticky="w")

@@ -270,6 +270,9 @@ class InfoPage(tk.Frame):
         if self.name_ent.get() == "" or self.name_ent.get() == "<enter project name>":
             err_messages += "Project name field has been left empty!\n\n"
             valid = False
+        if "," in self.name_ent.get():
+            err_messages += "Project name field cannot have a comma.\n\n"
+            valid = False
 
         for i in range(int(self.num_plans_ent.get())):
             if self.name_ents[i].get() == "" or self.name_ents[i].get() == "<enter plan name>":
