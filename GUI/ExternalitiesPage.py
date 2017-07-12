@@ -181,7 +181,7 @@ class ExternalitiesPage(tk.Frame):
         self.recur_selection.trace("w", self.recur_trace_change)
 
         pad_opts = {'sticky':"w", 'padx':FIELDX_PADDING, 'pady':FIELDY_PADDING}
-        self.year_start_lbl = ttk.Label(self.group5, text="Year of occurence", font=SMALL_FONT)
+        self.year_start_lbl = ttk.Label(self.group5, text="Year of occurrence", font=SMALL_FONT)
         self.year_start_lbl.grid(row=4, column=0, **pad_opts)
         self.year_start_ent = tk.Entry(self.group5, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.year_start_ent.insert(tk.END, "<enter # of years after build year>")
@@ -192,7 +192,7 @@ class ExternalitiesPage(tk.Frame):
         self.year_rate_lbl = ttk.Label(self.group5, text="Rate of occurrence")
         self.year_rate_lbl.grid(row=6, column=0, **pad_opts)
         self.year_rate_ent = tk.Entry(self.group5, width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.year_rate_ent.insert(tk.END, "<enter rate of occurence in years>")
+        self.year_rate_ent.insert(tk.END, "<enter rate of occurrence in years>")
         self.year_rate_ent.grid(row=7, column=0, **pad_opts)
         self.year_rate_lbl2 = ttk.Label(self.group5, text="Year(s)", font=SMALL_FONT)
         self.year_rate_lbl2.grid(row=7, column=1, **pad_opts)
@@ -541,7 +541,7 @@ class ExternalitiesPage(tk.Frame):
         self.year_start_ent.delete(0, tk.END)
         self.year_start_ent.insert(tk.END, "<enter # of years after build year>")
         self.year_rate_ent.delete(0, tk.END)
-        self.year_rate_ent.insert(tk.END, "<enter rate of occurence in years>")
+        self.year_rate_ent.insert(tk.END, "<enter rate of occurrence in years>")
         self.recur_selection.set(1)
         self.sign_select.set(1)
         self.new_party.set('')
