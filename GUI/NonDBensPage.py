@@ -111,7 +111,7 @@ class NonDBensPage(tk.Frame):
         controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
 
         # ===== Allows for recurrence
-        self.group5 = ttk.LabelFrame(self, text="recurring Non-Disaster Related Benefits")
+        self.group5 = ttk.LabelFrame(self, text="Recurring Non-Disaster Related Benefits")
         self.group5.grid(row=4, column=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
         non_d_ben_recurr_lbl = ttk.Label(self.group5,
                                          text="Choose how often this benefit will occur.",
