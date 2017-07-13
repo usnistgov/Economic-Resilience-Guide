@@ -1,8 +1,8 @@
 missing module named 'win32com.gen_py' - imported by win32com, c:\users\sac5\appdata\local\miniconda3\lib\site-packages\PyInstaller\loader\rthooks\pyi_rth_win32comgenpy.py
 missing module named pyimod03_importers - imported by PyInstaller.loader.pyimod02_archive, c:\users\sac5\appdata\local\miniconda3\lib\site-packages\PyInstaller\loader\rthooks\pyi_rth_pkgres.py
-missing module named __builtin__ - imported by numpy.core.numerictypes, numpy.core.numeric, future.builtins.misc, future.utils, past.types, past.builtins.noniterators, past.builtins, past.builtins.misc, numpy.distutils.misc_util, numpy.lib.function_base, numpy.lib._iotools, numpy.ma.core, numpy, pyparsing, PIL.Image, pkg_resources._vendor.pyparsing
 missing module named 'pkg_resources.extern.pyparsing' - imported by pkg_resources._vendor.packaging.markers, pkg_resources._vendor.packaging.requirements
 missing module named StringIO - imported by numpy.lib.utils, numpy.testing.utils, PyInstaller.lib.modulegraph.util, PyInstaller.lib.modulegraph.zipio, PyInstaller.lib.modulegraph.modulegraph, numpy.lib.format, six, docx.compat, pkg_resources._vendor.six
+missing module named __builtin__ - imported by numpy.core.numerictypes, numpy.core.numeric, future.builtins.misc, future.utils, past.types, past.builtins.noniterators, past.builtins, past.builtins.misc, numpy.distutils.misc_util, numpy.lib.function_base, numpy.lib._iotools, numpy.ma.core, numpy, pyparsing, PIL.Image, pkg_resources._vendor.pyparsing
 missing module named _dbm - imported by dbm.ndbm
 missing module named gdbm - imported by anydbm, future.moves.dbm.gnu
 missing module named _gdbm - imported by dbm.gnu
@@ -11,12 +11,12 @@ missing module named anydbm - imported by future.moves.dbm
 missing module named dbhash - imported by anydbm
 missing module named whichdb - imported by future.moves.dbm, anydbm
 missing module named _scproxy - imported by urllib.request, future.backports.urllib.request
-missing module named multiprocessing.set_start_method - imported by multiprocessing, multiprocessing.spawn
 missing module named multiprocessing.get_start_method - imported by multiprocessing, multiprocessing.spawn
+missing module named multiprocessing.set_start_method - imported by multiprocessing, multiprocessing.spawn
 missing module named multiprocessing.get_context - imported by multiprocessing, multiprocessing.pool, multiprocessing.managers, multiprocessing.sharedctypes
 missing module named multiprocessing.TimeoutError - imported by multiprocessing, multiprocessing.pool
-missing module named multiprocessing.BufferTooShort - imported by multiprocessing, multiprocessing.connection
 missing module named multiprocessing.AuthenticationError - imported by multiprocessing, multiprocessing.connection
+missing module named multiprocessing.BufferTooShort - imported by multiprocessing, multiprocessing.connection
 missing module named multiprocessing.SimpleQueue - imported by multiprocessing, concurrent.futures.process
 missing module named dummy_thread - imported by numpy.core.arrayprint, future.backports.misc
 missing module named thread - imported by numpy.core.arrayprint, future.backports.misc, PyInstaller.loader.pyimod02_archive
@@ -44,10 +44,10 @@ missing module named vms_lib - imported by platform, C:\Users\sac5\Desktop\Decis
 missing module named termios - imported by tty, getpass, C:\Users\sac5\Desktop\Decision Guide Tool\Economic-Resilience-Guide\EconGuide.py
 missing module named urllib.splittag - imported by urllib, setuptools.py26compat
 missing module named grp - imported by tarfile, shutil, pathlib, distutils.archive_util, C:\Users\sac5\Desktop\Decision Guide Tool\Economic-Resilience-Guide\EconGuide.py
-missing module named org - imported by copy, C:\Users\sac5\Desktop\Decision Guide Tool\Economic-Resilience-Guide\EconGuide.py
 missing module named pwd - imported by posixpath, tarfile, shutil, http.server, webbrowser, pathlib, distutils.util, distutils.archive_util, netrc, getpass, C:\Users\sac5\Desktop\Decision Guide Tool\Economic-Resilience-Guide\EconGuide.py
 missing module named ce - imported by os, C:\Users\sac5\Desktop\Decision Guide Tool\Economic-Resilience-Guide\EconGuide.py
 missing module named _dummy_threading - imported by dummy_threading, C:\Users\sac5\Desktop\Decision Guide Tool\Economic-Resilience-Guide\EconGuide.py
+missing module named org - imported by copy, C:\Users\sac5\Desktop\Decision Guide Tool\Economic-Resilience-Guide\EconGuide.py
 missing module named commands - imported by numpy.distutils.cpuinfo
 missing module named ConfigParser - imported by numpy.distutils.system_info, numpy.distutils.npy_pkg_config
 missing module named 'numpy_distutils.cpuinfo' - imported by numpy.f2py.diagnose
@@ -59,7 +59,7 @@ missing module named backports - imported by setuptools.ssl_support
 missing module named urllib2 - imported by setuptools.package_index, numpy.lib._datasource
 missing module named 'setuptools.extern.six' - imported by setuptools, setuptools.extension
 missing module named 'setuptools.extern.six.moves' - imported by setuptools.dist, setuptools.command.easy_install, setuptools.sandbox, setuptools.command.setopt, setuptools.package_index, setuptools.ssl_support, setuptools.command.egg_info
-missing module named setuptools.extern.six - imported by setuptools.extern, setuptools.dist, setuptools.depends, setuptools.command.easy_install, setuptools.sandbox, setuptools.package_index, setuptools.command.bdist_egg, setuptools.command.egg_info, setuptools.command.sdist, setuptools.unicode_utils, setuptools.command.develop
+missing module named setuptools.extern.six - imported by setuptools.extern, setuptools.dist, setuptools.depends, setuptools.command.easy_install, setuptools.sandbox, setuptools.package_index, setuptools.command.egg_info, setuptools.command.sdist, setuptools.command.bdist_egg, setuptools.unicode_utils, setuptools.command.develop
 missing module named 'numpy_distutils.command' - imported by numpy.f2py.diagnose
 missing module named numpy_distutils - imported by numpy.f2py.diagnose
 missing module named __svn_version__ - imported by numpy.f2py.__version__
@@ -82,38 +82,38 @@ missing module named numpy.core.isnat - imported by numpy.core, numpy.testing.ut
 missing module named numpy.core.float32 - imported by numpy.core, numpy.testing.utils
 missing module named numpy.core.integer - imported by numpy.core, numpy.fft.helper
 missing module named numpy.core.conjugate - imported by numpy.core, numpy.fft.fftpack
-missing module named numpy.core.maximum - imported by numpy.core, numpy.linalg.linalg
-missing module named numpy.core.single - imported by numpy.core, numpy.linalg.linalg
-missing module named numpy.core.longdouble - imported by numpy.core, numpy.linalg.linalg
-missing module named numpy.core.object_ - imported by numpy.core, numpy.linalg.linalg
-missing module named numpy.core.csingle - imported by numpy.core, numpy.linalg.linalg
+missing module named numpy.core.add - imported by numpy.core, numpy.linalg.linalg
 missing module named numpy.core.multiply - imported by numpy.core, numpy.linalg.linalg
 missing module named numpy.core.complexfloating - imported by numpy.core, numpy.linalg.linalg
+missing module named numpy.core.object_ - imported by numpy.core, numpy.linalg.linalg
+missing module named numpy.core.longdouble - imported by numpy.core, numpy.linalg.linalg
 missing module named numpy.core.intp - imported by numpy.core, numpy.linalg.linalg
+missing module named numpy.core.maximum - imported by numpy.core, numpy.linalg.linalg
 missing module named numpy.core.geterrobj - imported by numpy.core, numpy.linalg.linalg
-missing module named numpy.core.add - imported by numpy.core, numpy.linalg.linalg
-missing module named numpy.core.inexact - imported by numpy.core, numpy.linalg.linalg
-missing module named numpy.core.cdouble - imported by numpy.core, numpy.linalg.linalg
 missing module named numpy.core.sqrt - imported by numpy.core, numpy.linalg.linalg, numpy.fft.fftpack
+missing module named numpy.core.single - imported by numpy.core, numpy.linalg.linalg
+missing module named numpy.core.cdouble - imported by numpy.core, numpy.linalg.linalg
+missing module named numpy.core.inexact - imported by numpy.core, numpy.linalg.linalg
+missing module named numpy.core.csingle - imported by numpy.core, numpy.linalg.linalg
 missing module named numpy.core.double - imported by numpy.core, numpy.linalg.linalg
 missing module named copy_reg - imported by cPickle, cStringIO, numpy.core
-missing module named numpy.ndarray - imported by numpy, numpy.ma.core, numpy.ma.extras, numpy.ma.mrecords, numpy.ctypeslib
-missing module named numpy.array - imported by numpy, numpy.ma.core, numpy.ma.extras, numpy.ma.mrecords, numpy.ctypeslib
-missing module named numpy.recarray - imported by numpy, numpy.ma.mrecords
 missing module named numpy.bool_ - imported by numpy, numpy.ma.core, numpy.ma.mrecords
+missing module named numpy.recarray - imported by numpy, numpy.ma.mrecords
+missing module named numpy.ndarray - imported by numpy, numpy.ma.core, numpy.ma.extras, numpy.ma.mrecords, numpy.ctypeslib
 missing module named numpy.dtype - imported by numpy, numpy.ma.mrecords, numpy.ctypeslib
+missing module named numpy.array - imported by numpy, numpy.ma.core, numpy.ma.extras, numpy.ma.mrecords, numpy.ctypeslib
 missing module named numpy.expand_dims - imported by numpy, numpy.ma.core
+missing module named numpy.iscomplexobj - imported by numpy, numpy.ma.core
 missing module named numpy.amin - imported by numpy, numpy.ma.core
 missing module named numpy.amax - imported by numpy, numpy.ma.core
-missing module named numpy.iscomplexobj - imported by numpy, numpy.ma.core
 missing module named urlparse - imported by numpy.lib._datasource
 missing module named numpy.linalg.inv - imported by numpy.linalg, numpy.matrixlib.defmatrix, numpy.lib.polynomial, matplotlib.transforms
 missing module named numpy.histogramdd - imported by numpy, numpy.lib.twodim_base
 missing module named numpy.lib.i0 - imported by numpy.lib, numpy.dual
 missing module named numpy.lib.triu - imported by numpy.lib, numpy.linalg.linalg
+missing module named numpy.lib.real - imported by numpy.lib, numpy.testing.utils
 missing module named numpy.lib.iscomplexobj - imported by numpy.lib, numpy.testing.utils
 missing module named numpy.lib.imag - imported by numpy.lib, numpy.testing.utils
-missing module named numpy.lib.real - imported by numpy.lib, numpy.testing.utils
 missing module named exceptions - imported by joblib.my_exceptions
 missing module named 'multiprocessing.forking' - imported by joblib._multiprocessing_helpers
 missing module named cPickle - imported by numpy.core.numeric, numpy.lib.format, numpy.lib.npyio, numpy.ma.core, joblib.memory, joblib.parallel, joblib.pool

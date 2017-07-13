@@ -683,7 +683,7 @@ def uncert_string(uncert, values):
     if uncert == "none":
         return "N/A"
     elif uncert == "gauss":
-        return "Gaussian distribution with variance of " + str(values[0])
+        return "Gaussian distribution with standard deviation of " + str(values[0])
     elif uncert == "tri":
         return ("Triangular distribution with a min of " + str(values[0])
                 + " and a max of " + str(values[2]))

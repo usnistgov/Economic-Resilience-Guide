@@ -168,7 +168,7 @@ class InfoPage(tk.Frame):
         self.recur_one_label = tk.Label(group4, text="Recurrence (Years)")
         self.recur_one_label.grid(row=4, column=0)
         self.recur_gauss_label = [tk.Label(group4, text="Expected Recurrence (Years)"),
-                                  tk.Label(group4, text="Variance (Years)")]
+                                  tk.Label(group4, text="Standard Deviation (Years)")]
         self.recur_discrete_label = [tk.Label(group4, text="Most Frequent (Years)"),
                                      tk.Label(group4, text="Middle Recurrence (Years)"),
                                      tk.Label(group4, text="Least Frequence (Years)"),
@@ -211,7 +211,7 @@ class InfoPage(tk.Frame):
         self.mag_one_label = tk.Label(group5, text="Magnitude (%)")
         self.mag_one_label.grid(row=4, column=0)
         self.mag_gauss_label = [tk.Label(group5, text="Expected Magnitude (%)"),
-                                tk.Label(group5, text="Variance (%)")]
+                                tk.Label(group5, text="Standard Deviation (%)")]
         self.mag_discrete_label = [tk.Label(group5, text="Least Severe (%)"),
                                    tk.Label(group5, text="Middle Severity (%)"),
                                    tk.Label(group5, text="Most severe (%)"),

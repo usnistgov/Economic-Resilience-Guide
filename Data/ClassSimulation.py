@@ -105,7 +105,7 @@ class Simulation():
         for plan in self.plan_list:
             plan.sum_it(self.horizon)
 
-    def monte(self, new_seed, confidence, tol, low_iters=100, high_iters=102400):
+    def monte(self, new_seed, confidence, tol, low_iters=1000, high_iters=102400):
         """ Runs the monte-carlo everything."""
         self.seed = new_seed
         self.confidence = confidence
@@ -143,80 +143,88 @@ class Simulation():
             roi_totals = []
             nond_roi_totals = []
 
-            similar_list = []
+            #similar_list = []
             cost_ben_net = [False, False, False, False]
             old_iters = 0
             num_iters = low_iters
+
+            old_ben = plan.total_bens#list(plan.ben_range)
+            old_cost = plan.total_costs#list(plan.cost_range)
+            old_net = plan.net#list(plan.net_range)
+            old_ext_net = plan.net_w_ext#list(plan.net_ext_range)
+
             while (not all(cost_ben_net)) and num_iters < high_iters:
-
-                old_ben = list(plan.ben_range)
-                old_cost = list(plan.cost_range)
-                old_net = list(plan.net_range)
-                old_ext_net = list(plan.net_ext_range)
-
                 for i in range(old_iters, num_iters):
-                    similar_list.append(self.one_iter(plan))
-                    similar_list[i].sum_it(self.horizon)
-                    ben_direct_totals.append(similar_list[i].bens.d_sum)
-                    ben_indirect_totals.append(similar_list[i].bens.i_sum)
-                    fat_num_totals.append(similar_list[i].fat.stat_averted)
-                    fat_value_totals.append(similar_list[i].fat.stat_value_averted)
-                    cost_direct_totals.append(similar_list[i].costs.d_sum)
-                    cost_indirect_totals.append(similar_list[i].costs.i_sum)
-                    cost_omr_1_totals.append(similar_list[i].costs.omr_1_sum)
-                    cost_omr_r_totals.append(similar_list[i].costs.omr_r_sum)
-                    res_rec_totals.append(similar_list[i].bens.r_sum)
-                    nond_1_totals.append(similar_list[i].nond_bens.one_sum)
-                    nond_r_totals.append(similar_list[i].nond_bens.r_sum)
-                    ext_p_one_totals.append(similar_list[i].exts.one_sum_p)
-                    ext_p_r_totals.append(similar_list[i].exts.r_sum_p)
-                    ext_n_one_totals.append(similar_list[i].exts.one_sum_n)
-                    ext_n_r_totals.append(similar_list[i].exts.r_sum_n)
-                    ben_totals.append(similar_list[i].total_bens)
-                    cost_totals.append(similar_list[i].total_costs)
-                    net_totals.append(similar_list[i].net)
-                    net_ext_totals.append(similar_list[i].net_w_ext)
-                    if isinstance(similar_list[i].irr(), str):
+                    #similar_list.append(self.one_iter(plan))
+                    #similar_list[i].sum_it(self.horizon)
+                    new_sim = self.one_iter(plan)
+                    new_sim.sum_it(self.horizon)
+                    ben_direct_totals.append(new_sim.bens.d_sum)
+                    ben_indirect_totals.append(new_sim.bens.i_sum)
+                    fat_num_totals.append(new_sim.fat.stat_averted)
+                    fat_value_totals.append(new_sim.fat.stat_value_averted)
+                    cost_direct_totals.append(new_sim.costs.d_sum)
+                    cost_indirect_totals.append(new_sim.costs.i_sum)
+                    cost_omr_1_totals.append(new_sim.costs.omr_1_sum)
+                    cost_omr_r_totals.append(new_sim.costs.omr_r_sum)
+                    res_rec_totals.append(new_sim.bens.r_sum)
+                    nond_1_totals.append(new_sim.nond_bens.one_sum)
+                    nond_r_totals.append(new_sim.nond_bens.r_sum)
+                    ext_p_one_totals.append(new_sim.exts.one_sum_p)
+                    ext_p_r_totals.append(new_sim.exts.r_sum_p)
+                    ext_n_one_totals.append(new_sim.exts.one_sum_n)
+                    ext_n_r_totals.append(new_sim.exts.r_sum_n)
+                    ben_totals.append(new_sim.total_bens)
+                    cost_totals.append(new_sim.total_costs)
+                    net_totals.append(new_sim.net)
+                    net_ext_totals.append(new_sim.net_w_ext)
+                    if isinstance(new_sim.irr(), str):
                         irr_totals.append(-1)
                     else:
-                        irr_totals.append(similar_list[i].irr())
-                    sir_totals.append(similar_list[i].sir())
-                    roi_totals.append(similar_list[i].roi())
-                    nond_roi_totals.append(similar_list[i].non_d_roi())
-
-                ben_totals.sort()
-                cost_totals.sort()
-                net_totals.sort()
-                net_ext_totals.sort()
-
-                first_num = math.floor(num_iters*(1-confidence/100)/2)
-                last_num = math.ceil(num_iters - num_iters*(1-confidence/100)/2)
-
-                plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
-                plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
-                plan.net_range = [net_totals[first_num], net_totals[last_num]]
-                plan.net_ext_range = [net_ext_totals[first_num], net_ext_totals[last_num]]
+                        irr_totals.append(new_sim.irr())
+                    sir_totals.append(new_sim.sir())
+                    roi_totals.append(new_sim.roi())
+                    nond_roi_totals.append(new_sim.non_d_roi())
 
                 # Test costs
                 tol = plan.total_costs * tol_percent + 0.001
-                if max(abs(plan.cost_range[0] - old_cost[0]), abs(plan.cost_range[1] - old_cost[1])) < tol:
+                #if max(abs(plan.cost_range[0] - old_cost[0]), abs(plan.cost_range[1] - old_cost[1])) < tol:
+                if abs(np.mean(cost_totals) - old_cost) < tol:
                     cost_ben_net[0] = True
+
                 # Test bens
-                tol = plan.total_bens * tol_percent + 0.001
-                if max(abs(plan.ben_range[0] - old_ben[0]), abs(plan.ben_range[1] - old_ben[1])) < tol:
+                #tol = plan.total_bens * tol_percent + 0.001
+                #if max(abs(plan.ben_range[0] - old_ben[0]), abs(plan.ben_range[1] - old_ben[1])) < tol:
+                if abs(np.mean(ben_totals) - old_ben) < tol:
                     cost_ben_net[1] = True
                 # Test net
-                tol = plan.net * tol_percent + 0.001
-                if max(abs(plan.net_range[0] - old_net[0]), abs(plan.net_range[1] - old_net[1])) < tol:
+                #tol = plan.net * tol_percent + 0.001
+                #if max(abs(plan.net_range[0] - old_net[0]), abs(plan.net_range[1] - old_net[1])) < tol:
+                if abs(np.mean(net_totals) - old_net) < tol:
                     cost_ben_net[2] = True
                 # Test net with externalities
-                tol = plan.net_w_ext * tol_percent + 0.001
-                if max(abs(plan.net_ext_range[0] - old_ext_net[0]), abs(plan.net_ext_range[1] - old_ext_net[1])) < tol:
+                #tol = plan.net_w_ext * tol_percent + 0.001
+                #if max(abs(plan.net_ext_range[0] - old_ext_net[0]), abs(plan.net_ext_range[1] - old_ext_net[1])) < tol:
+                if abs(np.mean(net_ext_totals) - old_ext_net) < tol:
                     cost_ben_net[3] = True
 
-                old_iters = num_iters
-                num_iters = 2 * num_iters
+                old_ben = np.mean(ben_totals)
+                old_cost = np.mean(cost_totals)
+                old_net = np.mean(net_totals)
+                old_ext_net = np.mean(net_ext_totals)
 
+                old_iters = num_iters
+                num_iters = num_iters + low_iters#2 * num_iters
+
+            num_iters = num_iters - low_iters
+
+            first_num = math.floor(num_iters*(1-confidence/100)/2)
+            last_num = math.ceil(num_iters - num_iters*(1-confidence/100)/2)
+
+            ben_totals.sort()
+            cost_totals.sort()
+            net_totals.sort()
+            net_ext_totals.sort()
             ben_direct_totals.sort()
             ben_indirect_totals.sort()
             fat_num_totals.sort()
@@ -236,6 +244,11 @@ class Simulation():
             sir_totals.sort()
             roi_totals.sort()
             nond_roi_totals.sort()
+
+            plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
+            plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
+            plan.net_range = [net_totals[first_num], net_totals[last_num]]
+            plan.net_ext_range = [net_ext_totals[first_num], net_ext_totals[last_num]]
             plan.bens.direct_range = [ben_direct_totals[first_num], ben_direct_totals[last_num]]
             plan.bens.indirect_range = [ben_indirect_totals[first_num], ben_indirect_totals[last_num]]
             plan.bens.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
@@ -260,7 +273,7 @@ class Simulation():
                 plan.irr_range[0] = '---'
             if plan.irr_range[1] < 0:
                 plan.irr_range[1] = '---'
-            plan.mc_iters = num_iters / 2
+            plan.mc_iters = num_iters
 
     def one_iter(self, my_plan):
         """ Creates one plan that is within the uncertainty bounds of my_plan."""

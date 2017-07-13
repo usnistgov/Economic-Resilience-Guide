@@ -129,7 +129,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
                             "information are as follows:\n"
                             "•	‘Gaussian’ is a common continuous probability distribution. The "
                             "assumption is that the Gaussian distribution is symmetric in this "
-                            "Tool. The user needs to define the ‘variance ($)’ from the point "
+                            "Tool. The user needs to define the ‘Standard Deviation ($)’ from the point "
                             "estimate defined by the user for the benefit.\n"
                             "•	‘Triangle’ is a continuous probability distribution. This "
                             "distribution can be defined to be symmetric or asymmetric around the "
@@ -300,7 +300,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
                     for entry in self.ranges[plan.id_assign][choice]:
                         entry.grid_remove()
                 elif self.choices[plan.id_assign][choice].get() == "gauss":
-                    self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Variance ($)")]
+                    self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Standard Deviation ($)")]
                     self.labels[plan.id_assign][choice][0].grid(row=row_index + 4, column=0)
                     for entry in self.ranges[plan.id_assign][choice]:
                         entry.grid_remove()
