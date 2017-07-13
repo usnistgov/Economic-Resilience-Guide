@@ -339,7 +339,7 @@ class AnalysisInfo(tk.Frame):
     def processingPleaseWait(self, text, seed, conf, tol, break_point):
         """ Pops up a field to let you know to wait on the computation."""
         window = tk.Toplevel()
-        window.minsize(width=150, height=200)
+        window.minsize(width=150, height=20)
         # code before computation starts
         label = tk.Label(window, text=text, font=NORM_FONT)
         label.pack()

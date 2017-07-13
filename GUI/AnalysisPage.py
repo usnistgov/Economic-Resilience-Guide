@@ -40,8 +40,8 @@ def run_main_page(data):
 
             # make the canvas expandable
             self.container.grid()
-            self.container.grid_rowconfigure(0, weight=1, minsize=900)
-            self.container.grid_columnconfigure(0, weight=1, minsize=1500)
+            self.container.grid_rowconfigure(0, weight=1, minsize=20)
+            self.container.grid_columnconfigure(0, weight=1, minsize=20)
 
             # create canvas contents
             frame = tk.Frame(canvas)
