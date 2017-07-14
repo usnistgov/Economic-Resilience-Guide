@@ -111,11 +111,13 @@ class StartPage(tk.Frame):
         self.exit_button = ttk.Button(self, text="Exit", command=sys.exit
                                      ).grid(row=4, column=0)
 
+        tk.Label(self, text="").grid(row=5)
+
         photo = tk.PhotoImage(file="nistident_fleft_300ppi.png")
         photo = photo.subsample(3, 3)
         pic = ttk.Label(self, image=photo)
         pic.image = photo
-        pic.grid(row=5, sticky="sw")
+        pic.grid(row=6, sticky="sw")
 
     def select(self, controller):
         """Makes the OK button interact with the two given radio buttons"""

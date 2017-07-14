@@ -44,7 +44,7 @@ class VerticalScrolledFrame(Frame):
         # also updating the scrollbar
         def _configure_interior(event):
             # update the scrollbars to match the size of the inner frame
-            default_height = 650
+            default_height = 671
             size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
             canvas.config(scrollregion="0 0 %s %s" % size)
             if interior.winfo_reqwidth() != canvas.winfo_width():
