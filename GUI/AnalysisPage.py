@@ -40,8 +40,9 @@ def run_main_page(data):
 
             # make the canvas expandable
             self.container.grid()
-            self.container.grid_rowconfigure(0, weight=1, minsize=20)
-            self.container.grid_columnconfigure(0, weight=1, minsize=20)
+            width_size = min(self.data_cont.num_plans * 200 + 300, 1500)
+            self.container.grid_rowconfigure(0, weight=1, minsize=800)
+            self.container.grid_columnconfigure(0, weight=1, minsize=width_size)
 
             # create canvas contents
             frame = tk.Frame(canvas)
@@ -53,7 +54,6 @@ def run_main_page(data):
             canvas.create_window(0, 0, anchor="nw", window=frame)
             frame.update_idletasks()
             canvas.config(scrollregion=canvas.bbox("all"))
-
 
             # ===== Adds a title to the page
             title = ttk.Label(frame, text="Outputs of Economic Evaluation", font=LARGE_FONT)
