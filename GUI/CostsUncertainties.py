@@ -95,17 +95,17 @@ class CostsUncertaintiesPage(tk.Frame):
         # ===== Manueverability/Information buttons
         save_button = ttk.Button(self, text="Save Analysis",
                                  command=lambda: self.data_cont.file_save())
-        save_button.grid(row=1, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
+        save_button.grid(row=1, column=0, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Update Uncertainties",
                                      command=self.add_uncertainty)
-        self.add_button.grid(row=3, column=1, sticky="w",
+        self.add_button.grid(row=3, column=0, sticky="w",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         did_info = ttk.Button(self, text="More Information", command=self.show_info)
-        did_info.grid(row=2, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        did_info.grid(row=2, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         back_button = ttk.Button(self, text="<<Back", command=save_and_back)
         back_button.grid(row=13, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
-        finished_button.grid(row=13, column=1, sticky="se",
+        finished_button.grid(row=13, column=0, sticky="se",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         ttk.Button(self, text="Directory", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
