@@ -34,8 +34,8 @@ class Application(tk.Tk):
     """ Contains the actual application."""
     def __init__(self, *args, **kwargs):
         #args = arguments, kwargs = key word args
-
         tk.Tk.__init__(self, *args, **kwargs)
+
         self.container = VerticalScrolledFrame(self)
 
         self.container.grid(sticky="nsew")
@@ -110,6 +110,12 @@ class StartPage(tk.Frame):
                                    ).grid(row=3, column=0)
         self.exit_button = ttk.Button(self, text="Exit", command=sys.exit
                                      ).grid(row=4, column=0)
+
+        photo = tk.PhotoImage(file="nistident_fleft_300ppi.png")
+        photo = photo.subsample(3, 3)
+        pic = ttk.Label(self, image=photo)
+        pic.image = photo
+        pic.grid(row=5, sticky="sw")
 
     def select(self, controller):
         """Makes the OK button interact with the two given radio buttons"""

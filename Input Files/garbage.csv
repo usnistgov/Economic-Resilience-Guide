@@ -1,0 +1,7 @@
+Title,Paln,,Horizon,980
+Discount Rate,5.0,,Risk Prev,neutral,,Value of Stat Life,7500000
+BEGIN PLANS
+Plan 0,Base,none,3,0,0,0,0,0,none,['9'],0,0,0,0,0,
+,Fatalities,0,N/A
+END PLAN
+END FILE
