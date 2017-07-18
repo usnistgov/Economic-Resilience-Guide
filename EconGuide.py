@@ -74,6 +74,8 @@ class Application(tk.Tk):
         cont = frame_dict[cont_string]
         frame = self.frames[cont]
         frame.on_trace_change("", "","")
+        self.container.canvas.xview_moveto(0)
+        self.container.canvas.yview_moveto(0)
         frame.tkraise()
 
     def selectall(self, event):
