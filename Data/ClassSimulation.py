@@ -332,7 +332,7 @@ class Plan():
             self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
         else:
             self.recurr_uncert = list(disaster_recurrence[1])
-            self.recurrence = [disaster_recurrence[1][1]]
+            self.recurrence = disaster_recurrence[1][1]
         self.mag_dist = disaster_magnitude[0]
         self.mag_range = disaster_magnitude[1]
         if self.mag_dist == "none":
