@@ -415,6 +415,7 @@ class Plan():
         self.fat.recurrence = self.recurrence
         self.fat.discount_rate = discount_rate
         self.fat.horizon = horizon
+        self.fat.update(self.fat.averted, self.fat.desc)
         self.nond_bens.discount_rate = discount_rate
         self.nond_bens.horizon = horizon
 

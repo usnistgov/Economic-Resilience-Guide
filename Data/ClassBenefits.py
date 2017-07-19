@@ -24,7 +24,7 @@ class Benefits():
         self.total = 0
 
         self.dis_rate = float(disaster_rate)
-        self.disc_rate = float(discount_rate)
+        self.discount_rate = float(discount_rate)
         self.horizon = float(horizon)
 
         self.direct_range = [0, 0]
@@ -61,9 +61,9 @@ class Benefits():
         self.d_sum_no_discount = self.d_sum
         self.i_sum_no_discount = self.i_sum
         self.r_sum_no_discount = self.r_sum
-        self.d_sum = self.on_dis_occ(self.d_sum, self.horizon, self.dis_rate, self.disc_rate)
-        self.i_sum = self.on_dis_occ(self.i_sum, self.horizon, self.dis_rate, self.disc_rate)
-        self.r_sum = self.on_dis_occ(self.r_sum, self.horizon, self.dis_rate, self.disc_rate)
+        self.d_sum = self.on_dis_occ(self.d_sum, self.horizon, self.dis_rate, self.discount_rate)
+        self.i_sum = self.on_dis_occ(self.i_sum, self.horizon, self.dis_rate, self.discount_rate)
+        self.r_sum = self.on_dis_occ(self.r_sum, self.horizon, self.dis_rate, self.discount_rate)
         self.total = self.d_sum + self.i_sum + self.r_sum
 
 
@@ -85,7 +85,7 @@ class Benefits():
         """ Creates one Benefit class within the range of uncertainties."""
         dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist,
                      'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
-        delta_ben = Benefits(self.dis_rate, self.disc_rate, self.horizon)
+        delta_ben = Benefits(self.dis_rate, self.discount_rate, self.horizon)
         for ben in old_ben_list:
             ben_dict = {'title': ben.title,
                         'ben_type': ben.ben_type,
