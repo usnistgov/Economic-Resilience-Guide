@@ -1,13 +1,13 @@
-Outputs of Economic Evaluation: [Riverbend]
+Outputs of Economic Evaluation: [Riverbend v2]
 Number of Alternatives: 2
 Planning Horizon: 50 years
-Discount Rate: 5%
+Discount Rate: 5.0%
 Disaster Rate: Every 25 years
-Disaster Magnitude: ['6']% of build cost
+Disaster Magnitude: ['6.25']% of build cost
 Risk Preference: neutral
 Statistical Value of a Life: $7500000
 ,Base Case,Alternative 1,Alternative 2
-,Base,Retrofit,Second Bridge
+,Base,Retrofit,New Bridge
 Benefits
 Disaster Economic Benefits
 Response and Recovery Costs,$0.0,$451705.9683527613,$752843.2805879355
@@ -19,25 +19,26 @@ Number of Statistical Lives Saved,0.0,0.2,0.4
 Non-disaster Related Benefits
 One-Time,$0,$0,$0
 Recurring
-,$0,$0,$1890316.7013322278
+,$0,$0,$1790316.7013322278
 Costs
-Direct Costs,$0,$3000000.0,$4250000.0
-Indirect Costs,$0,$500000.0,$50000.0
+Direct Costs,$0,$3000000.0,$6750000.0
+Indirect Costs,$0,$500000.0,$295000.0
 OMR
 One-Time,$0,$0,$0
-Recurring,$0,$0,$491531.3070215052
+Recurring,$0,$0,$513999.92495248263
 Externalities
 Positive
 One-Time,$0,$0,$0
-Recurring,$0,$0,$0
+Recurring,$0,$0,$2796635.815984061
 Negative
 One-Time,$0,$0,$0
 Recurring,$0,$0,$0
 Total: Present Expected Value
-Benefits,$0.0,$2717764.2429224467,$6407376.384859841
-Costs,$0,$3500000.0,$4791531.307021505
-Net,$0.0,$-782235.7570775533,$1615845.0778383361
-Savings-to-Investment Ratio,0,-0.22349593059358666,0.3757779250786828
-Internal Rate of Return (%),---,3.4515380859375,7.3883056640625
-Return on Investment (%),0,1.5530081388128267,2.6744587374272095
-Non-Disaster ROI (%),0,0,0.7890240427155968
+Benefits,$0.0,$2717764.2429224467,$6307376.384859841
+Costs,$0,$3500000.0,$7558999.924952483
+Net,$0.0,$-782235.7570775533,$-1251623.5400926415
+Net with Externalities,$0.0,$-782235.7570775533,$1545012.2758914195
+Savings-to-Investment Ratio,0,-0.22349593059358666,-0.17766125480378162
+Internal Rate of Return (%),---,3.4515380859375,3.7933349609375
+Return on Investment (%),0,1.5530081388128267,1.6688388536793088
+Non-Disaster ROI (%),0,0,0.47369141926363556

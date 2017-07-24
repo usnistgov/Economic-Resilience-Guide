@@ -337,7 +337,7 @@ class Plan():
         self.mag_range = disaster_magnitude[1]
         if self.mag_dist == "none":
             self.mag_uncert = [0]
-            self.magnitude = [disaster_magnitude[1][0]]
+            self.magnitude = disaster_magnitude[1][0]
         elif self.mag_dist == "gauss":
             self.mag_uncert = disaster_magnitude[1][1]
             self.magnitude = [disaster_magnitude[1][0]]
@@ -412,7 +412,7 @@ class Plan():
         self.bens.dis_rate = self.recurrence
         self.bens.discount_rate = discount_rate
         self.bens.horizon = horizon
-        self.fat.disaster_rate = self.recurrence
+        self.fat.disaster_rate = float(self.recurrence)
         self.fat.discount_rate = discount_rate
         self.fat.horizon = horizon
         self.fat.update(self.fat.averted, self.fat.desc)

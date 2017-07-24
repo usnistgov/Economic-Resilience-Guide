@@ -47,8 +47,8 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 
-        ben_lbl = tk.Label(self, text="Externalities Uncertainties", font=LARGE_FONT)
-        ben_lbl.grid(row=2, sticky="w")
+        ext_lbl = tk.Label(self, text="Externalities Uncertainties", font=LARGE_FONT)
+        ext_lbl.grid(row=2, sticky="w")
         self.direct_range = []
         self.indirect_range = []
         self.res_rec_range = []
@@ -63,13 +63,13 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
 
         self.on_trace_change("name", "index", "mode")
 
-        #controller.frames[BenefitsPage].choice.trace("w", self.on_trace_change)
+        #controller.frames[extefitsPage].choice.trace("w", self.on_trace_change)
 
 
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.
             If save unsuccessful asks user for verification to move on."""
-            go_to_place = 'BenefitsPage'
+            go_to_place = 'extefitsPage'
             moveon = self.add_uncertainty(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)
@@ -159,12 +159,12 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
             valid = self.check_page(printout=False)
 
         for plan in self.data_cont.plan_list:
-            for ben in plan.exts.indiv:
+            for ext in plan.exts.indiv:
                 new_values = []
-                for entry in self.ranges[plan.id_assign][plan.exts.indiv.index(ben)]:
+                for entry in self.ranges[plan.id_assign][plan.exts.indiv.index(ext)]:
                     new_values.append(entry.get())
-                ben.add_uncertainty(new_values,
-                                    self.choices[plan.id_assign][plan.exts.indiv.index(ben)].get())
+                ext.add_uncertainty(new_values,
+                                    self.choices[plan.id_assign][plan.exts.indiv.index(ext)].get())
         self.on_trace_change('_name', '_index', '_mode')
 
         return valid
@@ -176,9 +176,9 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
         err_messages = ""
         valid = True
         for plan in self.data_cont.plan_list:
-            for ben in plan.exts.indiv:
-                dist = self.choices[plan.id_assign][plan.exts.indiv.index(ben)].get()
-                nums = self.ranges[plan.id_assign][plan.exts.indiv.index(ben)]
+            for ext in plan.exts.indiv:
+                dist = self.choices[plan.id_assign][plan.exts.indiv.index(ext)].get()
+                nums = self.ranges[plan.id_assign][plan.exts.indiv.index(ext)]
                 try:
                     assert dist in ['none', 'gauss', 'rect', 'tri', 'discrete']
                 except AssertionError:
@@ -190,10 +190,11 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                         entry.insert(tk.END, '<insert uncertainty>')
                 elif dist == 'gauss':
                     try:
-                        float(nums[0].get())
+                        if float(nums[0].get()) <= 0:
+                            err_messages += "Standard deviation must be greater than zero (" + ext.title + ").\n\n"
                     except ValueError:
                         valid = False
-                        err_messages += "All inputs must be numbers (" + ben.title +").\n\n"
+                        err_messages += "All inputs must be numbers (" + ext.title +").\n\n"
                     for entry in nums[1:]:
                         entry.delete(0, tk.END)
                         entry.insert(tk.END, '<insert uncertainty>')
@@ -203,34 +204,34 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                             float(entry.get())
                         except ValueError:
                             valid = False
-                            err_messages += "All inputs must be numbers (" + ben.title + ").\n\n"
+                            err_messages += "All inputs must be numbers (" + ext.title + ").\n\n"
                     try:
                         assert float(nums[0].get()) <= float(nums[1].get()) <= float(nums[2].get())
                         disc_sum = float(nums[3].get()) + float(nums[4].get()) + float(nums[5].get())
                         if disc_sum != 100:
                             valid = False
-                            err_messages += "Discrete liklihoods must add to 100% (" + ben.title + ").\n\n"
+                            err_messages += "Discrete liklihoods must add to 100% (" + ext.title + ").\n\n"
                     except AssertionError:
                         valid = False
-                        err_messages += "Discrete options must be in order (" + ben.title + ").\n\n"
+                        err_messages += "Discrete options must be in order (" + ext.title + ").\n\n"
                     except ValueError:
                         pass
                     try:
-                        assert float(ben.amount) in [float(nums[0].get()), float(nums[1].get()), float(nums[2].get())]
+                        assert float(ext.amount) in [float(nums[0].get()), float(nums[1].get()), float(nums[2].get())]
                     except AssertionError:
                         valid = False
-                        err_messages += "One of the discrete options must be your point estimate (" + ben.title + ").\n\n"
+                        err_messages += "One of the discrete options must be your point estimate (" + ext.title + ").\n\n"
                     except ValueError:
                         pass
                 else:
                     try:
-                        bound = float(nums[0].get()) <= float(ben.amount) <= float(nums[1].get())
+                        bound = float(nums[0].get()) <= float(ext.amount) <= float(nums[1].get())
                         if not bound:
                             valid = False
-                            err_messages += "Lower bound must be below Upper bound (" + ben.title + ").\n\n"
+                            err_messages += "Lower bound must be below Upper bound (" + ext.title + ").\n\n"
                     except ValueError:
                         valid = False
-                        err_messages += "All inputs must be numbers (" + ben.title + ").\n\n"
+                        err_messages += "All inputs must be numbers (" + ext.title + ").\n\n"
                     for entry in nums[2:]:
                         entry.delete(0, tk.END)
                         entry.insert(tk.END, '<insert uncertainty>')
@@ -242,14 +243,14 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
 
 
     def on_trace_change(self, _name, _index, _mode):
-        """Updates the number of plans with options dependent on number of benefits input."""
+        """Updates the number of plans with options dependent on number of externalities input."""
         for group in self.groups:
             group.grid_forget()
             group.destroy()
         self.groups = []
         rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
         figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
-        self.choices = [[tk.StringVar() for ben in plan.exts.indiv]
+        self.choices = [[tk.StringVar() for ext in plan.exts.indiv]
                         for plan in self.data_cont.plan_list]
         rads = []
         self.ranges = []
@@ -262,10 +263,10 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
             rads.append([])
             self.ranges.append([])
             self.labels.append([])
-            for ben in plan.exts.indiv:
-                choice = plan.exts.indiv.index(ben)
-                self.choices[plan.id_assign][choice].set(ben.dist)
-                titles = ttk.Label(self.groups[-1], text=ben.title + " - $" + str(ben.amount),
+            for ext in plan.exts.indiv:
+                choice = plan.exts.indiv.index(ext)
+                self.choices[plan.id_assign][choice].set(ext.dist)
+                titles = ttk.Label(self.groups[-1], text=ext.title + " - $" + str(ext.amount),
                                    font=SMALL_FONT)
                 titles.grid(row=row_index, column=0, sticky="w",
                             padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -327,4 +328,4 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                     self.ranges[plan.id_assign][choice][1].grid(row=row_index+4, column=3)
                     row_index+= 5
                 for entry in self.ranges[plan.id_assign][choice]:
-                    entry.insert(tk.END, ben.range[self.ranges[plan.id_assign][choice].index(entry)])
+                    entry.insert(tk.END, ext.range[self.ranges[plan.id_assign][choice].index(entry)])

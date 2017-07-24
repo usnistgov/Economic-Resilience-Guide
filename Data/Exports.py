@@ -50,7 +50,7 @@ def csv_export(sim):
     new_file.write('\nNon-disaster Related Benefits\nOne-Time')
     for plan in sim.plan_list:
         new_file.write(',$' + str(plan.nond_bens.one_sum))
-    new_file.write('\nRecurring\n')
+    new_file.write('\nRecurring')
     for plan in sim.plan_list:
         new_file.write(',$' + str(plan.nond_bens.r_sum))
     new_file.write('\nCosts\nDirect Costs')

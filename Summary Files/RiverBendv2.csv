@@ -1,48 +1,43 @@
 Outputs of Economic Evaluation: [Riverbend v2]
-NOTE: All bounds on uncertainties are given with a 95.0% confidence interval. The number of runs was determined with a 0.1% tolerance.
-For Base (Alternative 0) 1000 Monte-Carlo simulations were run.
-For Retrofit (Alternative 1) 4000 Monte-Carlo simulations were run.
-For New Bridge (Alternative 2) 4000 Monte-Carlo simulations were run.
-The random number seed for these runs was 350311508.
 Number of Alternatives: 2
 Planning Horizon: 50 years
-Discount Rate: 5%
+Discount Rate: 3.0%
 Disaster Rate: Every 25 years
-Disaster Magnitude: ["['6.25']"]% of build cost
+Disaster Magnitude: 6.25% of build cost
 Risk Preference: neutral
 Statistical Value of a Life: $7500000
-,Base Case,Lower Bound,Upper Bound,Alternative 1,Lower Bound,Upper Bound,Alternative 2,Lower Bound,Upper Bound
-,Base,,,Retrofit,,,New Bridge
+,Base Case,Alternative 1,Alternative 2
+,Base,Retrofit,New Bridge
 Benefits
 Disaster Economic Benefits
-Response and Recovery Costs,$0.0,$0.0,$0.0,$451705.9683527613,$189063.30419551543,$728860.344021529,$752843.2805879355,$307000.08497465483,$1196523.3463621538
-Direct Loss Reduction,$0.0,$0.0,$0.0,$195739.25295286323,$80685.84066338945,$312580.1185641497,$0.0,$0.0,$0.0
-Indirect Losses,$0.0,$0.0,$0.0,$1505686.561175871,$628709.8809813515,$2410770.829467559,$2634951.482057774,$1078310.432119431,$4203299.835751281
+Response and Recovery Costs,$0.0,$630864.9214506977,$1051441.5357511628
+Direct Loss Reduction,$0.0,$273374.79929530236,$0.0
+Indirect Losses,$0.0,$2102883.0715023256,$3680045.37512907
 Disaster Non-Market Benefits
-Value of Statistical Lives Saved,$0.0,$0.0,$0.0,$564632.4604409516,$564632.4604409516,$564632.4604409516,$1129264.9208819033,$1129264.9208819033,$1129264.9208819033
-Number of Statistical Lives Saved,0.0,0.0,0.0,0.2,0.2,0.2,0.4,0.4,0.4
+Value of Statistical Lives Saved,$0.0,$788581.1518133722,$1577162.3036267443
+Number of Statistical Lives Saved,0.0,0.2,0.4
 Non-disaster Related Benefits
-One-Time,$0,$0,$0,$0,$0,$0,$0,$0,$0
-Recurring,$0,$0,$0,$0,$0,$0,$1790316.7013322278,$1358237.878783597,$1987705.138114354
+One-Time,$0,$0,$0
+Recurring,$0,$0,$2550916.855392753
 Costs
-Direct Costs,$0,$0,$0,$3000000.0,$2908156.329492273,$3687869.8929451224,$6750000.0,$6656309.01955767,$7918122.454649078
-Indirect Costs,$0,$0,$0,$500000.0,$487450.8278083913,$708556.9052236392,$295000.0,$291088.7246408735,$345073.64937090245
+Direct Costs,$0,$3000000.0,$6750000.0
+Indirect Costs,$0,$500000.0,$295000.0
 OMR
-One-Time,$0,$0,$0,$0,$0,$0,$0,$0,$0
-Recurring,$0,$0,$0,$0,$0,$0,$513999.92495248263,$455707.7110017403,$602644.6674292922
+One-Time,$0,$0,$0
+Recurring,$0,$0,$732368.2291832594
 Externalities
 Positive
-One-Time,$0,$0,$0,$0,$0,$0,$0,$0,$0
-Recurring,$0,$0,$0,$0,$0,$0,$2833534.2431985177,$2354857.2667633197,$3574546.3258799263
+One-Time,$0,$0,$0
+Recurring,$0,$0,$3984761.7106404635
 Negative
-One-Time,$0,$0,$0,$0,$0,$0,$0,$0,$0
-Recurring,$0,$0,$0,$0,$0,$0,$0,$0,$0
+One-Time,$0,$0,$0
+Recurring,$0,$0,$0
 Total: Present Expected Value
-Benefits,$0.0,$0.0,$0.0,$2717764.2429224467,$1788663.2507168844,$3640150.9043345675,$6307376.384859841,$4561759.8117604675,$7847360.779227259
-Costs,$0,$0,$0,$3500000.0,$3447129.586742446,$4282881.975539422,$7558999.924952483,$7497644.167102654,$8759279.141495744
-Net,$0.0,$0.0,$0.0,$-782235.7570775533,$-2113580.577174039,$-51002.427291241474,$-1251623.5400926415,$-3621694.313980708,$-63770.6632371787
-Net with Externalities,$0.0,$0.0,$0.0,$-782235.7570775533,$-2113580.577174039,$-51002.427291241474,$1581910.7031058762,$-791470.3989329757,$2927622.490408429
-Savings-to-Investment Ratio,0,0,0,-0.22349593059358666,-0.5346049467540862,-0.014297076894562088,-0.17766125480378162,-0.4664001496841241,-0.00905633709875529
-Internal Rate of Return (%),---,---,---,3.4515380859375,0.9002685546875,4.9041748046875,3.7933349609375,1.5655517578125,4.9407958984375
-Return on Investment (%),0,0,0,1.5530081388128267,0.9307901064918276,1.9714058462108757,1.6688388536793088,1.125661966022142,1.9831039838702293
-Non-Disaster ROI (%),0,0,0,0,0,0,0.47369141926363556,0.3333679355004006,0.5064357214493326
+Benefits,$0.0,$3795703.944061698,$8859566.06989973
+Costs,$0,$3500000.0,$7777368.229183259
+Net,$0.0,$295703.9440616979,$1082197.840716471
+Net with Externalities,$0.0,$295703.9440616979,$5066959.551356935
+Savings-to-Investment Ratio,0,0.08448684116048512,0.15361218462973328
+Internal Rate of Return (%),---,3.4515380859375,3.7933349609375
+Return on Investment (%),0,2.16897368232097,2.2782940986787037
+Non-Disaster ROI (%),0,0,0.6559845902167443

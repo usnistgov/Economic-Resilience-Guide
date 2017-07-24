@@ -190,7 +190,8 @@ class CostsUncertaintiesPage(tk.Frame):
                         entry.insert(tk.END, '<insert uncertainty>')
                 elif dist == 'gauss':
                     try:
-                        float(nums[0].get())
+                        if float(nums[0].get()) <= 0:
+                            err_messages += "Standard deviation must be greater than zero (" + cost.title + ").\n\n"
                     except ValueError:
                         valid = False
                         err_messages += "All inputs must be numbers (" + cost.title +").\n\n"

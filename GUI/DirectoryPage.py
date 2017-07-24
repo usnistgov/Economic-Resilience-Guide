@@ -25,7 +25,7 @@ class DirectoryPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         title = ttk.Label(self, text="Directory", font=LARGE_FONT)
         title.grid(sticky="new", padx=BASE_PADDING, pady=BASE_PADDING)
-        label = ttk.Label(self, text="Please select a page to continue with the analysis.",
+        label = ttk.Label(self, text="Please select a page to continue with the project.",
                           font=SMALL_FONT)
         label.grid(sticky="w", padx=BASE_PADDING, pady=BASE_PADDING)
         self.create_widgets(controller)
@@ -37,7 +37,7 @@ class DirectoryPage(tk.Frame):
         group = ttk.LabelFrame(self, text="Pages")
         group.grid(row=2, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
-        info_button = ttk.Button(group, text="Analysis Information",
+        info_button = ttk.Button(group, text="Project Information",
                                  command=lambda: controller.show_frame('InfoPage'))
         info_button.grid(row=0, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 

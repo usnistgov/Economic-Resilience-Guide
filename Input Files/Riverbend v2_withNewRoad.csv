@@ -1,5 +1,5 @@
 Title,Riverbend v2,,Horizon,50
-Discount Rate,5.0,,Risk Prev,neutral,,Value of Stat Life,7500000
+Discount Rate,3.0,,Risk Prev,neutral,,Value of Stat Life,7500000
 BEGIN PLANS
 Plan 0,Base,none,25,0,0,0,0,0,none,6.25,0,0,0,0,0,
 ,Fatalities,0.0,N/A
@@ -34,16 +34,16 @@ Plan 2,New Bridge,none,25,0,0,0,0,0,none,6.25,0,0,0,0,0,
 ,Benefits,Uncertainty,gauss,1050000,0,0,0,0,0
 ,Benefits,New Bridge Response and Recovery,res-rec,1000000.0,Estimated reduction in response in recovery costs for a seismic event with a 25 year return period.
 ,Benefits,Uncertainty,gauss,300000,0,0,0,0,0
-,Externalities,Greenhous Gas Emissions,recurring,1.0,1.0,0.0,77329.0,The reduction in greenhouse gas emissions incurred due to fewer vehicle-hours in traffic over the year. This assumes that traffic remains at pre-action levels (i.e. a more efficient road network won't attract more motorists).
+,Externalities,Greenhous Gas Emissions,recurring,1.0,1.0,0.0,77329.0,The reduction in greenhouse gas emissions incurred due to fewer vehicle-hours in traffic over the year. This assumes that traffic remains at pre-action levels (i.e. a more efficient road network won't attract more motorists).,
 ,Externalities,positive,community
 ,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Water Pollution,recurring,1.0,1.0,0.0,39081.0,The reduction in water pollution incurred due to fewer vehicle-hours in traffic over the year. This assumes that traffic remains at pre-action levels (i.e. a more efficient road network won't attract more motorists).
+,Externalities,Water Pollution,recurring,1.0,1.0,0.0,39081.0,The reduction in water pollution incurred due to fewer vehicle-hours in traffic over the year. This assumes that traffic remains at pre-action levels (i.e. a more efficient road network won't attract more motorists).,
 ,Externalities,positive,community
 ,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Better linking of communities,recurring,1.0,1.0,0.0,39799.0,More efficient traffic flow and the inclusion of a pedestrian crossing help strengthen the link between communities on the two sides of the river.
+,Externalities,Better linking of communities,recurring,1.0,1.0,0.0,39799.0,More efficient traffic flow and the inclusion of a pedestrian crossing help strengthen the link between communities on the two sides of the river.,
 ,Externalities,positive,community
 ,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Non-Disaster Benefits,Reduced Commute Time,recurring,1,1,0,100000,Estimated benefit incurred due to the reduction of vehicle-hours in traffic as a result of an additional crossing. This benefit is separate from the externalities which focus on community level environmental and social impacts which are not internalized. Instead represent the value of a reduction in travel time itself internalized into the design process.
+,Non-Disaster Benefits,Reduced Commute Time,recurring,1,1,0,100000,Estimated benefit incurred due to the reduction of vehicle-hours in traffic as a result of an additional crossing. This benefit is separate from the externalities which focus on community level environmental and social impacts which are not internalized. Instead represent the value of a reduction in travel time itself internalized into the design process.,
 ,Non-Disaster Benefits,Uncertainty,tri,70000,115000,0,0,0,0
 ,Fatalities,0.2,Estimated reduction in the number of fatalities due to a seismic event with a 25 year return period.
 END PLAN
