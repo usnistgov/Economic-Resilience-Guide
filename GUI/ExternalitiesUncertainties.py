@@ -63,13 +63,10 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
 
         self.on_trace_change("name", "index", "mode")
 
-        #controller.frames[extefitsPage].choice.trace("w", self.on_trace_change)
-
-
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.
             If save unsuccessful asks user for verification to move on."""
-            go_to_place = 'extefitsPage'
+            go_to_place = 'BenefitsPage'
             moveon = self.add_uncertainty(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)

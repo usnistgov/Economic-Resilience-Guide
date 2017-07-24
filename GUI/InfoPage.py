@@ -311,21 +311,99 @@ class InfoPage(tk.Frame):
             err_messages += "Please enter a positive amount.\n\n"
             valid = False
 
-        for entry in self.recur_range:
+        if self.recur_choice.get() == 'none':
             try:
-                entry.get()
+                if float(self.recur_range[0].get()) <= 0:
+                    valid = False
+                    err_messages += "Recurrence must be greater than zero."
             except ValueError:
-                err_messages += "All Hazard Recurrence values must be a number.\n\n"
-            if "-" in entry.get():
-                err_messages += "All Hazard Recurrence values must be positive.\n\n"
-        for entry in self.mag_range:
+                valid = False
+                err_messages += "Hazard Recurrence must be a number"
+        elif self.recur_choice.get() == 'gauss':
             try:
-                entry.get()
+                if float(self.recur_range[0].get()) <= 0:
+                    valid = False
+                    err_messages += "Recurrence must be greater than zero."
+                if float(self.recur_range[1].get()) <= 0:
+                    valid = False
+                    err_messages += "Recurrence standard deviation must be greater than zero."
             except ValueError:
-                err_messages += "All Hazard Magnitude values must be a number.\n\n"
-            if "-" in entry.get():
-                err_messages += "All Hazard Magnitude values must be positive.\n\n"
+                valid = False
+                err_messages += "All hazard recurrence values must be numbers."
+        elif self.recur_choice.get() == 'discrete':
+            for entry in self.recur_range:
+                try:
+                    float(entry.get())
+                except ValueError:
+                    valid = False
+                    err_messages += "All hazard recurrence inputs must be numbers..\n\n"
+            try:
+                assert float(self.recur_range[0].get()) >= float(self.recur_range[1].get()) >= float(self.recur_range[2].get())
+                disc_sum = float(self.recur_range[3].get()) + float(self.recur_range[4].get()) + float(self.recur_range[5].get())
+                if disc_sum != 100:
+                    valid = False
+                    err_messages += "Hazard recurrence discrete liklihoods must add to 100%.\n\n"
+            except AssertionError:
+                valid = False
+                err_messages += "Hazard recurrence discrete options must be in order.\n\n"
+            except ValueError:
+                pass
+        else:
+            try:
+                bound = float(self.recur_range[0].get()) <= float(self.recur_range[1]) <= float(self.recur_range[2].get())
+                if not bound:
+                    valid = False
+                    err_messages += "Hazard recurrence Lower bound must be below Upper bound.\n\n"
+            except ValueError:
+                valid = False
+                err_messages += "All hazard recurrence inputs must be numbers.\n\n"
 
+        if self.mag_choice.get() == 'none':
+            try:
+                if float(self.mag_range[0].get()) < 0:
+                    valid = False
+                    err_messages += "Magnitude must be greater than or equal to zero."
+            except ValueError:
+                valid = False
+                err_messages += "Hazard magnitude must be a number"
+        elif self.mag_choice.get() == 'gauss':
+            try:
+                if float(self.mag_range[0].get()) <= 0:
+                    valid = False
+                    err_messages += "Magnitude must be greater than zero."
+                if float(self.mag_range[1].get()) <= 0:
+                    valid = False
+                    err_messages += "Magnitude standard deviation must be greater than zero."
+            except ValueError:
+                valid = False
+                err_messages += "All hazard magnitude values must be numbers."
+        elif self.mag_choice.get() == 'discrete':
+            for entry in self.mag_range:
+                try:
+                    float(entry.get())
+                except ValueError:
+                    valid = False
+                    err_messages += "All hazard magnitude inputs must be numbers..\n\n"
+            try:
+                assert float(self.mag_range[0].get()) >= float(self.mag_range[1].get()) >= float(self.mag_range[2].get())
+                disc_sum = float(self.mag_range[3].get()) + float(self.mag_range[4].get()) + float(self.mag_range[5].get())
+                if disc_sum != 100:
+                    valid = False
+                    err_messages += "Hazard magnitude discrete liklihoods must add to 100%.\n\n"
+            except AssertionError:
+                valid = False
+                err_messages += "Hazard magnitude discrete options must be in order.\n\n"
+            except ValueError:
+                pass
+        else:
+            try:
+                bound = float(self.mag_range[0].get()) <= float(self.mag_range[1]) <= float(self.mag_range[2].get())
+                if not bound:
+                    valid = False
+                    err_messages += "Hazard magnitude Lower bound must be below Upper bound.\n\n"
+            except ValueError:
+                valid = False
+                err_messages += "All hazard magnitude inputs must be numbers.\n\n"
         if not valid:
             messagebox.showerror("ERROR", err_messages)
             return
@@ -422,13 +500,27 @@ class InfoPage(tk.Frame):
     def on_trace_choice(self, _name, _index, _mode):
         """Triggers refresh when combobox changes"""
 
-        choice = int(self.num_plans_ent.get())
-        for i in range(choice):
-            self.name_lbls[i].configure(state="active")
-            self.name_ents[i].configure(state="normal")
-        for i in range(choice, 6):
-            self.name_lbls[i].configure(state="disabled")
-            self.name_ents[i].configure(text="", state="disabled")
+        try:
+            choice = int(self.num_plans_ent.get())
+            #print('try', choice)
+            if 0 <= choice <= 6:
+                for i in range(choice):
+                    self.name_lbls[i].configure(state="active")
+                    self.name_ents[i].configure(state="normal")
+                for i in range(choice, 6):
+                    self.name_lbls[i].configure(state="disabled")
+                    self.name_ents[i].configure(text="", state="disabled")
+            elif choice < 0:
+                self.num_plans_ent.set(0)
+                self.on_trace_choice("","","")
+            else:
+                #print('set 6', choice)
+                self.num_plans_ent.set(6)
+                self.on_trace_choice("","","")
+        except ValueError:
+            self.num_plans_ent.set(0)
+            self.on_trace_choice("","","")
+            pass
 
     def on_trace_change_recur(self, _name, _index, _mode):
         """Triggers refresh when the uncertainty choices change."""

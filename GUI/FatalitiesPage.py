@@ -112,7 +112,7 @@ class FatalitiesPage(tk.Frame):
         controller.frames[InfoPage].traces[3].trace("w", self.on_trace_change)
         controller.frames[InfoPage].traces[4].trace("w", self.on_trace_change)
         controller.frames[InfoPage].traces[5].trace("w", self.on_trace_change)
-        controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
+        #controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
 
         def save_and_next():
             """ Tries to save the input and sends the user to the next screen.

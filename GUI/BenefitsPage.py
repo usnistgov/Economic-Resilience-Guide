@@ -104,7 +104,7 @@ class BenefitsPage(tk.Frame):
         controller.frames[InfoPage].traces[3].trace("w", self.on_trace_change)
         controller.frames[InfoPage].traces[4].trace("w", self.on_trace_change)
         controller.frames[InfoPage].traces[5].trace("w", self.on_trace_change)
-        controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
+        #controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
 
         # ===== Benefit type widgets
         group3 = ttk.LabelFrame(self, text="Kind of Benefit")
@@ -232,8 +232,9 @@ class BenefitsPage(tk.Frame):
             [valid, blank, err_messages] = self.check_page(printout=False)
             if not (valid | blank):
                 checker = messagebox.askyesno('Move Forward?',
-                                              'Your benefit was not saved. '
-                                              'Select \'No\' if you wish to continue editing'
+                                              'Your benefit was not saved. The following errors were found:\n'
+                                              + err_messages
+                                              + 'Select \'No\' if you wish to continue editing'
                                               ' and \'Yes\' if you wish to move to the next page.')
                 return checker
             if blank:
@@ -491,13 +492,19 @@ class BenefitsPage(tk.Frame):
     def on_trace_change(self, _name, _index, _mode):
         """Updates checkbox fields if names are changed in 'InfoPage'"""
 
-        self.plan1.configure(text=self.controller.frames[InfoPage].name_ents[0].get()+" (Plan 1)")
         # ===== Hides the widget until .grid() is called again
+        #self.plan1.configure(text=self.controller.frames[InfoPage].name_ents[0].get()+" (Plan 1)")
+        self.plan1.grid_remove()
         self.plan2.grid_remove()
         self.plan3.grid_remove()
         self.plan4.grid_remove()
         self.plan5.grid_remove()
         self.plan6.grid_remove()
+
+        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 0:
+            self.plan1.configure(text=self.controller.frames[InfoPage].name_ents[0].get()
+                                 +" (Plan 1)")
+            self.plan1.grid()
 
         if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 1:
             self.plan2.configure(text=self.controller.frames[InfoPage].name_ents[1].get()
