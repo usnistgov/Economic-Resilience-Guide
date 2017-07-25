@@ -49,7 +49,10 @@ class FatalitiesPage(tk.Frame):
         life_lbl = ttk.Label(group0, text="Value of a Statistical Life $", font=SMALL_FONT)
         life_lbl.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.life_ent = tk.Entry(group0, width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.life_ent.insert(tk.END, "7500000")
+        # TODO: Why no commas?!?
+        text = '{:,.0f}'.format(float(controller.data_cont.stat_life))
+        #print(text)
+        self.life_ent.insert(tk.END, text)
         self.life_ent.grid(row=1, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         def_button = ttk.Button(group0, text="Restore Default", command=self.restore)
@@ -150,13 +153,13 @@ class FatalitiesPage(tk.Frame):
         back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=6, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Directory", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def restore(self):
         """Restores the number of the statistical life value to its default state"""
         self.life_ent.delete(0, tk.END)
-        self.life_ent.insert(tk.END, "7500000")
+        self.life_ent.insert(tk.END, '{:,.0f}'.format(7500000))
         return
 
     def hover(self, _event):
@@ -189,7 +192,7 @@ class FatalitiesPage(tk.Frame):
 
     def add_fat(self):
         """Appends list of fatality aversions, clears page's entry widgets,
-           and updates 'Previously Inputted Fatality Aversions' section"""
+           and updates 'Saved Fatality Aversions' section"""
         num_plans = int(self.controller.frames[InfoPage].num_plans_ent.get())
         valid = self.check_page()
         if not valid:
@@ -198,7 +201,7 @@ class FatalitiesPage(tk.Frame):
         self.data_cont.stat_life = self.life_ent.get()
 
         for i in range(0, num_plans + 1):
-            self.data_cont.plan_list[i].fat.update(self.fat_plan_ents[i].get(), [self.desc_plan_ents[i].get("1.0", "end-1c")])
+            self.data_cont.plan_list[i].fat.update(self.fat_plan_ents[i].get(), [self.desc_plan_ents[i].get("1.0", "end-1c")], self.data_cont.stat_life)
 
         if valid:
             messagebox.showinfo("Success",
@@ -232,7 +235,8 @@ class FatalitiesPage(tk.Frame):
                 valid = False
 
         try:
-            self.data_cont.stat_life = float(self.life_ent.get())
+            amount = self.life_ent.get().replace(',','')
+            self.data_cont.stat_life = float(amount)
         except ValueError:
             err_messages += "Statistical Life Value must be a number. Please enter an amount.\n\n"
             valid = False

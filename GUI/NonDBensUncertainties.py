@@ -104,10 +104,10 @@ class NonDBensUncertaintiesPage(tk.Frame):
         did_info.grid(row=2, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         back_button = ttk.Button(self, text="<<Back", command=save_and_back)
         back_button.grid(row=13, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        finished_button = ttk.Button(self, text="View Analysis", command=save_and_next)
+        finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=13, column=0, sticky="se",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Directory", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
     def show_info(self):
         """ Pulls up information for the NonDBenefits page."""
@@ -250,7 +250,7 @@ class NonDBensUncertaintiesPage(tk.Frame):
             group.grid_forget()
             group.destroy()
         self.groups = []
-        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
+        rad_labels = ["Exact", "Gaussian", "Triangular", "Rectangular", "Discrete"]
         figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         self.choices = [[tk.StringVar() for ben in plan.nond_bens.indiv]
                         for plan in self.data_cont.plan_list]

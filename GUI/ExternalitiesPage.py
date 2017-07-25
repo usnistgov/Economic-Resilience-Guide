@@ -30,13 +30,13 @@ class ExternalitiesPage(tk.Frame):
         [self.data_cont] = data_cont_list
         self.controller = controller
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Input individual externalities by including a "
-                                     "title, cost, and description.\n"
-                                     "To add another externality, click 'Add Externality.' "
+        label = ttk.Label(self, text="To add an externality, input a "
+                                     "title, amount and description, then"
+                                     "click 'Add Externality.'\n"
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 
-        ext_lbl = tk.Label(self, text="Externalities", font=LARGE_FONT)
+        ext_lbl = tk.Label(self, text="Add Externalities", font=LARGE_FONT)
         ext_lbl.grid(row=2, sticky="w")
         self.create_widgets(controller)
 
@@ -54,7 +54,7 @@ class ExternalitiesPage(tk.Frame):
         self.title_ent.insert(tk.END, "<enter a title for this externality>")
         self.title_ent.grid(row=0, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        ext_lbl = ttk.Label(group1, text="Cost  $", font=SMALL_FONT)
+        ext_lbl = ttk.Label(group1, text="Amount  $", font=SMALL_FONT)
         ext_lbl.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.ext_ent = tk.Entry(group1, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.ext_ent.insert(tk.END, "<enter an amount for this externality>")
@@ -132,11 +132,11 @@ class ExternalitiesPage(tk.Frame):
                                           values=self.data_cont.parties)
         self.third_parties.grid(row=3, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        # ===== Interact with previously inputted externalities
-        group4 = ttk.LabelFrame(self, text="Previously Inputted Externalities (optional)")
+        # ===== Interact with Saved externalities
+        group4 = ttk.LabelFrame(self, text="Access Saved Externalities")
         group4.grid(row=5, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        hist_lbl = ttk.Label(group4, text="Interact with previously inputted externalities",
+        hist_lbl = ttk.Label(group4, text="Edit, copy, or delete saved externalities",
                              font=SMALL_FONT)
         hist_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
@@ -238,7 +238,7 @@ class ExternalitiesPage(tk.Frame):
         back_button.grid(row=7, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=7, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Directory", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def hover(self, _event):
@@ -254,9 +254,9 @@ class ExternalitiesPage(tk.Frame):
                             "externality will be assigned to the respective plan(s). Whether or "
                             "not the externality is positive or negative must be assigned to "
                             "determine the sign on the calculations in the analysis stage. You "
-                            "must also assign a party affected. You may add a party affected if "
-                            "you wish to do so.\n\n"
-                            "You may interact with previously inputted externalities on the right "
+                            "must also assign a party affected. There are predefined (common) "
+                            "categories available for selection or you may write-in a party category.\n\n"
+                            "You may interact with saved externalities on the right "
                             "side by editing the associated information, copying the associated "
                             "information (for ease), or deleting the externality all together.\n\n"
                             "Externalities are the inexplicit costs associated with a project. "
@@ -265,22 +265,22 @@ class ExternalitiesPage(tk.Frame):
                             "community or others, such as members of a neighboring community. "
                             "Externalities may be positive or negative.\n\n"
                             "Examples of negative externalities include:\n"
-                            "•	Noise disturbances,\n"
-                            "•	Landscape disturbances,\n"
-                            "•	Removal of ‘green spaces,’\n"
-                            "•	Slower traffic patterns, etc.\n\n"
+                            "•	Noise disturbances\n"
+                            "•	Landscape disturbances\n"
+                            "•	Removal of ‘green spaces’\n"
+                            "•	Slower traffic patterns\n\n"
                             "Examples of positive externalities include:\n"
                             "•	A neighborhood community center that can be used by members of "
-                            "a neighboring community,\n"
+                            "a neighboring community\n"
                             "•	In an area that does not have a public fire department, a "
                             "neighborhood that requires homeowners purchase private fire "
                             "protection services provide a positive externality to the "
-                            "neighboring community, which is at reduced of the protected "
+                            "neighboring community, which is at reduced risk of the protected "
                             "neighborhood's fire spreading to their (unprotected) houses.")
 
     def add_ext(self, moveon=False):
         """Appends list of externalities, clears page's entry widgets,
-           and updates 'Previously Inputted Externalities' section"""
+           and updates 'Saved Externalities' section"""
         if moveon:
             [valid, blank, err_messages] = self.check_page(printout=False)
             if not (valid | blank):
@@ -304,7 +304,7 @@ class ExternalitiesPage(tk.Frame):
             return True
 
     def update_prev_list(self):
-        """Updates 'Previously Inputted Externalities' Section"""
+        """Updates 'Saved Externalities' Section"""
         del self.choices[:]
 
         for plan in self.data_cont.plan_list:
@@ -380,7 +380,7 @@ class ExternalitiesPage(tk.Frame):
         self.title_ent.delete(0, tk.END)
         self.title_ent.insert(tk.END, chosen_ext[0])
         self.ext_ent.delete(0, tk.END)
-        self.ext_ent.insert(tk.END, old_ext.amount)
+        self.ext_ent.insert(tk.END, '{:,.2f}'.format(old_ext.amount))
         self.desc_ent.delete('1.0', tk.END)
         self.desc_ent.insert(tk.END, old_ext.desc)
 

@@ -23,7 +23,7 @@ class DirectoryPage(tk.Frame):
         [self.data_cont] = data_cont_list
         self.controller = controller
         tk.Frame.__init__(self, parent)
-        title = ttk.Label(self, text="Directory", font=LARGE_FONT)
+        title = ttk.Label(self, text="Menu", font=LARGE_FONT)
         title.grid(sticky="new", padx=BASE_PADDING, pady=BASE_PADDING)
         label = ttk.Label(self, text="Please select a page to continue with the project.",
                           font=SMALL_FONT)

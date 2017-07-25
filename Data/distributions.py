@@ -7,6 +7,10 @@ def triDistInv(rand, mid, inputs):
     b = float(mid)
     c = float(inputs[1])
     if a > b:
+        a = float(mid)
+        b = float(inputs[0])
+        c = float(inputs[1])
+    if a > b:
         return "a must be less than b"
     elif b > c:
         return "b must be less than c"
@@ -18,20 +22,25 @@ def triDistInv(rand, mid, inputs):
     else:
         return c-math.sqrt((1-rand)*(c-a)*(c-b))
 
-def uniDistInv(rand, _mid, inputs):
-    """ Returns a value within the -rect- disctribution."""
+def uniDistInv(rand, mid, inputs):
+    """ Returns a value within the Rectangular disctribution."""
     a = float(inputs[0])
+    b = float(mid)
     c = float(inputs[1])
+    if a > b:
+        a = float(mid)
+        b = float(inputs[0])
+        c = float(inputs[1])
     if a > c:
         return "Input Error: a is the lower bound of the distribution and must be less than b (the upper bound of the distribution"
     return rand*(c-a)+a
 
 def none_dist(_rand, mid, _inputs):
-    """ Gives the -none-type distribution"""
+    """ Gives the Exact distribution"""
     return mid
 
 def discrete_dist_inv(rand, _mid, inputs):
-    """ Returns a value within the -discrete- distribution."""
+    """ Returns a value within the discrete distribution."""
     if rand < float(inputs[3])/100:
         return inputs[0]
     elif rand < float(inputs[3])/100 + float(inputs[4])/100:
@@ -40,7 +49,7 @@ def discrete_dist_inv(rand, _mid, inputs):
         return inputs[2]
 
 def gauss_dist_inv(rand, mid, inputs):
-    """ Uses numpy.random.normal to return a value with the -gauss- distribution."""
+    """ Uses numpy.random.normal to return a value with the Gaussian distribution."""
     ### NOTE: It's mad about this call, claiming it will pull an error. It doesn't
     return numpy.random.normal(float(mid), float(inputs[0]))
 

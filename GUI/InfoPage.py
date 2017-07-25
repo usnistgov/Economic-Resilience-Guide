@@ -149,7 +149,7 @@ class InfoPage(tk.Frame):
                       tk.Radiobutton(group4, variable=self.recur_choice, value="tri"),
                       tk.Radiobutton(group4, variable=self.recur_choice, value="rect"),
                       tk.Radiobutton(group4, variable=self.recur_choice, value="discrete")]
-        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
+        rad_labels = ["Exact", "Gaussian", "Triangular", "Rectangular", "Discrete"]
         figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         for col in range(len(recur_rads)):
             fig_label = ttk.Label(group4)
@@ -192,7 +192,7 @@ class InfoPage(tk.Frame):
                     tk.Radiobutton(group5, variable=self.mag_choice, value="tri"),
                     tk.Radiobutton(group5, variable=self.mag_choice, value="rect"),
                     tk.Radiobutton(group5, variable=self.mag_choice, value="discrete")]
-        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
+        rad_labels = ["Exact", "Gaussian", "Triangular", "Rectangular", "Discrete"]
         figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         for col in range(len(mag_rads)):
             fig_label = ttk.Label(group5)
@@ -229,7 +229,7 @@ class InfoPage(tk.Frame):
         group6 = ttk.LabelFrame(self, text="Risk Preference")
         group6.grid(row=7, stick="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.preference = tk.StringVar()
-        self.preference.set("Risk Neutral")
+        self.preference.set("none")
         risk_lbl = ttk.Label(group6, text="Define Risk Preference", font=SMALL_FONT)
         risk_lbl.grid(row=14, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.neutral = ttk.Radiobutton(group6, text="Risk Neutral",
@@ -248,19 +248,18 @@ class InfoPage(tk.Frame):
             # === Places spacing so that buttons are on the bottom right
         space_lbl = ttk.Label(group7, text=" " * 106)
         space_lbl.grid(row=0, column=1)
-        next_button = ttk.Button(group7, text="Next>>", command=lambda: self.check_page(controller))
+        next_button = ttk.Button(group7, text="Next>>", command=lambda: self.check_page(controller, 'CostPage'))
         next_button.grid(row=0, column=7, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        exit_button = ttk.Button(group7, text="Exit", command=sys.exit)
-        exit_button.grid(row=0, column=3, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-
+        menu_button = ttk.Button(group7, text="Menu", command=lambda: self.check_page(controller, 'DirectoryPage'))
+        menu_button.grid(row=0, column=3, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
     def restore(self):
         """restores default discount value"""
         self.dis_ent.delete(0, tk.END)
         self.dis_ent.insert(tk.END, "5.00")
 
-    def check_page(self, controller):
+    def check_page(self, controller, frame):
         """Ensures that all required fields are properly filled out before continuing"""
         err_messages = ""
 
@@ -343,7 +342,7 @@ class InfoPage(tk.Frame):
                 pass
         else:
             try:
-                bound = float(self.recur_range[0].get()) <= float(self.recur_range[1]) <= float(self.recur_range[2].get())
+                bound = float(self.recur_range[0].get()) <= float(self.recur_range[1].get()) <= float(self.recur_range[2].get())
                 if not bound:
                     valid = False
                     err_messages += "Hazard Recurrence lower bound must be below upper bound.\n\n"
@@ -357,8 +356,9 @@ class InfoPage(tk.Frame):
                     valid = False
                     err_messages += "Hazard Magnitude must be greater than or equal to zero.\n\n"
             except ValueError:
-                valid = False
-                err_messages += "Hazard Magnitude must be a number.\n\n"
+                if self.mag_range[0].get() != "":
+                    valid = False
+                    err_messages += "Hazard Magnitude must be a number.\n\n"
         elif self.mag_choice.get() == 'gauss':
             try:
                 if float(self.mag_range[0].get()) <= 0:
@@ -401,13 +401,13 @@ class InfoPage(tk.Frame):
         not_neutral = self.preference.get() != "neutral"
         not_averse = self.preference.get() != "averse"
         not_accepting = self.preference.get() != "accepting"
-        if not_neutral and not_averse and not_accepting:
+        if self.preference.get() not in ['neutral', 'averse', 'accepting', 'none']:
             err_messages += "A risk preference has not been selected! Please select one.\n\n"
             valid = False
 
         if not valid:
             messagebox.showerror("ERROR", err_messages)
-            return
+            return valid
 
         # Fills data_cont with the values entered
         data = self.controller.data_cont
@@ -459,9 +459,8 @@ class InfoPage(tk.Frame):
                 for j in range(old_num_plans, new_num_plans, -1):
                     data.plan_list.remove(data.plan_list[j-1])
 
-        # TODO: Make file save possible
         data.file_save()
-        controller.show_frame('CostPage')
+        controller.show_frame(frame)
 
     def show_info(self):
         """Shows extra information for the user (for clarification)"""
@@ -475,8 +474,8 @@ class InfoPage(tk.Frame):
                             "    Real Discount Rate: Often referred to as the “time value of "
                             "money.” Typically, a dollar is worth more today than it would be "
                             "worth tomorrow. This is the percent at which the value of money "
-                            "decreases over time. The nominal discount rate is the real interest "
-                            "rate adjusted for inflation. 5.00% is the default value.\n"
+                            "decreases over time, allowing for the comparison of quantities as if "
+                            "prices had not changed. 5.00% is the default value.\n"
                             "    Hazard Recurrence: The number of years expected before a specific "
                             "hazard occurs after its last occurrence. In this version of EDGeS "
                             "only a single hazard will be considered. Future versions of the EDGeS"

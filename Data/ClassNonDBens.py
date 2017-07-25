@@ -102,7 +102,7 @@ class NonDBens():
         else:
             blank = False
         if desc in {"", "<enter a description for this benefit>\n"}:
-            desc = 'N/A'
+            desc = ['N/A']
         else:
             desc = desc.replace('\n', '')
             blank = False
@@ -122,6 +122,7 @@ class NonDBens():
 
         # ===== Cost must be a positive number
         try:
+            amount = amount.replace(',','')
             float(amount)
         except ValueError:
             if amount not in {"", "<enter an amount for this benefit>"}:
@@ -135,7 +136,7 @@ class NonDBens():
             err_messages += "Please enter a positive amount.\n\n"
             blank = False
             valid = False
-        field_dict['amount'] = amount
+        field_dict['amount'] = float(amount)
 
         try:
             float(times[0])

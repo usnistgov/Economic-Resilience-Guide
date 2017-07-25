@@ -119,7 +119,7 @@ class AnalysisInfo(tk.Frame):
         #self.uncert_select.trace("w", self.on_trace_change)
 
         # Return to menu
-        menu_button = ttk.Button(self, text="View Directory",
+        menu_button = ttk.Button(self, text="Menu",
                                  command=lambda: controller.show_frame('DirectoryPage'))
         menu_button.grid(row=5, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
@@ -137,28 +137,30 @@ class AnalysisInfo(tk.Frame):
                             "the appropriate button.\n\n"
                             "If you wish to use uncertainty in the analysis, you may also set the "
                             "following parameters:\n"
-                            "•	Seed: The starting number of the random number generator for the "
-                            "simulations.\n"
-                            "•	Confidence Interval: The percentage of the potential results that "
+                            "•	Seed: The starting number of the (pseudo) random number generator "
+                            "for the simulations.\n"
+                            "•	Confidence Interval: The probability that the results "
                             "fall between the upper and lower bounds.\n"
-                            "•	Monte Carlo Bounds Tolerance: Simulations will run until the "
-                            "bounds fall within this percent of the point estimate for Total "
-                            "Costs, Total Benefits, and Net Costs. This is a measure of how "
-                            "accurate the bound are believed to be.\n"
+                            "•	Monte Carlo Bounds Tolerance: This is a measure of how accurate "
+                            "the bounds are believed to be. Simulations will continue running "
+                            "until the mean Total Costs, Total Benefits, Net Costs, and Net with "
+                            "Externalities, change by less than a given percentage of the "
+                            "original point estimate with 1,000 additional simulations.\n"
                             "•	Maximum Number of Runs: If results do not converge to the defined "
                             "tolerance with this many runs, the analysis will stop. This field "
                             "helps put a limit on the maximum time spent waiting for calculations "
                             "or to avoid running down your computer’s memory.\n\n"
-                            "If you wish to export the analysis from the ‘View Analysis’ setting, "
-                            "you may find the appropriate buttons there. Furthermore, if you have "
+                            "You may export the analysis from the ‘View Analysis’ setting. "
+                            "Furthermore, if you have "
                             "already run the analysis with or without uncertainty, you may run "
-                            "the analysis again with the other option (without or without "
+                            "the analysis again with the other option (without or with "
                             "uncertainty) or with changed uncertainty parameters.\n")
 
 
 
     def view(self, uncert):
         """ Views the appropriate analysis page."""
+        valid = True
         self.data_cont.summer()
         if uncert == "point":
             run_main_page(self.data_cont)
@@ -166,41 +168,53 @@ class AnalysisInfo(tk.Frame):
             try:
                 seed = int(self.seed_ent.get())
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Input seed must be an integer value.")
             try:
                 conf = float(self.conf_ent.get())
                 assert 0 < conf <= 100
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
+                valid = False
                 messagebox.showerror("Error", "Confidence must be a positive"
                                      " number less than or equal to 100%.")
             try:
                 tol = float(self.tol_ent.get())
                 assert 0 < tol <= 100
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Tolerance must be a number.")
             except AssertionError:
+                valid = False
                 messagebox.showerror("Error",
                                      "Tolerance must be a positive number "
                                      "less than or equal to 100%.")
             try:
                 break_point = int(self.max_ent.get())
+                if break_point < 1000:
+                    valid = False
+                    messagebox.showerror("Error", "You must run at least 1000 simulations.")
             except ValueError:
+                valid = False
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
-            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
-                                      "\nPlease be patient while they compute.",
-                                      seed, conf, tol, break_point)
-            #self.data_cont.monte(seed, conf, tol, high_iters=break_point)
-            run_u_main_page(self.data_cont)
+            if valid:
+                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
+                                        "\nPlease be patient while they compute.\n\n",
+                                        seed, conf, tol, break_point)
+                #self.data_cont.monte(seed, conf, tol, high_iters=break_point)
+                run_u_main_page(self.data_cont)
         else:
+            valid = False
             messagebox.showerror("Error",
                                  "You must select whether to use "
                                  "uncertainty inputs in your analysis.")
 
     def document(self, uncert):
         """Calls docx export."""
+        valid = True
         self.data_cont.summer()
         if uncert == "point":
             word_export(self.data_cont)
@@ -209,13 +223,16 @@ class AnalysisInfo(tk.Frame):
             try:
                 seed = int(self.seed_ent.get())
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Input seed must be an integer value.")
             try:
                 conf = float(self.conf_ent.get())
                 assert 0 < conf <= 100
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
+                valid = False
                 messagebox.showerror("Error",
                                      "Confidence must be a positive number "
                                      "less than or equal to 100%.")
@@ -223,28 +240,38 @@ class AnalysisInfo(tk.Frame):
                 tol = float(self.tol_ent.get())
                 assert 0 < tol <= 100
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Tolerance must be a number.")
             except AssertionError:
+                valid = False
                 messagebox.showerror("Error",
                                      "Tolerance must be a positive number "
                                      "less than or equal to 100%.")
             try:
                 break_point = int(self.max_ent.get())
+                if break_point < 1000:
+                    valid = False
+                    messagebox.showerror("Error", "You must run at least 1000 simulations.")
+
             except ValueError:
+                valid = False
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
-            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
-                                      "\nPlease be patient while they compute.",
-                                      seed, conf, tol, break_point)
-            word_export_uncert(self.data_cont)
-            #self.data_cont.word_export_uncert()
+            if valid:
+                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
+                                        "\nPlease be patient while they compute.\n\n",
+                                        seed, conf, tol, break_point)
+                word_export_uncert(self.data_cont)
+                #self.data_cont.word_export_uncert()
         else:
+            valid = False
             messagebox.showerror("Error",
                                  "You must select whether to use "
                                  "uncertainty inputs in your analysis.")
 
     def commas(self, uncert):
         """Calls csv export."""
+        valid = True
         self.data_cont.summer()
         if uncert == "point":
             csv_export(self.data_cont)
@@ -253,13 +280,16 @@ class AnalysisInfo(tk.Frame):
             try:
                 seed = int(self.seed_ent.get())
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Input seed must be an integer value.")
             try:
                 conf = float(self.conf_ent.get())
                 assert 0 < conf <= 100
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
+                valid = False
                 messagebox.showerror("Error",
                                      "Confidence must be a positive number "
                                      "less than or equal to 100%.")
@@ -267,28 +297,37 @@ class AnalysisInfo(tk.Frame):
                 tol = float(self.tol_ent.get())
                 assert 0 < tol <= 100
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Tolerance must be a number.")
             except AssertionError:
+                valid = False
                 messagebox.showerror("Error",
                                      "Tolerance must be a positive number "
                                      "less than or equal to 100%.")
             try:
                 break_point = int(self.max_ent.get())
+                if break_point < 1000:
+                    valid = False
+                    messagebox.showerror("Error", "You must run at least 1000 simulations.")
             except ValueError:
+                valid = False
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
-            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
-                                      "\nPlease be patient while they compute.",
-                                      seed, conf, tol, break_point)
-            csv_export_uncert(self.data_cont)
-            #self.data_cont.csv_export_uncert()
+            if valid:
+                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
+                                        "\nPlease be patient while they compute.\n\n",
+                                        seed, conf, tol, break_point)
+                csv_export_uncert(self.data_cont)
+                #self.data_cont.csv_export_uncert()
         else:
+            valid = False
             messagebox.showerror("Error",
                                  "You must select whether to use "
                                  "uncertainty inputs in your analysis.")
 
     def both(self, uncert):
         """Calls docx and csv export."""
+        valid = True
         self.data_cont.summer()
         if uncert == "point":
             word_export(self.data_cont)
@@ -299,13 +338,16 @@ class AnalysisInfo(tk.Frame):
             try:
                 seed = int(self.seed_ent.get())
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Input seed must be an integer value.")
             try:
                 conf = float(self.conf_ent.get())
                 assert 0 < conf <= 100
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Confidence must be a number.")
             except AssertionError:
+                valid = False
                 messagebox.showerror("Error",
                                      "Confidence must be a positive number "
                                      "less than or equal to 100%.")
@@ -313,24 +355,32 @@ class AnalysisInfo(tk.Frame):
                 tol = float(self.tol_ent.get())
                 assert 0 < tol <= 100
             except ValueError:
+                valid = False
                 messagebox.showerror("Error", "Tolerance must be a number.")
             except AssertionError:
+                valid = False
                 messagebox.showerror("Error",
                                      "Tolerance must be a positive number "
                                      "less than or equal to 100%.")
             try:
                 break_point = int(self.max_ent.get())
+                if break_point < 1000:
+                    valid = False
+                    messagebox.showerror("Error", "You must run at least 1000 simulations.")
             except ValueError:
+                valid = False
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
-            self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run.\n"
-                                      "Please be patient while they compute.",
-                                      seed, conf, tol, break_point)
-            word_export_uncert(self.data_cont)
-            csv_export_uncert(self.data_cont)
+            if valid:
+                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run.\n"
+                                        "Please be patient while they compute.\n\n",
+                                        seed, conf, tol, break_point)
+                word_export_uncert(self.data_cont)
+                csv_export_uncert(self.data_cont)
             #self.data_cont.word_export_uncert()
             #self.data_cont.csv_export_uncert()
         else:
+            valid = False
             messagebox.showerror("Error",
                                  "You must select whether to use "
                                  "uncertainty inputs in your analysis.")

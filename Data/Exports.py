@@ -22,9 +22,11 @@ def csv_export(sim):
     new_file.write('Planning Horizon: ' + str(sim.horizon) + ' years' + '\n')
     new_file.write('Discount Rate: ' + str(sim.discount_rate) + '%' + '\n')
     new_file.write('Disaster Rate: Every ' + str(sim.get_disaster_rate()[0]) + ' years\n')
-    new_file.write('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
-                   + '% of build cost' + '\n')
-    new_file.write('Risk Preference: ' + str(sim.risk_pref) + '\n')
+    if sim.get_disaster_magnitude()[0] != "":
+        new_file.write('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
+                    + '% of build cost' + '\n')
+    if sim.risk_pref != "none":
+        new_file.write('Risk Preference: ' + str(sim.risk_pref) + '\n')
     new_file.write('Statistical Value of a Life: '+'${:.0f}'.format(float(sim.stat_life))+'\n')
     new_file.write(',Base Case')
     for i in range(1, sim.num_plans):
@@ -127,9 +129,11 @@ def csv_export_uncert(sim):
     new_file.write('Planning Horizon: ' + str(sim.horizon) + ' years' + '\n')
     new_file.write('Discount Rate: ' + str(sim.discount_rate) + '%' + '\n')
     new_file.write('Disaster Rate: Every ' + str(sim.get_disaster_rate()[0]) + ' years\n')
-    new_file.write('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
-                   + '% of build cost' + '\n')
-    new_file.write('Risk Preference: ' + str(sim.risk_pref) + '\n')
+    if sim.get_disaster_magnitude()[0] != "":
+        new_file.write('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
+                    + '% of build cost' + '\n')
+    if sim.risk_pref != "none":
+        new_file.write('Risk Preference: ' + str(sim.risk_pref) + '\n')
     new_file.write('Statistical Value of a Life: '+'${:.0f}'.format(float(sim.stat_life))+'\n')
 
     new_file.write(',Base Case,Lower Bound,Upper Bound')
@@ -563,9 +567,11 @@ def word_export(sim):
     doc.add_paragraph()
     doc.add_paragraph('Disaster Rate: Every ' + str(sim.get_disaster_rate()[0]) + ' years',
                       style='ListBullet')
-    doc.add_paragraph('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
-                      + '% of build cost', style='ListBullet')
-    doc.add_paragraph('Risk Preference: ' + str(sim.risk_pref), style='ListBullet')
+    if sim.get_disaster_magnitude()[0] != "":
+        doc.add_paragraph('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
+                        + '% of build cost', style='ListBullet')
+    if sim.risk_pref != "none":
+        doc.add_paragraph('Risk Preference: ' + str(sim.risk_pref), style='ListBullet')
     doc.add_paragraph()
     doc.add_paragraph('Statistical Value of a Life: '+'${:.0f}'.format(float(sim.stat_life)),
                       style='ListBullet')
@@ -742,12 +748,14 @@ def word_export_uncert(sim):
     doc.add_paragraph('Uncertainty in Disaster Rate: '
                       + uncert_string(sim.get_disaster_rate()[2], sim.get_disaster_rate()[1]),
                       style='ListBullet')
-    doc.add_paragraph('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
-                      + '% of build cost', style='ListBullet')
-    doc.add_paragraph('Uncertainty in Disaster Magnitude: '
-                      + uncert_string(sim.get_disaster_magnitude()[2],
-                                      sim.get_disaster_magnitude()[1]), style='ListBullet')
-    doc.add_paragraph('Risk Preference: ' + str(sim.risk_pref), style='ListBullet')
+    if sim.get_disaster_magnitude()[0] != "":
+        doc.add_paragraph('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
+                        + '% of build cost', style='ListBullet')
+        doc.add_paragraph('Uncertainty in Disaster Magnitude: '
+                        + uncert_string(sim.get_disaster_magnitude()[2],
+                                        sim.get_disaster_magnitude()[1]), style='ListBullet')
+    if sim.risk_pref != "none":
+        doc.add_paragraph('Risk Preference: ' + str(sim.risk_pref), style='ListBullet')
     doc.add_paragraph()
     doc.add_paragraph('Statistical Value of a Life: '+'${:.0f}'.format(float(sim.stat_life)),
                       style='ListBullet')
@@ -840,15 +848,20 @@ def word_export_uncert(sim):
             if isinstance(plan.irr(), str):
                 sum_tab.cell(9, sum_index).text = plan.irr()
                 sum_tab.cell(9, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                sum_tab.cell(10, sum_index).text = ('(' + '{:,.2f}'.format(plan.irr_range[0]) + '; '
-                                                + '{:,.2f}'.format(plan.irr_range[1]) + ')')
-                sum_tab.cell(10, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             else:
                 sum_tab.cell(9, sum_index).text = '{:,.2f}'.format(plan.irr())
                 sum_tab.cell(9, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-                sum_tab.cell(10, sum_index).text = ('(' + '{:,.2f}'.format(plan.irr_range[0]) + '; '
-                                                + '{:,.2f}'.format(plan.irr_range[1]) + ')')
-                sum_tab.cell(10, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            range_text = '('
+            if isinstance(plan.irr_range[0], str):
+                range_text += plan.irr_range[0] + '; '
+            else:
+                range_text += '{:,.2f}'.format(plan.irr_range[0]) + '; '
+            if isinstance(plan.irr_range[1], str):
+                range_text += plan.irr_range[1] + ')'
+            else:
+                range_text += '{:,.2f}'.format(plan.irr_range[1]) + ')'
+            sum_tab.cell(10, sum_index).text = (range_text)
+            sum_tab.cell(10, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_tab.cell(11, sum_index).text = '{:,.2f}'.format(plan.roi())
             sum_tab.cell(11, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_tab.cell(12, sum_index).text = ('(' + '{:,.2f}'.format(plan.roi_range[0]) + '; '

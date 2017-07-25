@@ -32,13 +32,14 @@ class NonDBensPage(tk.Frame):
         [self.data_cont] = data_cont_list
         self.controller = controller
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Input individual Non-Disaster Related Benefits"
-                                     " by including a title, cost,\n"
-                                     "and description. When finished, click 'Next>>'",
+        label = ttk.Label(self, text="To add a non-disaster related benefit,"
+                                     " input a title, amount,\n"
+                                     "and description, then click 'Add Benefit.'\n"
+                                     "When finished, click 'Next>>'",
                           font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 
-        ext_lbl = tk.Label(self, text="Non-disaster Related Benefits (Resilience Dividend)",
+        ext_lbl = tk.Label(self, text="Add Non-Disaster Related Benefits (Resilience Dividend)",
                            font=LARGE_FONT)
         ext_lbl.grid(row=2, sticky="w")
         self.create_widgets(controller)
@@ -148,11 +149,11 @@ class NonDBensPage(tk.Frame):
         self.year_rate_lbl2.grid(row=7, column=1, **pad_opts)
 
 
-        # ===== Interact with previously inputted externalities
-        group4 = ttk.LabelFrame(self, text="Previously Inputted Benefits (optional)")
+        # ===== Interact with already-saved externalities
+        group4 = ttk.LabelFrame(self, text="Access Saved Benefits")
         group4.grid(row=4, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        hist_lbl = ttk.Label(group4, text="Interact with previously inputted Non-disaster\n"
+        hist_lbl = ttk.Label(group4, text="Edit, copy, or delete saved non-disaster\n"
                                           "related benefits", font=SMALL_FONT)
         hist_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
@@ -210,7 +211,7 @@ class NonDBensPage(tk.Frame):
         back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Directory", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def hover(self, _event):
@@ -224,10 +225,10 @@ class NonDBensPage(tk.Frame):
                             "dollar value must be provided. The description field is optional. "
                             "At least one ‘Plan Affected’ must be selected so that the benefit "
                             "will be assigned to the respective plan(s).\n\n"
-                            "You may interact with previously inputted non-disaster related "
+                            "You may interact with saved non-disaster related "
                             "benefits on the right side by editing the associated information, "
                             "copying the associated information (for ease), or deleting the "
-                            "externality all together.\n\n"
+                            "benefit all together.\n\n"
                             "Non-disaster related benefits are the inexplicit benefits of a given "
                             "project. These types of benefits may affect the project or its "
                             "stakeholders directly, but may generate benefits or conveniences "
@@ -237,12 +238,12 @@ class NonDBensPage(tk.Frame):
                             "Examples of such benefits include:\n"
                             "•	Reduced traffic time\n"
                             "•	Increased ‘green space’\n"
-                            "•	Increased public recreational activity options,\n"
-                            "•	Increased tourism, etc.\n")
+                            "•	Increased public recreational activity options\n"
+                            "•	Increased tourism\n")
 
     def add_ben(self, moveon=False):
         """Appends list of NonDBens, clears page's entry widgets,
-           and updates 'Previously Inputted NonDBens' section"""
+           and updates 'Saved NonDBens' section"""
         if moveon:
             [valid, blank, err_messages] = self.check_page(printout=False)
             if not (valid | blank):
@@ -266,7 +267,7 @@ class NonDBensPage(tk.Frame):
             return True
 
     def update_prev_list(self):
-        """Updates 'Previously Inputted NonDBens' Section"""
+        """Updates 'Saved NonDBens' Section"""
         del self.choices[:]
 
         for plan in self.data_cont.plan_list:
@@ -346,7 +347,7 @@ class NonDBensPage(tk.Frame):
         self.title_ent.delete(0, tk.END)
         self.title_ent.insert(tk.END, old_ben.title)
         self.ben_ent.delete(0, tk.END)
-        self.ben_ent.insert(tk.END,old_ben.amount)
+        self.ben_ent.insert(tk.END, '{:,.2f}'.format(old_ben.amount))
         self.desc_ent.delete('1.0', tk.END)
         self.desc_ent.insert(tk.END,old_ben.desc)
         self.non_d_ben_recurr_selection.set(old_ben.ben_type)

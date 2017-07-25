@@ -34,14 +34,15 @@ class CostPage(tk.Frame):
 
         tk.Frame.__init__(self, parent)
 
-        label = ttk.Label(self, text="Input individual costs by including a "
-                                     "title, cost, and description. "
-                                     "Note: these are not \n"
-                                     "externalities. To add another cost, click 'Add Cost.' "
+        label = ttk.Label(self, text="To add a cost, input a "
+                                     "title, amount, and description, "
+                                     "then click 'Add Cost.'\n"
+                                     "Note: these are not "
+                                     "externalities.\n "
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 
-        cost_lbl = tk.Label(self, text="Costs", font=LARGE_FONT)
+        cost_lbl = tk.Label(self, text="Add Costs", font=LARGE_FONT)
         cost_lbl.grid(row=2, sticky="w")
 
         self.create_widgets(controller)
@@ -61,7 +62,7 @@ class CostPage(tk.Frame):
         self.title_ent.insert(tk.END, "<enter a title for this cost>")
         self.title_ent.grid(row=0, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        cost_lbl = ttk.Label(group1, text="Cost  $", font=SMALL_FONT)
+        cost_lbl = ttk.Label(group1, text="Amount $", font=SMALL_FONT)
         cost_lbl.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.cost_ent = tk.Entry(group1, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.cost_ent.insert(tk.END, "<enter an amount for this cost>")
@@ -110,7 +111,7 @@ class CostPage(tk.Frame):
         #controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
 
         # ===== Cost type widgets
-        group3 = ttk.LabelFrame(self, text="Kind of Cost")
+        group3 = ttk.LabelFrame(self, text="Cost Type")
         group3.grid(row=4, column=0, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 #        self.scrollbar = Scrollbar(self)
 #        self.scrollbar.grid_configure(group3)
@@ -135,11 +136,11 @@ class CostPage(tk.Frame):
 
         self.choice.trace("w", self.on_trace_change)
 
-        # ===== Interact with previously inputted costs
-        group4 = ttk.LabelFrame(self, text="Previously Inputted Costs (optional)")
+        # ===== Interact with already-saved costs
+        group4 = ttk.LabelFrame(self, text="Access Saved Costs")
         group4.grid(row=4, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        hist_lbl = ttk.Label(group4, text="Interact with previously inputted costs",
+        hist_lbl = ttk.Label(group4, text="Edit, copy, or delete saved costs.",
                              font=SMALL_FONT)
         hist_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
@@ -237,7 +238,7 @@ class CostPage(tk.Frame):
         back_button.grid(row=7, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=7, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Directory", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def hover(self, _event):
@@ -253,7 +254,7 @@ class CostPage(tk.Frame):
                             "be assigned to the respective plan(s). The cost ‘type’ must be "
                             "selected to determine the type of calculation to be made in the "
                             "analysis stage.\n\n"
-                            "You may interact with previously inputted costs on the right side by "
+                            "You may interact with saved costs on the right side by "
                             "editing the associated information, copying the associated "
                             "information (for ease), or deleting the cost all together.\n\n"
                             "The following cost types are defined:\n"
@@ -269,7 +270,7 @@ class CostPage(tk.Frame):
 
     def add_cost(self, moveon=False):
         """Appends list of costs, clears page's entry widgets,
-            and updates 'Previously Inputted Costs' section"""
+            and updates 'Saved Costs' section"""
         if moveon:
             [valid, blank, err_messages] = self.check_page(printout=False)
             if not (valid | blank):
@@ -293,7 +294,7 @@ class CostPage(tk.Frame):
             return True
 
     def update_prev_list(self):
-        """Updates 'Previously Inputted Costs' Section"""
+        """Updates 'Saved Costs' Section"""
         del self.choices[:]
 
         for plan in self.data_cont.plan_list:
@@ -368,7 +369,7 @@ class CostPage(tk.Frame):
         self.title_ent.delete(0, tk.END)
         self.title_ent.insert(tk.END, old_cost.title)
         self.cost_ent.delete(0, tk.END)
-        self.cost_ent.insert(tk.END, old_cost.amount)
+        self.cost_ent.insert(tk.END, '{:,.2f}'.format(old_cost.amount))
         self.desc_ent.delete('1.0', tk.END)
         self.desc_ent.insert(tk.END, old_cost.desc)
         self.choice.set(old_cost.cost_type)

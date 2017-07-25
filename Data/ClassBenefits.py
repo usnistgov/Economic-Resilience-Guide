@@ -115,7 +115,7 @@ class Benefits():
                 err_messages += "Please input a different title.\n\n"
                 valid = False
         if desc in {"", "<enter a description for this benefit>\n"}:
-            desc = "N/A"
+            desc = ["N/A"]
         else:
             desc = desc.replace('\n', '')
             blank = False
@@ -132,6 +132,7 @@ class Benefits():
             valid = False
         # ===== Dollar Amount must be a positive number
         try:
+            amount = amount.replace(',','')
             field_dict['amount'] = float(amount)
         except ValueError:
             if amount not in {"", "<enter dollar value for this benefit>"}:

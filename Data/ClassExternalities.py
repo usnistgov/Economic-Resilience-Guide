@@ -122,6 +122,7 @@ class Externalities():
         # == COST
         # Cost must be a number
         try:
+            amount = amount.replace(',','')
             float(amount)
         except ValueError:
             if amount not in {"", "<enter an amount for this externality>"}:
@@ -134,7 +135,7 @@ class Externalities():
             err_messages += "Please enter a positive amount.\n\n"
             blank = False
             valid = False
-        field_dict['amount'] = amount
+        field_dict['amount'] = float(amount)
         # == TYPE
         # Type must be either one-time or recurring
         if new_type not in {"one-time", "recurring"}:
@@ -185,7 +186,7 @@ class Externalities():
         # == DESCRIPTION
         # Set blank description to N/A or non-blank description to dict
         if desc in {"", "<enter a description for this externality>\n"}:
-            field_dict['desc'] = 'N/A'
+            field_dict['desc'] = ['N/A']
         else:
             desc = desc.replace('\n', '')
             blank = False

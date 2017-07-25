@@ -140,56 +140,61 @@ class StartPage(tk.Frame):
         elif self.choice.get() == "open":
             # ======== Select a file for opening:
             filename = filedialog.askopenfilename(title='Choose a .csv file')
-            if filename != None and filename[-4:] == ".csv":
-                controller.data_cont = Simulation()
-                controller.data_cont.file_read(file_name=filename)
-                controller.cont_list = [controller.data_cont]
-                for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
-                             ExternalitiesPage, ExternalitiesUncertaintiesPage,
-                             BenefitsPage, BenefitsUncertaintiesPage,
-                             FatalitiesPage, NonDBensPage,
-                             NonDBensUncertaintiesPage, AnalysisInfo):
-                    frame = page(controller.container.interior, controller, controller.cont_list)
-                    controller.frames[page] = frame
-                    frame.grid(row=0, column=0, sticky="nsew")
-
-                # === Changes these fields so that the .trace methods are envoked
-                # ===  and the respective widgets are altered
-                controller.frames[InfoPage].num_plans_ent.insert(tk.END,
-                                                                 controller.data_cont.num_plans-1)
-                for i in range(1, controller.data_cont.num_plans):
-                    controller.frames[InfoPage].name_ents[i-1].delete(0, tk.END)
-                    name = controller.data_cont.plan_list[i].name
-                    controller.frames[InfoPage].name_ents[i-1].insert(tk.END, name)
-
-                # ===== Global variables part of infopage
-                page = controller.frames[InfoPage]
-                page.name_ent.delete(0, tk.END)
-                page.name_ent.insert(tk.END, controller.data_cont.title)
-                page.hor_ent.delete(0, tk.END)
-                page.hor_ent.insert(tk.END, controller.data_cont.horizon)
-                page.dis_ent.delete(0, tk.END)
-                page.dis_ent.insert(tk.END, controller.data_cont.discount_rate)
-                controller.frames[FatalitiesPage].life_ent.delete(0, tk.END)
-                controller.frames[FatalitiesPage].life_ent.insert(tk.END,
-                                                                  controller.data_cont.stat_life)
-                for entry in page.recur_range:
-                    entry.delete(0, tk.END)
-                    entry.insert(tk.END, controller.data_cont.plan_list[0].recurr_range[page.recur_range.index(entry)])
-                for entry in page.mag_range:
-                    entry.delete(0, tk.END)
-                    entry.insert(tk.END, controller.data_cont.plan_list[0].mag_range[page.mag_range.index(entry)])
-
-                page.recur_choice.set(controller.data_cont.plan_list[0].recurr_dist)
-
-                page.mag_choice.set(controller.data_cont.plan_list[0].mag_dist)
-
-                page.preference.set(controller.data_cont.risk_pref)
-
-                # ===== Transitions to DirectoryPage
-                controller.show_frame('DirectoryPage')
+            if filename == "":
+                pass
+            elif filename[-4:] != ".csv":
+                tk.messagebox.showerror('File Read Error', 'The file selected was not a .csv file and thus could not be a save file. Please select a different file.')
             else:
-                print("ERR: Not a .csv file")
+                try:
+                    controller.data_cont = Simulation()
+                    controller.data_cont.file_read(file_name=filename)
+                    controller.cont_list = [controller.data_cont]
+                    for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
+                                ExternalitiesPage, ExternalitiesUncertaintiesPage,
+                                BenefitsPage, BenefitsUncertaintiesPage,
+                                FatalitiesPage, NonDBensPage,
+                                NonDBensUncertaintiesPage, AnalysisInfo):
+                        frame = page(controller.container.interior, controller, controller.cont_list)
+                        controller.frames[page] = frame
+                        frame.grid(row=0, column=0, sticky="nsew")
+
+                    # === Changes these fields so that the .trace methods are envoked
+                    # ===  and the respective widgets are altered
+                    controller.frames[InfoPage].num_plans_ent.insert(tk.END,
+                                                                    controller.data_cont.num_plans-1)
+                    for i in range(1, controller.data_cont.num_plans):
+                        controller.frames[InfoPage].name_ents[i-1].delete(0, tk.END)
+                        name = controller.data_cont.plan_list[i].name
+                        controller.frames[InfoPage].name_ents[i-1].insert(tk.END, name)
+
+                    # ===== Global variables part of infopage
+                    page = controller.frames[InfoPage]
+                    page.name_ent.delete(0, tk.END)
+                    page.name_ent.insert(tk.END, controller.data_cont.title)
+                    page.hor_ent.delete(0, tk.END)
+                    page.hor_ent.insert(tk.END, controller.data_cont.horizon)
+                    page.dis_ent.delete(0, tk.END)
+                    page.dis_ent.insert(tk.END, controller.data_cont.discount_rate)
+                    controller.frames[FatalitiesPage].life_ent.delete(0, tk.END)
+                    controller.frames[FatalitiesPage].life_ent.insert(tk.END,
+                                                                    controller.data_cont.stat_life)
+                    for entry in page.recur_range:
+                        entry.delete(0, tk.END)
+                        entry.insert(tk.END, controller.data_cont.plan_list[0].recurr_range[page.recur_range.index(entry)])
+                    for entry in page.mag_range:
+                        entry.delete(0, tk.END)
+                        entry.insert(tk.END, controller.data_cont.plan_list[0].mag_range[page.mag_range.index(entry)])
+
+                    page.recur_choice.set(controller.data_cont.plan_list[0].recurr_dist)
+
+                    page.mag_choice.set(controller.data_cont.plan_list[0].mag_dist)
+
+                    page.preference.set(controller.data_cont.risk_pref)
+
+                    # ===== Transitions to DirectoryPage
+                    controller.show_frame('DirectoryPage')
+                except IndexError:#Exception:
+                    tk.messagebox.showerror('File Read Error', 'The save file chosen is inproperly formatted. Please choose a different file.')
         else:
             return
     

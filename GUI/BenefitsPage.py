@@ -32,15 +32,16 @@ class BenefitsPage(tk.Frame):
         [self.data_cont] = data_cont_list
         self.controller = controller
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Input individual benefits by including a "
-                                     "title, dollar value, and description. \n"
+        label = ttk.Label(self, text="To add a benefit, input a "
+                                     "title, amount, and description, the click"
+                                     "'Add Benefit.' \n"
                                      "Note: these are only disaster-related benefits "
                                      "and do not consider fatalities averted.\n"
                                      "Fatalities averted will be recorded in a later page. "
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 
-        ben_lbl = tk.Label(self, text="Benefits", font=LARGE_FONT)
+        ben_lbl = tk.Label(self, text="Add Benefits", font=LARGE_FONT)
         ben_lbl.grid(row=2, sticky="w")
         self.create_widgets(controller)
 
@@ -107,7 +108,7 @@ class BenefitsPage(tk.Frame):
         #controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
 
         # ===== Benefit type widgets
-        group3 = ttk.LabelFrame(self, text="Kind of Benefit")
+        group3 = ttk.LabelFrame(self, text="Benefit Type")
         group3.grid(row=4, column=0, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
         self.choice = tk.StringVar()
@@ -130,11 +131,11 @@ class BenefitsPage(tk.Frame):
 
         #self.choice.trace("w", self.on_trace_change)
 
-        # ===== Interact with previously inputted costs
-        group4 = ttk.LabelFrame(self, text="Previously Inputted Benefits (optional)")
+        # ===== Interact with already-saved costs
+        group4 = ttk.LabelFrame(self, text="Access Saved Benefits")
         group4.grid(row=4, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        hist_lbl = ttk.Label(group4, text="Interact with previously inputted benefits",
+        hist_lbl = ttk.Label(group4, text="Edit, copy, or delete saved benefits.",
                              font=SMALL_FONT)
         hist_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
@@ -193,7 +194,7 @@ class BenefitsPage(tk.Frame):
         back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Directory", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def hover(self, _event):
@@ -210,7 +211,7 @@ class BenefitsPage(tk.Frame):
                             "will be assigned to the respective plan(s). The benefit ‘type’ must "
                             "be selected to determine the type of calculation to be made in the "
                             "analysis stage.\n\n"
-                            "You may interact with previously inputted benefits on the right side "
+                            "You may interact with saved benefits on the right side "
                             "by editing the associated information, copying the associated "
                             "information (for ease), or deleting the benefit all together.\n\n"
                             "The following benefit types are defined:\n"
@@ -227,7 +228,7 @@ class BenefitsPage(tk.Frame):
 
     def add_ben(self, moveon=False):
         """Appends list of benefits, clears page's entry widgets,
-           and updates 'Previously Inputted Benefits' section"""
+           and updates 'Saved Benefits' section"""
         if moveon:
             [valid, blank, err_messages] = self.check_page(printout=False)
             if not (valid | blank):
@@ -251,7 +252,7 @@ class BenefitsPage(tk.Frame):
             return True
 
     def update_prev_list(self):
-        """Updates 'Previously Inputted Benefits' Section"""
+        """Updates ' Benefits' Section"""
         del self.choices[:]
 
         for plan in self.data_cont.plan_list:
@@ -322,7 +323,7 @@ class BenefitsPage(tk.Frame):
         self.title_ent.delete(0, tk.END)
         self.title_ent.insert(tk.END, old_ben.title)
         self.ben_ent.delete(0, tk.END)
-        self.ben_ent.insert(tk.END, old_ben.amount)
+        self.ben_ent.insert(tk.END, '{:,.2f}'.format(old_ben.amount))
         self.desc_ent.delete('1.0', tk.END)
         self.desc_ent.insert(tk.END, old_ben.desc)
         self.choice.set(old_ben.ben_type)

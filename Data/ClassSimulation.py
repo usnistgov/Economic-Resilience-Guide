@@ -9,7 +9,7 @@ import csv
 import math
 import numpy as np
 
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 
 from Data.ClassBenefits import Benefits
 from Data.ClassCosts import Costs
@@ -25,14 +25,14 @@ from NewIRR import irr_for_all
 
 class Simulation():
     """ Holds all of the plans and does all of the larger calculations. """
-    parties = ['developer', 'title holder(s)', 'lender(s)', 'tenants', 'users', 'community']
+    parties = ['Developer', 'Title holder(s)', 'Lender(s)', 'Tenants', 'Users', 'Community']
     def __init__(self):
         self.title = ""
         self.plan_list = []
         self.num_plans = 0
         self.horizon = 0
         self.discount_rate = 0.03
-        self.risk_pref = "neutral"
+        self.risk_pref = "none"
         self.stat_life = 7500000
         self.seed = 000
         self.confidence = 95 #%
@@ -58,7 +58,7 @@ class Simulation():
             elif line[0] == "":
                 build_list.append(list(line))
             elif line[0] == 'END PLAN':
-                next_plan.new_plan(build_list)
+                next_plan.new_plan(build_list, self.stat_life)
                 self.plan_list.append(next_plan)
                 build_list = []
             elif line[0] == 'END FILE':
@@ -215,6 +215,9 @@ class Simulation():
 
                 old_iters = num_iters
                 num_iters = num_iters + low_iters#2 * num_iters
+                if num_iters >= high_iters:
+                    messagebox.showwarning('Maximum number of runs','The maximum number of Monte-Carlo runs has been reached for '
+                                                                    + plan.name + '. The results may not have converged.')
 
             num_iters = num_iters - low_iters
 
@@ -307,7 +310,7 @@ class Simulation():
         delta_plan.bens = delta_plan.bens.one_iter(my_plan.bens.indiv)
         delta_plan.exts = delta_plan.exts.one_iter(my_plan.exts.indiv)
         delta_plan.costs = delta_plan.costs.one_iter(my_plan.costs.indiv)
-        delta_plan.fat.update(my_plan.fat.averted, my_plan.fat.desc)
+        delta_plan.fat.update(my_plan.fat.averted, [my_plan.fat.desc], self.stat_life)
         delta_plan.nond_bens = delta_plan.nond_bens.one_iter(my_plan.nond_bens.indiv)
         return delta_plan
 
@@ -331,8 +334,10 @@ class Plan():
             self.recurr_uncert = list(disaster_recurrence)
             self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
         else:
-            self.recurr_uncert = list(disaster_recurrence[1])
+            self.recurr_uncert = disaster_recurrence[1]
             self.recurrence = disaster_recurrence[1][1]
+            if isinstance(self.recurrence, list):
+                self.recurrence = disaster_recurrence[1][0]
         self.mag_dist = disaster_magnitude[0]
         self.mag_range = disaster_magnitude[1]
         if self.mag_dist == "none":
@@ -415,11 +420,11 @@ class Plan():
         self.fat.disaster_rate = float(self.recurrence)
         self.fat.discount_rate = discount_rate
         self.fat.horizon = horizon
-        self.fat.update(self.fat.averted, self.fat.desc)
+        self.fat.update(self.fat.averted, [self.fat.desc], stat_life)
         self.nond_bens.discount_rate = discount_rate
         self.nond_bens.horizon = horizon
 
-    def new_plan(self, save_list):
+    def new_plan(self, save_list, stat_life):
         """ Builds a plan from a list of pieces from the save file."""
         for line in save_list:
             if line[1] == "Costs":
@@ -429,7 +434,7 @@ class Plan():
             elif line[1] == "Externalities":
                 self.exts.new_ext(list(line[2:]))
             elif line[1] == "Fatalities":
-                self.fat.update(line[2], line[3:])
+                self.fat.update(line[2], line[3:], stat_life)
             elif line[1] == "Non-Disaster Benefits":
                 self.nond_bens.new_ben(list(line[2:]))
 

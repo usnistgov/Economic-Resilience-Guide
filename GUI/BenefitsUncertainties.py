@@ -111,7 +111,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=13, column=0, sticky="se",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Directory", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
     def show_info(self):
         """ Pulls up information for the Benefits page."""
@@ -156,7 +156,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
 
     def add_uncertainty(self, moveon=False):
         """Appends list of benefits, clears page's entry widgets,
-           and updates 'Previously Inputted Benefits' section"""
+           and updates 'Saved Benefits' section"""
         if moveon:
             valid = self.check_page()
         else:
@@ -172,10 +172,6 @@ class BenefitsUncertaintiesPage(tk.Frame):
         self.on_trace_change('_name', '_index', '_mode')
 
         return valid
-
-    def update_prev_list(self):
-        """Updates 'Previously Inputted Benefits' Section"""
-        pass
 
     def check_page(self, printout=True):
         """Ensures that all required fields are properly filled out before continuing.
@@ -256,7 +252,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
             group.grid_forget()
             group.destroy()
         self.groups = []
-        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
+        rad_labels = ["Exact", "Gaussian", "Triangular", "Rectangular", "Discrete"]
         figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         self.choices = [[tk.StringVar() for ben in plan.bens.indiv]
                         for plan in self.data_cont.plan_list]

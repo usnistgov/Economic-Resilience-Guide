@@ -26,14 +26,17 @@ class Fatalities():
         self.value_range = [0, 0]
 
 
-    def update(self, averted, desc):
+    def update(self, averted, desc, amount):
         """ Makes a new fatality and adds it to the list of fatality types. """
+        amount = amount.replace(',','')
+        self.stat_value = float(amount)
         self.averted = float(averted)
         self.desc = ""
-        for i in range(len(desc)):
-            if i != 0:
-                self.desc += ','
-            self.desc += desc[i]
+        if isinstance(desc, list):
+            for i in range(len(desc)):
+                if i != 0:
+                    self.desc += ','
+                self.desc += desc[i]
 
         self.stat_value_averted = self.on_dis_occ(self.stat_value * self.averted, self.horizon,
                                                   self.disaster_rate, self.discount_rate)

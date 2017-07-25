@@ -118,6 +118,7 @@ class Costs():
 
         # ===== Cost must be a positive number
         try:
+            amount = amount.replace(',','')
             float(amount)
             blank = False
             field_dict['amount'] = amount
@@ -158,8 +159,8 @@ class Costs():
             field_dict['omr_type'] = omr_type
         field_dict['omr_times'] = omr_times
         # Set blank description to N/A or non-blank description to dict
-        if desc in {"", "<enter a description for this externality>\n"}:
-            field_dict['desc'] = 'N/A'
+        if desc in {"", "<enter a description for this cost>\n"}:
+            field_dict['desc'] = ['N/A']
         else:
             desc = desc.replace('\n', '')
             field_dict['desc'] = [desc]

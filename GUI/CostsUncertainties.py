@@ -107,7 +107,7 @@ class CostsUncertaintiesPage(tk.Frame):
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=13, column=0, sticky="se",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Directory", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def show_info(self):
@@ -153,7 +153,7 @@ class CostsUncertaintiesPage(tk.Frame):
 
     def add_uncertainty(self, moveon=False):
         """Appends list of costs, clears page's entry widgets,
-           and updates 'Previously Inputted Costs' section"""
+           and updates 'Saved Costs' section"""
         if moveon:
             valid = self.check_page()
         else:
@@ -248,7 +248,7 @@ class CostsUncertaintiesPage(tk.Frame):
             group.grid_forget()
             group.destroy()
         self.groups = []
-        rad_labels = ["-none-", "-gaussian-", "-triangle-", "-rectangle-", "-discrete-"]
+        rad_labels = ["Exact", "Gaussian", "Triangular", "Rectangular", "Discrete"]
         figs = [none_dist(), gauss_dist(), tri_dist(), rect_dist(), disc_dist()]
         self.choices = [[tk.StringVar() for cost in plan.costs.indiv]
                         for plan in self.data_cont.plan_list]
