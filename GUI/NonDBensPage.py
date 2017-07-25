@@ -123,7 +123,7 @@ class NonDBensPage(tk.Frame):
         one_time_rad = ttk.Radiobutton(self.group5, text="One-Time Occurrence",
                                        variable=self.non_d_ben_recurr_selection, value="one-time")
         one_time_rad.grid(row=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        recurring_rad = ttk.Radiobutton(self.group5, text="recurring",
+        recurring_rad = ttk.Radiobutton(self.group5, text="Recurring Occurrence",
                                         variable=self.non_d_ben_recurr_selection, value="recurring")
         recurring_rad.grid(row=2, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 

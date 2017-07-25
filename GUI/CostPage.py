@@ -37,7 +37,7 @@ class CostPage(tk.Frame):
         label = ttk.Label(self, text="Input individual costs by including a "
                                      "title, cost, and description. "
                                      "Note: these are not \n"
-                                     "externalities. To add another cost, click 'Add Cost'. "
+                                     "externalities. To add another cost, click 'Add Cost.' "
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 

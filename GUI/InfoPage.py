@@ -37,8 +37,8 @@ class InfoPage(tk.Frame):
         self.controller = controller
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Input the project name, the list of alternatives, "
-                                    "the planning horizon,the calculated\n"
-                                    "nominal discount rate for discounting future costs to "
+                                    "the planning horizon,the calculated \n"
+                                    "real discount rate for discounting future costs to "
                                     "present values, and hazard specifics.", font=SMALL_FONT)
 
         label.grid(pady=BASE_PADDING, padx=BASE_PADDING)
@@ -61,8 +61,8 @@ class InfoPage(tk.Frame):
         group0 = ttk.LabelFrame(self)
         group0.grid(row=0, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         new_label = ttk.Label(group0, text="Input the project name, the list of alternatives, "
-                                           "the planning horizon,the calculated\n"
-                                           "nominal discount rate for discounting future costs to "
+                                           "the planning horizon,the calculated \n"
+                                           "real discount rate for discounting future costs to "
                                            "present values, and hazard specifics.", font=SMALL_FONT)
         new_label.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
@@ -129,7 +129,7 @@ class InfoPage(tk.Frame):
         group3 = ttk.LabelFrame(self, text="Discount Rate")
         group3.grid(row=4, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        dis_lbl = ttk.Label(group3, text="Nominal Discount Rate", font=SMALL_FONT)
+        dis_lbl = ttk.Label(group3, text="Real Discount Rate", font=SMALL_FONT)
         dis_lbl.grid(row=0, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.dis_ent = tk.Entry(group3, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.dis_ent.insert(tk.END, "5.00")
@@ -172,9 +172,9 @@ class InfoPage(tk.Frame):
         self.recur_discrete_label = [tk.Label(group4, text="Most Frequent (Years)"),
                                      tk.Label(group4, text="Middle Recurrence (Years)"),
                                      tk.Label(group4, text="Least Frequence (Years)"),
-                                     tk.Label(group4, text="Liklihood of Most Frequent (%)"),
-                                     tk.Label(group4, text="Liklihood of Middle Recurrence (%)"),
-                                     tk.Label(group4, text="Liklihood of Least Frequent (%)")]
+                                     tk.Label(group4, text="Likelihood of Most Frequent (%)"),
+                                     tk.Label(group4, text="Likelihood of Middle Recurrence (%)"),
+                                     tk.Label(group4, text="Likelihood of Least Frequent (%)")]
         self.recur_range = [tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
                             tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
                             tk.Entry(group4, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
@@ -215,9 +215,9 @@ class InfoPage(tk.Frame):
         self.mag_discrete_label = [tk.Label(group5, text="Least Severe (%)"),
                                    tk.Label(group5, text="Middle Severity (%)"),
                                    tk.Label(group5, text="Most severe (%)"),
-                                   tk.Label(group5, text="Liklihood of Least Severe (%)"),
-                                   tk.Label(group5, text="Liklihood of Middle Severity (%)"),
-                                   tk.Label(group5, text="Liklihood of Most Severe (%)")]
+                                   tk.Label(group5, text="Likelihood of Least Severe (%)"),
+                                   tk.Label(group5, text="Likelihood of Middle Severity (%)"),
+                                   tk.Label(group5, text="Likelihood of Most Severe (%)")]
         self.mag_range = [tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
                           tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
                           tk.Entry(group5, width=int(ENTRY_WIDTH/2), font=SMALL_FONT),
@@ -276,15 +276,8 @@ class InfoPage(tk.Frame):
 
         for i in range(int(self.num_plans_ent.get())):
             if self.name_ents[i].get() == "" or self.name_ents[i].get() == "<enter plan name>":
-                err_messages += "Name for Alternative " + str(i) + " hasn't been given \n\n"
+                err_messages += "Name for Alternative " + str(i) + " hasn't been given.\n\n"
                 valid = False
-
-        not_neutral = self.preference.get() != "neutral"
-        not_averse = self.preference.get() != "averse"
-        not_accepting = self.preference.get() != "accepting"
-        if not_neutral and not_averse and not_accepting:
-            err_messages += "A risk preference has not been selected! Please select one\n\n"
-            valid = False
 
         # ===== Number fields must be positive numbers
         try:
@@ -315,37 +308,37 @@ class InfoPage(tk.Frame):
             try:
                 if float(self.recur_range[0].get()) <= 0:
                     valid = False
-                    err_messages += "Recurrence must be greater than zero."
+                    err_messages += "Hazard Recurrence must be greater than zero.\n\n"
             except ValueError:
                 valid = False
-                err_messages += "Hazard Recurrence must be a number"
+                err_messages += "Hazard Recurrence must be a number.\n\n"
         elif self.recur_choice.get() == 'gauss':
             try:
                 if float(self.recur_range[0].get()) <= 0:
                     valid = False
-                    err_messages += "Recurrence must be greater than zero."
+                    err_messages += "Hazard Recurrence must be greater than zero.\n\n"
                 if float(self.recur_range[1].get()) <= 0:
                     valid = False
-                    err_messages += "Recurrence standard deviation must be greater than zero."
+                    err_messages += "Hazard Recurrence standard deviation must be greater than zero.\n\n"
             except ValueError:
                 valid = False
-                err_messages += "All hazard recurrence values must be numbers."
+                err_messages += "All Hazard Recurrence values must be numbers.\n\n"
         elif self.recur_choice.get() == 'discrete':
             for entry in self.recur_range:
                 try:
                     float(entry.get())
                 except ValueError:
                     valid = False
-                    err_messages += "All hazard recurrence inputs must be numbers..\n\n"
+                    err_messages += "All Hazard Recurrence inputs must be numbers.\n\n"
             try:
                 assert float(self.recur_range[0].get()) >= float(self.recur_range[1].get()) >= float(self.recur_range[2].get())
                 disc_sum = float(self.recur_range[3].get()) + float(self.recur_range[4].get()) + float(self.recur_range[5].get())
                 if disc_sum != 100:
                     valid = False
-                    err_messages += "Hazard recurrence discrete liklihoods must add to 100%.\n\n"
+                    err_messages += "Hazard Recurrence discrete likelihoods must add to 100%.\n\n"
             except AssertionError:
                 valid = False
-                err_messages += "Hazard recurrence discrete options must be in order.\n\n"
+                err_messages += "Hazard Recurrence discrete options must be in order.\n\n"
             except ValueError:
                 pass
         else:
@@ -353,46 +346,46 @@ class InfoPage(tk.Frame):
                 bound = float(self.recur_range[0].get()) <= float(self.recur_range[1]) <= float(self.recur_range[2].get())
                 if not bound:
                     valid = False
-                    err_messages += "Hazard recurrence Lower bound must be below Upper bound.\n\n"
+                    err_messages += "Hazard Recurrence lower bound must be below upper bound.\n\n"
             except ValueError:
                 valid = False
-                err_messages += "All hazard recurrence inputs must be numbers.\n\n"
+                err_messages += "All Hazard Recurrence inputs must be numbers.\n\n"
 
         if self.mag_choice.get() == 'none':
             try:
                 if float(self.mag_range[0].get()) < 0:
                     valid = False
-                    err_messages += "Magnitude must be greater than or equal to zero."
+                    err_messages += "Hazard Magnitude must be greater than or equal to zero.\n\n"
             except ValueError:
                 valid = False
-                err_messages += "Hazard magnitude must be a number"
+                err_messages += "Hazard Magnitude must be a number.\n\n"
         elif self.mag_choice.get() == 'gauss':
             try:
                 if float(self.mag_range[0].get()) <= 0:
                     valid = False
-                    err_messages += "Magnitude must be greater than zero."
+                    err_messages += "Hazard Magnitude must be greater than zero.\n\n"
                 if float(self.mag_range[1].get()) <= 0:
                     valid = False
-                    err_messages += "Magnitude standard deviation must be greater than zero."
+                    err_messages += "Hazard Magnitude standard deviation must be greater than zero.\n\n"
             except ValueError:
                 valid = False
-                err_messages += "All hazard magnitude values must be numbers."
+                err_messages += "All Hazard Magnitude values must be numbers.\n\n"
         elif self.mag_choice.get() == 'discrete':
             for entry in self.mag_range:
                 try:
                     float(entry.get())
                 except ValueError:
                     valid = False
-                    err_messages += "All hazard magnitude inputs must be numbers..\n\n"
+                    err_messages += "All Hazard Magnitude inputs must be numbers.\n\n"
             try:
                 assert float(self.mag_range[0].get()) >= float(self.mag_range[1].get()) >= float(self.mag_range[2].get())
                 disc_sum = float(self.mag_range[3].get()) + float(self.mag_range[4].get()) + float(self.mag_range[5].get())
                 if disc_sum != 100:
                     valid = False
-                    err_messages += "Hazard magnitude discrete liklihoods must add to 100%.\n\n"
+                    err_messages += "Hazard Magnitude discrete likelihoods must add to 100%.\n\n"
             except AssertionError:
                 valid = False
-                err_messages += "Hazard magnitude discrete options must be in order.\n\n"
+                err_messages += "Hazard Magnitude discrete options must be in order.\n\n"
             except ValueError:
                 pass
         else:
@@ -400,14 +393,21 @@ class InfoPage(tk.Frame):
                 bound = float(self.mag_range[0].get()) <= float(self.mag_range[1]) <= float(self.mag_range[2].get())
                 if not bound:
                     valid = False
-                    err_messages += "Hazard magnitude Lower bound must be below Upper bound.\n\n"
+                    err_messages += "Hazard Magnitude lower bound must be below upper bound.\n\n"
             except ValueError:
                 valid = False
-                err_messages += "All hazard magnitude inputs must be numbers.\n\n"
+                err_messages += "All Hazard Magnitude inputs must be numbers.\n\n"
+
+        not_neutral = self.preference.get() != "neutral"
+        not_averse = self.preference.get() != "averse"
+        not_accepting = self.preference.get() != "accepting"
+        if not_neutral and not_averse and not_accepting:
+            err_messages += "A risk preference has not been selected! Please select one.\n\n"
+            valid = False
+
         if not valid:
             messagebox.showerror("ERROR", err_messages)
             return
-
 
         # Fills data_cont with the values entered
         data = self.controller.data_cont
@@ -472,7 +472,7 @@ class InfoPage(tk.Frame):
                             "    Base Scenario:  Often referred to as the “business as usual” case. "
                             "It refers to the option against which the other identified alterative"
                             " scenarios are compared.\n"
-                            "    Nominal Discount Rate: Often referred to as the “time value of "
+                            "    Real Discount Rate: Often referred to as the “time value of "
                             "money.” Typically, a dollar is worth more today than it would be "
                             "worth tomorrow. This is the percent at which the value of money "
                             "decreases over time. The nominal discount rate is the real interest "
@@ -518,9 +518,11 @@ class InfoPage(tk.Frame):
                 self.num_plans_ent.set(6)
                 self.on_trace_choice("","","")
         except ValueError:
-            self.num_plans_ent.set(0)
-            self.on_trace_choice("","","")
-            pass
+            if self.num_plans_ent.get() == "":
+                pass
+            else:
+                self.num_plans_ent.set(0)
+                self.on_trace_choice("","","")
 
     def on_trace_change_recur(self, _name, _index, _mode):
         """Triggers refresh when the uncertainty choices change."""

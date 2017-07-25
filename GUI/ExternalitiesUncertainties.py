@@ -40,10 +40,10 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                                      "below. The type of externality and the dollar amount associated "
                                      "with the externality is indicated.\nFor each externality, please "
                                      "select the associated uncertainty description. Each type of "
-                                     "uncertainty distribution requires key information. \n"
+                                     "uncertainty distribution requires key information.\n"
                                      "Please provide this information in the boxes below the "
-                                     "distribution type you select. Further information is "
-                                     "available in the “more information” section for this page.\n"
+                                     "distribution type you select.\nFurther information is "
+                                     "available in the “More Information” section for this page.\n"
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 

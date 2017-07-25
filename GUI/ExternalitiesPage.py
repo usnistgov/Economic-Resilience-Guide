@@ -32,7 +32,7 @@ class ExternalitiesPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = ttk.Label(self, text="Input individual externalities by including a "
                                      "title, cost, and description.\n"
-                                     "To add another externality, click 'Add Externality'. "
+                                     "To add another externality, click 'Add Externality.' "
                                      "When finished, click 'Next>>'", font=SMALL_FONT)
         label.grid(padx=10, pady=10, sticky="new")
 

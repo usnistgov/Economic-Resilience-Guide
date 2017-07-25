@@ -128,7 +128,7 @@ class Benefits():
             blank = False
         # ===== Benefit Title must not have a comma
         if "," in title:
-            err_messages += ("Title cannot have a comma \',\'. Please change the title.\n\n")
+            err_messages += ("Title cannot have a comma \',\' please change the title.\n\n")
             valid = False
         # ===== Dollar Amount must be a positive number
         try:

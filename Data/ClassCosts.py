@@ -119,6 +119,7 @@ class Costs():
         # ===== Cost must be a positive number
         try:
             float(amount)
+            blank = False
             field_dict['amount'] = amount
         except ValueError:
             if amount not in {"", "<enter an amount for this cost>"}:
