@@ -1,7 +1,7 @@
 Outputs of Economic Evaluation: [Riverbend v2]
 Number of Alternatives: 2
 Planning Horizon: 50 years
-Discount Rate: 3%
+Discount Rate: 3.0%
 Disaster Rate: Every 25 years
 Disaster Magnitude: 6.25% of build cost
 Risk Preference: neutral
@@ -35,9 +35,14 @@ Recurring,$0,$0,$0
 Total: Present Expected Value
 Benefits,$0.0,$3795703.944061698,$8859566.06989973
 Costs,$0,$3500000.0,$7777368.229183259
-Net,$0.0,$295703.9440616979,$1082197.840716471
+Externalities,$0,$0,$3984761.7106404635
 Net with Externalities,$0.0,$295703.9440616979,$5066959.551356935
-Savings-to-Investment Ratio,0,0.08448684116048512,0.15361218462973328
+Savings-to-Investment Ratio with Externalities,No Valid SIR,0.08448684116048512,0.7192277574672725
+Internal Rate of Return with Externalities (%),---,3.4515380859375,6.3690185546875
+Return on Investment with Externalities (%),No Valid ROI,2.16897368232097,3.3030010672103773
+Non-Disaster ROI with Externalities (%),No Valid ROI,0.0,1.6806915587484175
+Net,$0.0,$295703.9440616979,$1082197.840716471
+Savings-to-Investment Ratio,No Valid SIR,0.08448684116048512,0.15361218462973328
 Internal Rate of Return (%),---,3.4515380859375,3.7933349609375
-Return on Investment (%),0,2.16897368232097,2.2782940986787037
-Non-Disaster ROI (%),0,0,0.6559845902167443
+Return on Investment (%),No Valid ROI,2.16897368232097,2.2782940986787037
+Non-Disaster ROI (%),No Valid ROI,0.0,0.6559845902167443

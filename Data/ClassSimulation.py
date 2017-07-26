@@ -12,7 +12,7 @@ import numpy as np
 from tkinter import filedialog, messagebox
 
 from Data.ClassBenefits import Benefits
-from Data.ClassCosts import Costs
+from Data.ClassCosts import Costs, Cost
 from Data.ClassExternalities import Externalities
 from Data.ClassFatalities import Fatalities
 from Data.ClassNonDBens import NonDBens
@@ -136,12 +136,17 @@ class Simulation():
 
             ben_totals = []
             cost_totals = []
+            ext_totals = []
             net_totals = []
             net_ext_totals = []
             irr_totals = []
+            irr_ext_totals = []
             sir_totals = []
+            sir_ext_totals = []
             roi_totals = []
+            roi_ext_totals = []
             nond_roi_totals = []
+            nond_roi_ext_totals = []
 
             #similar_list = []
             cost_ben_net = [False, False, False, False]
@@ -176,35 +181,58 @@ class Simulation():
                     ext_n_r_totals.append(new_sim.exts.r_sum_n)
                     ben_totals.append(new_sim.total_bens)
                     cost_totals.append(new_sim.total_costs)
+                    ext_totals.append(new_sim.exts.total_p - new_sim.exts.total_n)
                     net_totals.append(new_sim.net)
                     net_ext_totals.append(new_sim.net_w_ext)
-                    if isinstance(new_sim.irr(), str):
+                    if new_sim.irr() == "---":
                         irr_totals.append(-1)
+                    elif new_sim.irr() == "No Valid IRR":
+                        irr_totals.append(-2)
                     else:
                         irr_totals.append(new_sim.irr())
-                    sir_totals.append(new_sim.sir())
-                    roi_totals.append(new_sim.roi())
-                    nond_roi_totals.append(new_sim.non_d_roi())
+                    if new_sim.irr(w_ext=True) == "---":
+                        irr_ext_totals.append(-1)
+                    elif new_sim.irr(w_ext=True) == "No Valid IRR":
+                        irr_ext_totals.append(-2)
+                    else:
+                        irr_ext_totals.append(new_sim.irr(w_ext=True))
+                    sim_list = [[sir_totals,new_sim.sir()], [sir_ext_totals,new_sim.sir(w_ext=True)],
+                                [roi_totals,new_sim.roi()], [roi_ext_totals,new_sim.roi(w_ext=True)],
+                                [nond_roi_totals,new_sim.non_d_roi()],
+                                [nond_roi_ext_totals,new_sim.non_d_roi(w_ext=True)]]
+                    for item in sim_list:
+                        if isinstance(item[1], str):
+                            item[0].append(-1)
+                        else:
+                            item[0].append(item[1])
+                    #if isinstance(new_sim.sir(), str):
+                    #    sir_totals.append(-1)
+                    #else:
+                    #    sir_totals.append(new_sim.sir())
+                    #if isinstance(new_sim.roi(), str):
+                    #    roi_totals.append(-1)
+                    #else:
+                    #    roi_totals.append(new_sim.roi())
+                    #if isinstance(new_sim.non_d_roi(), str):
+                    #    nond_roi_totals.append(-1)
+                    #else:
+                    #    nond_roi_totals.append(new_sim.non_d_roi())
 
                 # Test costs
                 tol = plan.total_costs * tol_percent + 0.001
-                #if max(abs(plan.cost_range[0] - old_cost[0]), abs(plan.cost_range[1] - old_cost[1])) < tol:
                 if abs(np.mean(cost_totals) - old_cost) < tol:
                     cost_ben_net[0] = True
 
                 # Test bens
-                #tol = plan.total_bens * tol_percent + 0.001
-                #if max(abs(plan.ben_range[0] - old_ben[0]), abs(plan.ben_range[1] - old_ben[1])) < tol:
+                tol = plan.total_bens * tol_percent + 0.001
                 if abs(np.mean(ben_totals) - old_ben) < tol:
                     cost_ben_net[1] = True
                 # Test net
-                #tol = plan.net * tol_percent + 0.001
-                #if max(abs(plan.net_range[0] - old_net[0]), abs(plan.net_range[1] - old_net[1])) < tol:
+                tol = abs(plan.net * tol_percent + 0.001)
                 if abs(np.mean(net_totals) - old_net) < tol:
                     cost_ben_net[2] = True
                 # Test net with externalities
-                #tol = plan.net_w_ext * tol_percent + 0.001
-                #if max(abs(plan.net_ext_range[0] - old_ext_net[0]), abs(plan.net_ext_range[1] - old_ext_net[1])) < tol:
+                tol = abs(plan.net_w_ext * tol_percent + 0.001)
                 if abs(np.mean(net_ext_totals) - old_ext_net) < tol:
                     cost_ben_net[3] = True
 
@@ -216,8 +244,9 @@ class Simulation():
                 old_iters = num_iters
                 num_iters = num_iters + low_iters#2 * num_iters
                 if num_iters >= high_iters:
-                    messagebox.showwarning('Maximum number of runs','The maximum number of Monte-Carlo runs has been reached for '
-                                                                    + plan.name + '. The results may not have converged.')
+                    messagebox.showwarning("Maximum number of runs","The maximum number of "
+                                           "Monte-Carlo runs has been reached for "
+                                           + plan.name + '. The results may not have converged.')
 
             num_iters = num_iters - low_iters
 
@@ -243,10 +272,15 @@ class Simulation():
             ext_p_r_totals.sort()
             ext_n_one_totals.sort()
             ext_n_r_totals.sort()
+            ext_totals.sort()
             irr_totals.sort()
+            irr_ext_totals.sort()
             sir_totals.sort()
+            sir_ext_totals.sort()
             roi_totals.sort()
+            roi_ext_totals.sort()
             nond_roi_totals.sort()
+            nond_roi_ext_totals.sort()
 
             plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
             plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
@@ -267,15 +301,55 @@ class Simulation():
             plan.exts.one_n_range = [ext_n_one_totals[first_num], ext_n_one_totals[last_num]]
             plan.exts.r_p_range = [ext_p_r_totals[first_num], ext_p_r_totals[last_num]]
             plan.exts.r_n_range = [ext_n_r_totals[first_num], ext_n_r_totals[last_num]]
+            plan.ext_range = [ext_totals[first_num], ext_totals[last_num]]
             plan.irr_range = [irr_totals[first_num], irr_totals[last_num]]
+            plan.irr_ext_range = [irr_ext_totals[first_num], irr_ext_totals[last_num]]
             plan.sir_range = [sir_totals[first_num], sir_totals[last_num]]
+            plan.sir_ext_range = [sir_ext_totals[first_num], sir_ext_totals[last_num]]
             plan.roi_range = [roi_totals[first_num], roi_totals[last_num]]
+            plan.roi_ext_range = [roi_ext_totals[first_num], roi_ext_totals[last_num]]
             plan.nond_roi_range = [nond_roi_totals[first_num], nond_roi_totals[last_num]]
+            plan.nond_roi_ext_range = [nond_roi_ext_totals[first_num], nond_roi_ext_totals[last_num]]
 
-            if plan.irr_range[0] < 0:
+            if plan.irr_range[0] == -1:
                 plan.irr_range[0] = '---'
-            if plan.irr_range[1] < 0:
+            elif plan.irr_range[0] == -2:
+                plan.irr_range[0] = 'No Valid IRR'
+            if plan.irr_range[1] == -1:
                 plan.irr_range[1] = '---'
+            elif plan.irr_range[1] == -2:
+                plan.irr_range[1] = 'No Valid IRR'
+            if plan.irr_ext_range[0] == -1:
+                plan.irr_ext_range[0] = '---'
+            elif plan.irr_ext_range[0] == -2:
+                plan.irr_ext_range[0] = 'No Valid IRR'
+            if plan.irr_ext_range[1] == -1:
+                plan.irr_ext_range[1] = '---'
+            elif plan.irr_ext_range[1] == -2:
+                plan.irr_ext_range[1] = 'No Valid IRR'
+            sim_list = [[plan.sir_range, 'No Valid SIR'], [plan.roi_range, 'No Valid ROI'],
+                        [plan.nond_roi_range, 'No Valid ROI'],
+                        [plan.sir_ext_range, 'No Valid SIR'],
+                        [plan.roi_ext_range, 'No Valid ROI'],
+                        [plan.nond_roi_ext_range, 'No Valid ROI']]
+            for item in sim_list:
+                if item[0][0] == -1:
+                    item[0][0] = item[1]
+                if item[0][1] == -1:
+                    item[0][1] = item[1]
+            #if plan.sir_range[0] < 0:
+            #    plan.sir_range[0] = 'No Valid SIR'
+            #if plan.sir_range[1] < 0:
+            #    plan.sir_range[1] = 'No Valid SIR'
+            #if plan.roi_range[0] < 0:
+            #    plan.roi_range[0] = 'No Valid ROI'
+            #if plan.roi_range[1] < 0:
+            #    plan.roi_range[1] = 'No Valid ROI'
+            #if plan.nond_roi_range[0] < 0:
+            #    plan.nond_roi_range[0] = 'No Valid ROI'
+            #if plan.nond_roi_range[1] < 0:
+            #    plan.nond_roi_range[1] = 'No Valid ROI'
+
             plan.mc_iters = num_iters
 
     def one_iter(self, my_plan):
@@ -542,6 +616,7 @@ class Plan():
         self.exts.make_sum()
         self.nond_bens.make_sum()
 
+        # Makes cash flows for IRR
         rec_list = []
         ot_list = []
         for ben in self.nond_bens.indiv:
@@ -554,28 +629,53 @@ class Plan():
                 rec_list.append(cost)
             else:
                 ot_list.append(cost)
+        for ext in self.exts.indiv:
+            if ext.ext_type == "recurring":
+                rec_list.append(ext)
+            else:
+                ot_list.append(ext)
         time_series = []
+        time_series_w_ext = []
         for item in rec_list:
+            is_ext = False
             start = float(item.times[0])
             rate = float(item.times[1])
             if isinstance(item, NonDBenefit):
                 amount = float(item.amount)
-            else:
+            elif isinstance(item, Cost):
                 amount = -float(item.amount)
+            else:
+                is_ext = True
+                if item.pm == "+":
+                    amount = float(item.amount)
+                else:
+                    amount = -float(item.amount)
             i = 0
             while start + rate * i <= horizon + self.tol:
-                time_series.append([start + rate * i, amount])
+                time_series_w_ext.append([start + rate * i, amount])
+                if not is_ext:
+                    time_series.append([start + rate * i, amount])
                 i += 1
                 if rate <= self.tol:
                     break
         for item in ot_list:
+            is_ext = False
             if isinstance(item, NonDBenefit):
                 amount = float(item.amount)
-            else:
+            elif isinstance(item, Cost):
                 amount = -float(item.amount)
-            time_series.append([float(item.times[0]), amount])
+            else:
+                is_ext = True
+                if item.pm == "+":
+                    amount = float(item.amount)
+                else:
+                    amount = -float(item.amount)
+            time_series_w_ext.append([float(item.times[0]), amount])
+            if not is_ext:
+                time_series.append([float(item.times[0]), amount])
 
         time_series.sort(key=lambda x: x[0])
+        time_series_w_ext.sort(key=lambda x:x[0])
         prev = -1
         for i in range(len(time_series)):
             if abs(time_series[i][0]-prev) <= self.tol:
@@ -583,29 +683,46 @@ class Plan():
                 time_series[i-1][0] = -1
             else:
                 prev = time_series[i][0]
+        for i in range(len(time_series_w_ext)):
+            if abs(time_series_w_ext[i][0]-prev) <= self.tol:
+                time_series_w_ext[i][1] += float(time_series_w_ext[i-1][1])
+                time_series_w_ext[i-1][0] = -1
+            else:
+                prev = time_series_w_ext[i][0]
 
         self.annual_cash_flows = []
         for item in time_series:
             if item[0] != -1:
                 self.annual_cash_flows.append(item)
 
+        self.annual_cash_flows_w_ext = []
+        for item in time_series_w_ext:
+            if item[0] != -1:
+                self.annual_cash_flows_w_ext.append(item)
+
         self.total_bens = self.bens.total + self.fat.stat_value_averted + self.nond_bens.total
         self.total_costs = self.costs.total
         self.net = self.total_bens - self.total_costs
         self.net_w_ext = self.total_bens + self.exts.total_p - self.total_costs - self.exts.total_n
 
-    def sir(self):
+    def sir(self, w_ext=False):
         """Equation for the Savings-to-Investment Ratio"""
         up_front = self.costs.d_sum + self.costs.i_sum
 
         if up_front == 0:
-            return 0
+            return 'No Valid SIR'
 
-        return self.net / up_front
+        if w_ext:
+            return self.net_w_ext / up_front
+        else:
+            return self.net / up_front
 
-    def irr(self):
+    def irr(self, w_ext=False):
         """Equation for the Internal Rate of Return"""
-        cash_flows = self.annual_cash_flows
+        if w_ext:
+            cash_flows = self.annual_cash_flows_w_ext
+        else:
+            cash_flows = self.annual_cash_flows
         ben_list = [self.bens.d_sum_no_discount, self.bens.i_sum_no_discount,
                     self.bens.r_sum_no_discount]
 
@@ -623,24 +740,31 @@ class Plan():
 
         return the_irr * 100
 
-    def roi(self):
+    def roi(self, w_ext=False):
         """Equation for the Return on Investment"""
-        if self.total_bens == 0:
-            return 0
-        elif self.total_costs == 0:
-            return 0
-        annual_savings = self.total_bens / float(self.horizon)
-        simple_payback = self.total_costs / annual_savings
-        return (1 / simple_payback) * 100
+        try:
+            if w_ext:
+                annual_savings = (self.total_bens + self.exts.total_p) / float(self.horizon)
+                simple_payback = annual_savings / (self.total_costs + self.exts.total_n)
+            else:
+                annual_savings = self.total_bens / float(self.horizon)
+                simple_payback = annual_savings / self.total_costs
+            return simple_payback * 100
+        except ZeroDivisionError:
+            return 'No Valid ROI'
 
-    def non_d_roi(self):
+    def non_d_roi(self, w_ext=False):
         """Equation for the Return on Investment (without any chance of disaster occurring)"""
         non_d_ben_total = self.nond_bens.r_sum + self.nond_bens.one_sum
+        if w_ext:
+            non_d_ben_total += self.exts.total_p
 
-        if non_d_ben_total == 0:
-            return 0
-        elif self.total_costs == 0:
-            return 0
         annual_savings = non_d_ben_total / float(self.horizon)
-        simple_payback = self.total_costs / annual_savings
-        return (1 / simple_payback) * 100
+        try:
+            if w_ext:
+                simple_payback = annual_savings / (self.total_costs + self.exts.total_n)
+            else:
+                simple_payback = annual_savings / self.total_costs
+            return simple_payback * 100
+        except ZeroDivisionError:
+            return 'No Valid ROI'

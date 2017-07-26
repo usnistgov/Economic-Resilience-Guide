@@ -123,7 +123,7 @@ class NonDBens():
         # ===== Cost must be a positive number
         try:
             amount = amount.replace(',','')
-            float(amount)
+            amount = float(amount)
         except ValueError:
             if amount not in {"", "<enter an amount for this benefit>"}:
                 blank = False
@@ -136,7 +136,7 @@ class NonDBens():
             err_messages += "Please enter a positive amount.\n\n"
             blank = False
             valid = False
-        field_dict['amount'] = float(amount)
+        field_dict['amount'] = amount
 
         try:
             float(times[0])
