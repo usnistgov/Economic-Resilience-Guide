@@ -447,7 +447,7 @@ class CostPage(tk.Frame):
 
         def confirm():
             """Confirmation page to make sure the user really wants to delete the given cost"""
-            popup = tk.Tk()
+            #popup = tk.Tk()
 
             def confirm_delete():
                 """ Confirms that deleting should happen and actually deletes the data."""
@@ -458,11 +458,6 @@ class CostPage(tk.Frame):
                         chosen_plan.costs.indiv.remove(cost)
 
                 self.update_prev_list()
-                popup.destroy()
-
-            def cancel_delete():
-                """ Cancels the delete process."""
-                popup.destroy()
 
             chosen_plan = self.data_cont.plan_list[chosen_cost[1]]
             for cost in chosen_plan.costs.indiv:
@@ -470,16 +465,11 @@ class CostPage(tk.Frame):
                     cost_amount = cost.amount
                     cost_desc = cost.desc
 
-            popup.wm_title("Confirmation")
-            del_text = "Delete \'" + chosen_cost[0] + "\'?\n\nAmount: " + str(cost_amount) + "\n\nDescription: " + str(cost_desc)
-            label = ttk.Label(popup, text=del_text, font=NORM_FONT)
-            label.grid(padx=BASE_PADDING, pady=BASE_PADDING)
-
-            confirm_button = ttk.Button(popup, text="OK", command=confirm_delete)
-            confirm_button.grid(sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
-            cancel_button = ttk.Button(popup, text="Cancel", command=cancel_delete)
-            cancel_button.grid(sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
-            popup.mainloop()
+            del_text = ("Delete \'" + chosen_cost[0] + "\' from " + self.data_cont.plan_list[chosen_cost[1]].name + " Plan?\n\n"
+                        + "Amount: $" + '{:,.2f}'.format(cost_amount) + "\n\nDescription: " + str(cost_desc))
+            confirm = messagebox.askokcancel("Confirmation", del_text)
+            if confirm:
+                confirm_delete()
             return
 
         if not is_updating:

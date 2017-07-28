@@ -124,16 +124,18 @@ class Externalities():
         try:
             amount = amount.replace(',','')
             amount = float(amount)
+            blank = False
+            if amount < 0:
+                err_messages += "Dollar value of the externality must be positive. "
+                err_messages += "Please enter a positive amount.\n\n"
+                blank = False
+                valid = False
+
         except ValueError:
             if amount not in {"", "<enter an amount for this externality>"}:
                 blank = False
             err_messages += "Dollar value of the externality must be a number. "
             err_messages += "Please enter an amount.\n\n"
-            valid = False
-        if "-" in amount:
-            err_messages += "Dollar value of the externality must be positive. "
-            err_messages += "Please enter a positive amount.\n\n"
-            blank = False
             valid = False
         field_dict['amount'] = amount
         # == TYPE
@@ -244,7 +246,9 @@ class Externality():
     def add_uncertainty(self, new_range, distribution):
         """ Adds uncertainty to a specific benefit."""
 
-        self.range = new_range
+        self.range = []
+        for item in new_range:
+            self.range.append(item.replace(',',''))
         self.dist = distribution
 
     def set_party(self, new_party):

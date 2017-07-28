@@ -192,7 +192,7 @@ class NonDBensUncertaintiesPage(tk.Frame):
                         entry.insert(tk.END, '<insert uncertainty>')
                 elif dist == 'gauss':
                     try:
-                        if float(nums[0].get()) <= 0:
+                        if float(nums[0].get().replace(',','')) <= 0:
                             err_messages += "Standard deviation must be greater than zero (" + ben.title + ").\n\n"
                     except ValueError:
                         valid = False
@@ -203,12 +203,12 @@ class NonDBensUncertaintiesPage(tk.Frame):
                 elif dist == 'discrete':
                     for entry in nums:
                         try:
-                            float(entry.get())
+                            float(entry.get().replace(',',''))
                         except ValueError:
                             valid = False
                             err_messages += "All inputs must be numbers (" + ben.title + ").\n\n"
                     try:
-                        assert float(nums[0].get()) <= float(nums[1].get()) <= float(nums[2].get())
+                        assert float(nums[0].get().replace(',','')) <= float(nums[1].get().replace(',','')) <= float(nums[2].get().replace(',',''))
                         disc_sum = float(nums[3].get()) + float(nums[4].get()) + float(nums[5].get())
                         if disc_sum != 100:
                             valid = False
@@ -219,7 +219,7 @@ class NonDBensUncertaintiesPage(tk.Frame):
                     except ValueError:
                         pass
                     try:
-                        assert float(ben.amount) in [float(nums[0].get()), float(nums[1].get()), float(nums[2].get())]
+                        assert float(ben.amount) in [float(nums[0].get().replace(',','')), float(nums[1].get().replace(',','')), float(nums[2].get().replace(',',''))]
                     except AssertionError:
                         valid = False
                         err_messages += "One of the discrete options must be your point estimate (" + ben.title + ").\n\n"
@@ -227,7 +227,7 @@ class NonDBensUncertaintiesPage(tk.Frame):
                         pass
                 else:
                     try:
-                        bound = float(nums[0].get()) <= float(ben.amount) <= float(nums[1].get())
+                        bound = float(nums[0].get().replace(',','')) <= float(ben.amount) <= float(nums[1].get().replace(',',''))
                         if not bound:
                             valid = False
                             err_messages += "Lower bound must be below Upper bound (" + ben.title + ").\n\n"
@@ -268,7 +268,7 @@ class NonDBensUncertaintiesPage(tk.Frame):
             for ben in plan.nond_bens.indiv:
                 choice = plan.nond_bens.indiv.index(ben)
                 self.choices[plan.id_assign][choice].set(ben.dist)
-                titles = ttk.Label(self.groups[-1], text=ben.title + " - $" + str(ben.amount),
+                titles = ttk.Label(self.groups[-1], text=ben.title + " - $" + '{:,.2f}'.format(ben.amount),
                                    font=SMALL_FONT)
                 titles.grid(row=row_index, column=0, sticky="w",
                             padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -330,4 +330,9 @@ class NonDBensUncertaintiesPage(tk.Frame):
                     self.ranges[plan.id_assign][choice][1].grid(row=row_index+4, column=3)
                     row_index+= 5
                 for entry in self.ranges[plan.id_assign][choice]:
-                    entry.insert(tk.END, ben.range[self.ranges[plan.id_assign][choice].index(entry)])
+                    try:
+                        text = '{:,.2f}'.format(float(ben.range[self.ranges[plan.id_assign][choice].index(entry)]))
+                    except ValueError:
+                        text = ben.range[self.ranges[plan.id_assign][choice].index(entry)]
+                    entry.insert(tk.END, text)
+

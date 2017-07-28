@@ -180,5 +180,7 @@ class Benefit():
     def add_uncertainty(self, new_range, distribution):
         """ Adds uncertainty to a specific benefit."""
 
-        self.range = new_range
+        self.range = []
+        for item in new_range:
+            self.range.append(item.replace(',',''))
         self.dist = distribution

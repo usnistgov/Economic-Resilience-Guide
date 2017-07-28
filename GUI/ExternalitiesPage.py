@@ -456,7 +456,7 @@ class ExternalitiesPage(tk.Frame):
 
         def confirm():
             """Confirmation page to make sure the user wants to delete the given externality"""
-            popup = tk.Tk()
+            #popup = tk.Tk()
 
             def confirm_delete():
                 """ Confirms that the user wishes to delete and then performs delete operation."""
@@ -467,27 +467,17 @@ class ExternalitiesPage(tk.Frame):
                         chosen_plan.exts.indiv.remove(ext)
 
                 self.update_prev_list()
-                popup.destroy()
-
-            def cancel_delete():
-                """ Cancels the delete operation."""
-                popup.destroy()
 
             chosen_plan = self.data_cont.plan_list[chosen_ext[1]]
             for ext in chosen_plan.exts.indiv:
                 if ext.title == chosen_ext[0]:
                     ext_amount = ext.amount
                     ext_desc = ext.desc
-
-            popup.wm_title("Confirmation")
-            label = ttk.Label(popup, text="Delete \'" + chosen_ext[0] + "\'?\n\nAmount: " + str(ext_amount) + "\n\nDescription: " + str(ext_desc), font=NORM_FONT)
-            label.grid(padx=BASE_PADDING, pady=BASE_PADDING)
-
-            confirm_button = ttk.Button(popup, text="OK", command=confirm_delete)
-            confirm_button.grid(sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
-            cancel_button = ttk.Button(popup, text="Cancel", command=cancel_delete)
-            cancel_button.grid(sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
-            popup.mainloop()
+            del_text = ("Delete \'" + chosen_ext[0] + "\' from " + self.data_cont.plan_list[chosen_ext[1]].name + " Plan?\n\n"
+                        + "Amount: $" + '{:,.2f}'.format(ext_amount) + "\n\nDescription: " + str(ext_desc))
+            confirm = messagebox.askokcancel("Confirmation", del_text)
+            if confirm:
+                confirm_delete()
 
 
         if not is_updating:

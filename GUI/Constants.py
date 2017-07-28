@@ -5,6 +5,7 @@
 LARGE_FONT = ("Verdana", 13)
 NORM_FONT = ("Verdana", 11)
 SMALL_FONT = ("Verdana", 9)
+XS_FONT = ("Verdana", 5)
 BOLD_FONT = ("Verdana", 9, "bold")
 FIELDS_PER_VALUE = 3
 ENTRY_WIDTH = 35

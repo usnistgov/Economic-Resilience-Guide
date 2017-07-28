@@ -395,7 +395,7 @@ class BenefitsPage(tk.Frame):
 
         def confirm():
             """Confirmation page to make sure the user really wants to delete the given benefit"""
-            popup = tk.Tk()
+            #popup = tk.Tk()
 
             def confirm_delete():
                 """ Checks delete is confirmed and performs the deletion. """
@@ -406,30 +406,17 @@ class BenefitsPage(tk.Frame):
                         chosen_plan.bens.indiv.remove(ben)
 
                 self.update_prev_list()
-                popup.destroy()
-
-            def cancel_delete():
-                """ Cancels the delete call."""
-                popup.destroy()
 
             chosen_plan = self.data_cont.plan_list[chosen_ben[1]]
             for ben in chosen_plan.bens.indiv:
                 if ben.title == chosen_ben[0]:
                     ben_amount = ben.amount
                     ben_desc = ben.desc
-
-            popup.wm_title("Confirmation")
-            ben_text = "Delete \'" + chosen_ben[0] + "\'?\n\nAmount: "
-            ben_text = ben_text + str(ben_amount) + "\n\nDescription: " + str(ben_desc)
-            label = ttk.Label(popup, text=ben_text, font=NORM_FONT)
-            label.grid(padx=BASE_PADDING, pady=BASE_PADDING)
-
-            confirm_button = ttk.Button(popup, text="OK", command=confirm_delete)
-            confirm_button.grid(sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
-            cancel_button = ttk.Button(popup, text="Cancel", command=cancel_delete)
-            cancel_button.grid(sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
-            popup.mainloop()
-            return
+            del_text = ("Delete \'" + chosen_ben[0] + "\' from " + self.data_cont.plan_list[chosen_ben[1]].name + " Plan ?\n\n"
+                        + "Amount: $" + '{:,.2f}'.format(ben_amount) + "\n\nDescription: " + str(ben_desc))
+            confirm = messagebox.askokcancel("Confirmation", del_text)
+            if confirm:
+                confirm_delete()
 
         if not is_updating:
             # === Makes sure the user meant to delete the benefit

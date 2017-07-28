@@ -124,17 +124,18 @@ class NonDBens():
         try:
             amount = amount.replace(',','')
             amount = float(amount)
+            blank = False
+            if amount < 0:
+                err_messages += "Benefit must be a positive number. "
+                err_messages += "Perhaps you should enter that as a cost.\n"
+                err_messages += "Please enter a positive amount.\n\n"
+                blank = False
+                valid = False
         except ValueError:
             if amount not in {"", "<enter an amount for this benefit>"}:
                 blank = False
             err_messages += "Dollar value of the benefit must be a number. "
             err_messages += "Please enter an amount.\n\n"
-            valid = False
-        if "-" in amount:
-            err_messages += "Benefit must be a positive number. "
-            err_messages += "Perhaps you should enter that as a cost.\n"
-            err_messages += "Please enter a positive amount.\n\n"
-            blank = False
             valid = False
         field_dict['amount'] = amount
 
@@ -174,7 +175,7 @@ class Benefit():
         self.title = title
         self.ben_type = ben_type
         self.times = times
-        self.amount = amount
+        self.amount = float(amount)
         self.desc = ""
         for i in range(len(desc)):
             if i != 0:
@@ -191,5 +192,7 @@ class Benefit():
     def add_uncertainty(self, new_range, distribution):
         """ Adds uncertainty to a specific benefit."""
 
-        self.range = new_range
+        self.range = []
+        for item in new_range:
+            self.range.append(item.replace(',',''))
         self.dist = distribution

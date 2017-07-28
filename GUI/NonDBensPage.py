@@ -291,6 +291,8 @@ class NonDBensPage(tk.Frame):
         plan_num = []
         # === List that contains all selected plans
         plan_num = []
+        if self.b_bool.get():
+            plan_num.append(0)
         if self.p1_bool.get():
             plan_num.append(1)
         if self.p2_bool.get():
@@ -422,7 +424,7 @@ class NonDBensPage(tk.Frame):
 
         def confirm():
             """Confirmation page to make sure the user really wants to delete the given benefit"""
-            popup = tk.Tk()
+            #popup = tk.Tk()
 
             def confirm_delete():
                 # ===== Removes the externality from the list
@@ -432,28 +434,18 @@ class NonDBensPage(tk.Frame):
                         chosen_plan.nond_bens.indiv.remove(ben)
 
                 self.update_prev_list()
-                popup.destroy()
-
-            def cancel_delete():
-                popup.destroy()
+                #popup.destroy()
 
             chosen_plan = self.data_cont.plan_list[chosen_ben[1]]
             for ben in chosen_plan.nond_bens.indiv:
                 if ben.title == chosen_ben[0]:
                     ben_amount = ben.amount
                     ben_desc = ben.desc
-
-            popup.wm_title("Confirmation")
-            label_text = "Delete \'" + chosen_ben[0] + "\'?\n\nAmount: " + str(ben_amount) + "\n\nDescription: " + str(ben_desc)
-            label = ttk.Label(popup, text=label_text, font=NORM_FONT)
-            label.grid(padx=BASE_PADDING, pady=BASE_PADDING)
-
-            confirm_button = ttk.Button(popup, text="OK", command=confirm_delete)
-            confirm_button.grid(sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
-            cancel_button = ttk.Button(popup, text="Cancel", command=cancel_delete)
-            cancel_button.grid(sticky="e", padx=BASE_PADDING, pady=BASE_PADDING)
-            popup.mainloop()
-
+            del_text = ("Delete \'" + chosen_ben[0] + "\' from " + self.data_cont.plan_list[chosen_ben[1]].name + " Plan?\n\n"
+                        + "Amount: $" + '{:,.2f}'.format(ben_amount) + "\n\nDescription: " + str(ben_desc))
+            confirm = messagebox.askokcancel("Confirmation", del_text)
+            if confirm:
+                confirm_delete()
 
         if not is_updating:
             # === Makes sure the user meant to delete the benefit

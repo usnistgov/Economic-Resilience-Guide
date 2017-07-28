@@ -77,7 +77,7 @@ class Simulation():
         new_file = open(file_name, 'w')
         new_file.write('Title,' + str(self.title) + ',,Horizon,' + str(int(self.horizon)) + '\n')
         new_file.write('Discount Rate,' + str(self.discount_rate))
-        new_file.write(',,Risk Prev,' + self.risk_pref)
+        new_file.write(',,Risk Pref,' + self.risk_pref)
         new_file.write(',,Value of Stat Life,' + str(self.stat_life) + '\n')
         new_file.write('BEGIN PLANS\n')
         for plan in self.plan_list:

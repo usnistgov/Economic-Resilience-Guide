@@ -159,7 +159,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
             for ext in plan.exts.indiv:
                 new_values = []
                 for entry in self.ranges[plan.id_assign][plan.exts.indiv.index(ext)]:
-                    new_values.append(entry.get())
+                    new_values.append(entry.get().replace(',',''))
                 ext.add_uncertainty(new_values,
                                     self.choices[plan.id_assign][plan.exts.indiv.index(ext)].get())
         self.on_trace_change('_name', '_index', '_mode')
@@ -187,7 +187,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                         entry.insert(tk.END, '<insert uncertainty>')
                 elif dist == 'gauss':
                     try:
-                        if float(nums[0].get()) <= 0:
+                        if float(nums[0].get().replace(',','')) <= 0:
                             err_messages += "Standard deviation must be greater than zero (" + ext.title + ").\n\n"
                     except ValueError:
                         valid = False
@@ -198,12 +198,12 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                 elif dist == 'discrete':
                     for entry in nums:
                         try:
-                            float(entry.get())
+                            float(entry.get().replace(',',''))
                         except ValueError:
                             valid = False
                             err_messages += "All inputs must be numbers (" + ext.title + ").\n\n"
                     try:
-                        assert float(nums[0].get()) <= float(nums[1].get()) <= float(nums[2].get())
+                        assert float(nums[0].get().replace(',','')) <= float(nums[1].get().replace(',','')) <= float(nums[2].get().replace(',',''))
                         disc_sum = float(nums[3].get()) + float(nums[4].get()) + float(nums[5].get())
                         if disc_sum != 100:
                             valid = False
@@ -214,7 +214,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                     except ValueError:
                         pass
                     try:
-                        assert float(ext.amount) in [float(nums[0].get()), float(nums[1].get()), float(nums[2].get())]
+                        assert float(ext.amount) in [float(nums[0].get().replace(',','')), float(nums[1].get().replace(',','')), float(nums[2].get().replace(',',''))]
                     except AssertionError:
                         valid = False
                         err_messages += "One of the discrete options must be your point estimate (" + ext.title + ").\n\n"
@@ -222,7 +222,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                         pass
                 else:
                     try:
-                        bound = float(nums[0].get()) <= float(ext.amount) <= float(nums[1].get())
+                        bound = float(nums[0].get().replace(',','')) <= float(ext.amount) <= float(nums[1].get().replace(',',''))
                         if not bound:
                             valid = False
                             err_messages += "Lower bound must be below Upper bound (" + ext.title + ").\n\n"
@@ -263,7 +263,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
             for ext in plan.exts.indiv:
                 choice = plan.exts.indiv.index(ext)
                 self.choices[plan.id_assign][choice].set(ext.dist)
-                titles = ttk.Label(self.groups[-1], text=ext.title + " - $" + str(ext.amount),
+                titles = ttk.Label(self.groups[-1], text=ext.title + " - $" + '{:,.2f}'.format(ext.amount),
                                    font=SMALL_FONT)
                 titles.grid(row=row_index, column=0, sticky="w",
                             padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -325,4 +325,8 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                     self.ranges[plan.id_assign][choice][1].grid(row=row_index+4, column=3)
                     row_index+= 5
                 for entry in self.ranges[plan.id_assign][choice]:
-                    entry.insert(tk.END, ext.range[self.ranges[plan.id_assign][choice].index(entry)])
+                    try:
+                        text = '{:,.2f}'.format(float(ext.range[self.ranges[plan.id_assign][choice].index(entry)]))
+                    except ValueError:
+                        text = ext.range[self.ranges[plan.id_assign][choice].index(entry)]
+                    entry.insert(tk.END, text)

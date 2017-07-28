@@ -163,7 +163,7 @@ class CostsUncertaintiesPage(tk.Frame):
             for cost in plan.costs.indiv:
                 new_values = []
                 for entry in self.ranges[plan.id_assign][plan.costs.indiv.index(cost)]:
-                    new_values.append(entry.get())
+                    new_values.append(entry.get().replace(',',''))
                 cost.add_uncertainty(new_values,
                                     self.choices[plan.id_assign][plan.costs.indiv.index(cost)].get())
         self.on_trace_change('_name', '_index', '_mode')
@@ -201,12 +201,12 @@ class CostsUncertaintiesPage(tk.Frame):
                 elif dist == 'discrete':
                     for entry in nums:
                         try:
-                            float(entry.get())
+                            float(entry.get().replace(',',''))
                         except ValueError:
                             valid = False
                             err_messages += "All inputs must be numbers (" + cost.title + ").\n\n"
                     try:
-                        assert float(nums[0].get()) <= float(nums[1].get()) <= float(nums[2].get())
+                        assert float(nums[0].get().replace(',','')) <= float(nums[1].get().replace(',','')) <= float(nums[2].get().replace(',',''))
                         disc_sum = float(nums[3].get()) + float(nums[4].get()) + float(nums[5].get())
                         if disc_sum != 100:
                             valid = False
@@ -217,7 +217,7 @@ class CostsUncertaintiesPage(tk.Frame):
                     except ValueError:
                         pass
                     try:
-                        assert float(cost.amount) in [float(nums[0].get()), float(nums[1].get()), float(nums[2].get())]
+                        assert float(cost.amount) in [float(nums[0].get().replace(',','')), float(nums[1].get().replace(',','')), float(nums[2].get().replace(',',''))]
                     except AssertionError:
                         valid = False
                         err_messages += "One of the discrete options must be your point estimate (" + cost.title + ").\n\n"
@@ -225,7 +225,7 @@ class CostsUncertaintiesPage(tk.Frame):
                         pass
                 else:
                     try:
-                        bound = float(nums[0].get()) <= float(cost.amount) <= float(nums[1].get())
+                        bound = float(nums[0].get().replace(',','')) <= float(cost.amount) <= float(nums[1].get().replace(',',''))
                         if not bound:
                             valid = False
                             err_messages += "Lower bound must be below Upper bound (" + cost.title + ").\n\n"
@@ -266,7 +266,7 @@ class CostsUncertaintiesPage(tk.Frame):
             for cost in plan.costs.indiv:
                 choice = plan.costs.indiv.index(cost)
                 self.choices[plan.id_assign][choice].set(cost.dist)
-                titles = ttk.Label(self.groups[-1], text=cost.title + " - $" + str(cost.amount),
+                titles = ttk.Label(self.groups[-1], text=cost.title + " - $" + '{:,.2f}'.format(cost.amount),
                                    font=SMALL_FONT)
                 titles.grid(row=row_index, column=0, sticky="w",
                             padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -328,5 +328,9 @@ class CostsUncertaintiesPage(tk.Frame):
                     self.ranges[plan.id_assign][choice][1].grid(row=row_index+4, column=3)
                     row_index+= 5
                 for entry in self.ranges[plan.id_assign][choice]:
-                    entry.insert(tk.END, cost.range[self.ranges[plan.id_assign][choice].index(entry)])
+                    try:
+                        text = '{:,.2f}'.format(float(cost.range[self.ranges[plan.id_assign][choice].index(entry)]))
+                    except ValueError:
+                        text = cost.range[self.ranges[plan.id_assign][choice].index(entry)]
+                    entry.insert(tk.END, text)
 

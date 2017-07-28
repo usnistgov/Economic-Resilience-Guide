@@ -50,7 +50,7 @@ class FatalitiesPage(tk.Frame):
         life_lbl.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.life_ent = tk.Entry(group0, width=ENTRY_WIDTH, font=SMALL_FONT)
         # TODO: Why no commas?!?
-        text = '{:,.0f}'.format(float(controller.data_cont.stat_life))
+        text = '{:,.2f}'.format(float(controller.data_cont.stat_life))
         #print(text)
         self.life_ent.insert(tk.END, text)
         self.life_ent.grid(row=1, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -198,7 +198,7 @@ class FatalitiesPage(tk.Frame):
         if not valid:
             return False
 
-        self.data_cont.stat_life = self.life_ent.get()
+        self.data_cont.stat_life = self.life_ent.get().replace(',','')
 
         for i in range(0, num_plans + 1):
             self.data_cont.plan_list[i].fat.update(self.fat_plan_ents[i].get(), [self.desc_plan_ents[i].get("1.0", "end-1c")], self.data_cont.stat_life)

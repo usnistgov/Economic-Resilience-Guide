@@ -25,7 +25,7 @@ from GUI.NonDBensPage import NonDBensPage
 from GUI.NonDBensUncertainties import NonDBensUncertaintiesPage
 from GUI.AnalysisInfo import AnalysisInfo
 
-from GUI.Constants import LARGE_FONT
+from GUI.Constants import LARGE_FONT, XS_FONT
 from GUI.Constants import BASE_PADDING
 
 from VertScroll import VerticalScrolledFrame
@@ -96,11 +96,11 @@ class StartPage(tk.Frame):
         """Widgets include: radio buttons, confirmation buttons, and Labels"""
 
         photo = tk.PhotoImage(file="CR_Logo.png")
-        photo = photo.subsample(4, 4)
+        photo = photo.subsample(5, 5)
         #photo = tk.PhotoImage(file="el_logo_small.gif")
         pic = ttk.Label(self, image=photo)
         pic.image = photo
-        pic.grid(row=2, sticky="w")
+        pic.grid(row=2)
 
         self.choice = tk.StringVar()
         self.choice.set("1")  # makes so that radio buttons aren't chosen yet
@@ -109,17 +109,41 @@ class StartPage(tk.Frame):
         tk.Radiobutton(self, text="Open existing analysis", variable=self.choice, value="open"
                       ).grid(row=4, column=0, sticky='W')
         self.ok_button = ttk.Button(self, text="OK", command=lambda: self.select(controller)
-                                   ).grid(row=3, column=0)
+                                   ).grid(row=3, column=0, sticky="e")
         self.exit_button = ttk.Button(self, text="Exit", command=sys.exit
-                                     ).grid(row=4, column=0)
+                                     ).grid(row=4, column=0, sticky="e")
 
         tk.Label(self, text="").grid(row=5)
 
-        photo = tk.PhotoImage(file="nistident_fleft_300ppi.png")
+        photo = tk.PhotoImage(file="nistident_fcenter_300ppi.png")
+        #photo = tk.PhotoImage(file="nistident_fleft_300ppi.png")
         photo = photo.subsample(3, 3)
         pic = ttk.Label(self, image=photo)
         pic.image = photo
-        pic.grid(row=6, sticky="sw")
+        pic.grid(row=6, sticky="s")
+        #pic.grid(row=6, sticky="sw")
+        tk.Label(self, text="This software was developed by employees of the National Institute "
+                            "of Standards and Technology (NIST), an agency of the Federal \n"
+                            "Government. Pursuant to title 17 United States Code Section 105, "
+                            "works of NIST employees are not subject to copyright protection in \n"
+                            "the United States and are considered to be in the public domain. "
+                            "Permission to freely use, copy, modify, and distribute this software \n"
+                            "and its documentation without fee is hereby granted, provided that "
+                            "this notice and disclaimer of warranty appears in all copies.\n"
+                            "THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, "
+                            "EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING,\nBUT NOT LIMITED "
+                            "TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, "
+                            "ANY IMPLIED WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR "
+                            "PURPOSE, AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE\n"
+                            "DOCUMENTATION WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE "
+                            "SOFTWARE WILL BE ERROR FREE. IN NO EVENT\nSHALL NIST BE LIABLE FOR "
+                            "ANY DAMAGES, INCLUDING, BUT NOT LIMITED TO, DIRECT, INDIRECT, "
+                            "SPECIAL OR CONSEQUENTIAL\nDAMAGES, ARISING OUT OF, RESULTING FROM, OR "
+                            "IN ANY WAY CONNECTED WITH THIS SOFTWARE, WHETHER OR NOT BASED UPON \n"
+                            "WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS "
+                            "SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE,\nAND WHETHER OR NOT "
+                            "LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,\nOR USE OF, "
+                            "THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.", font=XS_FONT).grid(row=7, sticky="s")
 
     def select(self, controller):
         """Makes the OK button interact with the two given radio buttons"""

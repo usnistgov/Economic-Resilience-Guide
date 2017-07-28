@@ -330,7 +330,7 @@ class InfoPage(tk.Frame):
                     valid = False
                     err_messages += "All Hazard Recurrence inputs must be numbers.\n\n"
             try:
-                assert float(self.recur_range[0].get()) >= float(self.recur_range[1].get()) >= float(self.recur_range[2].get())
+                assert float(self.recur_range[0].get()) <= float(self.recur_range[1].get()) <= float(self.recur_range[2].get())
                 disc_sum = float(self.recur_range[3].get()) + float(self.recur_range[4].get()) + float(self.recur_range[5].get())
                 if disc_sum != 100:
                     valid = False
