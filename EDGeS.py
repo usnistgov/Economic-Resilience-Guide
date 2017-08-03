@@ -217,8 +217,8 @@ class StartPage(tk.Frame):
 
                     # ===== Transitions to DirectoryPage
                     controller.show_frame('DirectoryPage')
-                except IndexError:#Exception:
-                    tk.messagebox.showerror('File Read Error', 'The save file chosen is inproperly formatted. Please choose a different file.')
+                except Exception: #IndexError:
+                    tk.messagebox.showerror('File Read Error', 'The save file chosen is improperly formatted. Please choose a different file.')
         else:
             return
     

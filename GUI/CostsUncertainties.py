@@ -210,7 +210,7 @@ class CostsUncertaintiesPage(tk.Frame):
                         disc_sum = float(nums[3].get()) + float(nums[4].get()) + float(nums[5].get())
                         if disc_sum != 100:
                             valid = False
-                            err_messages += "Discrete liklihoods must add to 100% (" + cost.title + ").\n\n"
+                            err_messages += "Discrete likelihoods must add to 100% (" + cost.title + ").\n\n"
                     except AssertionError:
                         valid = False
                         err_messages += "Discrete options must be in order (" + cost.title + ").\n\n"
@@ -303,9 +303,9 @@ class CostsUncertaintiesPage(tk.Frame):
                     self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Lowest Amount ($)"),
                                                            tk.Label(self.groups[-1], text="Middle Amount ($)"),
                                                            tk.Label(self.groups[-1], text="Highest Amount ($)"),
-                                                           tk.Label(self.groups[-1], text="Liklihood of Lowest Amount (%)"),
-                                                           tk.Label(self.groups[-1], text="Liklihood of Middle Amount (%)"),
-                                                           tk.Label(self.groups[-1], text="Liklihood of Highest Amount (%)")]
+                                                           tk.Label(self.groups[-1], text="Likelihood of Lowest Amount (%)"),
+                                                           tk.Label(self.groups[-1], text="Likelihood of Middle Amount (%)"),
+                                                           tk.Label(self.groups[-1], text="Likelihood of Highest Amount (%)")]
                     for label in self.labels[plan.id_assign][choice][0:3]:
                         label.grid(row=row_index+self.labels[plan.id_assign][choice].index(label)+5, column=0)
                     for label in self.labels[plan.id_assign][choice][3:6]:
