@@ -1,7 +1,7 @@
 """
    File:          AnalysisUncertainties.py
    Author:        Shannon Craig
-   Description:   Interacts with EconGuide.py, builds the final analysis results with Montecarlo.
+   Description:   Interacts with EconGuide.py, builds the final analysis results with Monte-Carlo.
 """
 
 import tkinter as tk
