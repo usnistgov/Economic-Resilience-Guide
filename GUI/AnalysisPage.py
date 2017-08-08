@@ -158,17 +158,17 @@ def run_main_page(data):
                       font=BOLD_FONT).grid(row=31, **title_opts)
             if any_ext:
                 ttk.Label(group0, text=my_tab + "Externalities",
-                        font=BOLD_FONT).grid(row=32, **title_opts)
+                          font=BOLD_FONT).grid(row=32, **title_opts)
                 ttk.Label(group0, text=my_tab + "Net with Externalities",
                           font=BOLD_FONT).grid(row=33, **title_opts)
                 ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio with Externalities",
-                        font=SMALL_FONT).grid(row=34, **title_opts)
+                          font=SMALL_FONT).grid(row=34, **title_opts)
                 ttk.Label(group0, text=my_tab + "Internal Rate of Return with Externalities",
-                        font=SMALL_FONT).grid(row=35, **title_opts)
+                          font=SMALL_FONT).grid(row=35, **title_opts)
                 ttk.Label(group0, text=my_tab + "Return on Investment with Externalities",
-                        font=SMALL_FONT).grid(row=36, **title_opts)
+                          font=SMALL_FONT).grid(row=36, **title_opts)
                 ttk.Label(group0, text=my_tab + "Non-Disaster ROI with Externalities",
-                        font=SMALL_FONT).grid(row=37, **title_opts)
+                          font=SMALL_FONT).grid(row=37, **title_opts)
 
             ttk.Label(group0, text=my_tab + "Net",
                       font=BOLD_FONT).grid(row=38, **title_opts)
@@ -258,11 +258,13 @@ def run_main_page(data):
                           font=BOLD_FONT).grid(row=31, column=(i + 1), **field_opts)
                 if any_ext:
                     if (plan.exts.total_p - plan.exts.total_n) >= 0:
-                        ttk.Label(group0, text='${:,.0f}'.format(plan.exts.total_p - plan.exts.total_n),
+                        ttk.Label(group0,
+                                  text='${:,.0f}'.format(plan.exts.total_p - plan.exts.total_n),
                                   font=BOLD_FONT).grid(row=32, column=(i + 1), **field_opts)
                     else:
                         ttk.Label(group0,
-                                  text='(' + '${:,.0f}'.format(plan.exts.total_p - plan.exts.total_n) + ')',
+                                  text=('('+'${:,.0f}'.format(plan.exts.total_p-plan.exts.total_n)
+                                        +')'),
                                   font=BOLD_FONT).grid(row=32, column=(i + 1), **field_opts)
                     if plan.net_w_ext >= 0:
                         ttk.Label(group0, text='${:,.0f}'.format(plan.net_w_ext),
@@ -272,13 +274,13 @@ def run_main_page(data):
                                   text='(' + '${:,.0f}'.format(plan.net_w_ext) + ')',
                                   font=BOLD_FONT).grid(row=33, column=(i + 1), **field_opts)
                     ttk.Label(group0, text=write_pct(plan.sir(w_ext=True), w_pct=False),
-                            font=SMALL_FONT).grid(row=34, column=(i+1), **field_opts)
+                              font=SMALL_FONT).grid(row=34, column=(i+1), **field_opts)
                     ttk.Label(group0, text=write_pct(plan.irr(w_ext=True)),
-                            font=SMALL_FONT).grid(row=35, column=(i+1), **field_opts)
+                              font=SMALL_FONT).grid(row=35, column=(i+1), **field_opts)
                     ttk.Label(group0, text=write_pct(plan.roi(w_ext=True)),
-                            font=SMALL_FONT).grid(row=36, column=(i+1), **field_opts)
+                              font=SMALL_FONT).grid(row=36, column=(i+1), **field_opts)
                     ttk.Label(group0, text=write_pct(plan.non_d_roi(w_ext=True)),
-                            font=SMALL_FONT).grid(row=37, column=(i+1), **field_opts)
+                              font=SMALL_FONT).grid(row=37, column=(i+1), **field_opts)
 
                 if plan.net >= 0:
                     ttk.Label(group0, text='${:,.0f}'.format(plan.net),

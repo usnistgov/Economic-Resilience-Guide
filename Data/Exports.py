@@ -1,7 +1,6 @@
 """ The exporting capabilities.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-07
 """
 
 import docx
@@ -36,7 +35,7 @@ def csv_export(sim):
     new_file.write('Disaster Rate: Every ' + str(sim.get_disaster_rate()[0]) + ' years\n')
     if sim.get_disaster_magnitude()[0] != "":
         new_file.write('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
-                    + '% of build cost' + '\n')
+                       + '% of build cost' + '\n')
     if sim.risk_pref != "none":
         new_file.write('Risk Preference: ' + str(sim.risk_pref) + '\n')
     new_file.write('Statistical Value of a Life: '+'${:.0f}'.format(float(sim.stat_life))+'\n')
@@ -149,7 +148,7 @@ def csv_export_uncert(sim):
                    + '% confidence interval. The number of runs was determined with a '
                    + str(sim.tolerance) + '% tolerance.\n')
     for plan in sim.plan_list:
-        new_file.write('For ' + plan.name + ' (Alternative ' + str(plan.id_assign) + ') '
+        new_file.write('For ' + plan.name + ' (Alternative ' + str(plan.num) + ') '
                        + str(plan.mc_iters) + ' Monte-Carlo simulations were run.\n')
     new_file.write('The random number seed for these runs was ' + str(sim.seed) + '.\n')
     new_file.write('Number of Alternatives: ' + str(sim.num_plans-1) + '\n')
@@ -158,7 +157,7 @@ def csv_export_uncert(sim):
     new_file.write('Disaster Rate: Every ' + str(sim.get_disaster_rate()[0]) + ' years\n')
     if sim.get_disaster_magnitude()[0] != "":
         new_file.write('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
-                    + '% of build cost' + '\n')
+                       + '% of build cost' + '\n')
     if sim.risk_pref != "none":
         new_file.write('Risk Preference: ' + str(sim.risk_pref) + '\n')
     new_file.write('Statistical Value of a Life: '+'${:.0f}'.format(float(sim.stat_life))+'\n')
@@ -279,7 +278,8 @@ def csv_export_uncert(sim):
         new_file.write('\nNon-Disaster ROI with Externalities (%)')
         for plan in sim.plan_list:
             new_file.write(',' + str(plan.non_d_roi(w_ext=True)))
-            new_file.write(',' + str(plan.nond_roi_ext_range[0]) + ',' + str(plan.nond_roi_ext_range[1]))
+            new_file.write(',' + str(plan.nond_roi_ext_range[0]))
+            new_file.write(',' + str(plan.nond_roi_ext_range[1]))
     new_file.write('\nNet')
     for plan in sim.plan_list:
         new_file.write(',$' + str(plan.net))
@@ -358,7 +358,7 @@ def ben_table(sim, plan, table):
 
     return table
 
-def nond_ben_table(sim, plan, table):
+def nond_ben_table(plan, table):
     """ Constructs the NonDBens table."""
     i = 2
     # Header
@@ -412,7 +412,7 @@ def nond_ben_table(sim, plan, table):
 
     return table
 
-def cost_table(sim, plan, table):
+def cost_table(plan, table):
     """ Constructs the cost table."""
     i = 2
     # Header
@@ -500,7 +500,7 @@ def cost_table(sim, plan, table):
 
     return table
 
-def ext_table(sim, plan, table):
+def ext_table(plan, table):
     """ Creates Externalities table."""
     i = 2
     # Header
@@ -518,7 +518,7 @@ def ext_table(sim, plan, table):
     table.cell(1, 4).text = '{:,.0f}'.format(plan.exts.one_sum_p)
     table.cell(1, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
     for ext in plan.exts.indiv:
-        if (ext.ext_type == "one-time") & (ext.pm == "+"):
+        if (ext.ext_type == "one-time") & (ext.plus_minus == "+"):
             table.cell(i, 0).text = ext.title
             table.cell(i, 1).text = str(ext.times[0])
             table.cell(i, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -535,7 +535,7 @@ def ext_table(sim, plan, table):
     table.cell(i, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
     i += 1
     for ext in plan.exts.indiv:
-        if (ext.ext_type == "recurring") & (ext.pm == "+"):
+        if (ext.ext_type == "recurring") & (ext.plus_minus == "+"):
             table.cell(i, 0).text = ext.title
             table.cell(i, 1).text = str(ext.times[0])
             table.cell(i, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -553,7 +553,7 @@ def ext_table(sim, plan, table):
     table.cell(i, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
     i += 1
     for ext in plan.exts.indiv:
-        if (ext.ext_type == "one-time") & (ext.pm == "-"):
+        if (ext.ext_type == "one-time") & (ext.plus_minus == "-"):
             table.cell(i, 0).text = ext.title
             table.cell(i, 1).text = str(ext.times[0])
             table.cell(i, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -570,7 +570,7 @@ def ext_table(sim, plan, table):
     table.cell(i, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
     i += 1
     for ext in plan.exts.indiv:
-        if (ext.ext_type == "recurring") & (ext.pm == "-"):
+        if (ext.ext_type == "recurring") & (ext.plus_minus == "-"):
             table.cell(i, 0).text = ext.title
             table.cell(i, 1).text = str(ext.times[0])
             table.cell(i, 1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -617,7 +617,7 @@ def word_export(sim):
                       style='ListBullet')
     if sim.get_disaster_magnitude()[0] != "":
         doc.add_paragraph('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
-                        + '% of build cost', style='ListBullet')
+                          + '% of build cost', style='ListBullet')
     if sim.risk_pref != "none":
         doc.add_paragraph('Risk Preference: ' + str(sim.risk_pref), style='ListBullet')
     doc.add_paragraph()
@@ -625,7 +625,7 @@ def word_export(sim):
                       style='ListBullet')
 
     header_list = ['Plan Title', 'Total Benefits ($)', 'Total Costs ($)', 'Net ($)',
-                    'SIR (%)', 'IRR (%)', 'ROI (%)', 'Non-Disaster ROI (%)']
+                   'SIR (%)', 'IRR (%)', 'ROI (%)', 'Non-Disaster ROI (%)']
 
     if any_ext:
         doc.add_heading('Summary (with Externalities)\n', 1)
@@ -681,7 +681,7 @@ def word_export(sim):
 
     for plan in sim.plan_list:
         doc.add_heading(plan.name, 1)
-        doc.add_heading('Alternative ' + str(plan.id_assign), 3)
+        doc.add_heading('Alternative ' + str(plan.num), 3)
         doc.add_heading('Fatalities Averted\n', 2)
         doc.add_paragraph('Number of Statistical Lives Saved: '
                           + '{:,.2f}'.format(plan.fat.stat_averted))
@@ -702,7 +702,7 @@ def word_export(sim):
         doc.add_heading('Resilience Dividend\n', 2)
         table = doc.add_table(rows=len(plan.nond_bens.indiv)+4, cols=5,
                               style='Light List Accent 1')
-        table = nond_ben_table(sim, plan, table)
+        table = nond_ben_table(plan, table)
         for ben in plan.nond_bens.indiv:
             if ben.desc != 'N/A':
                 doc.add_paragraph(ben.title + ': ' + ben.desc)
@@ -710,7 +710,7 @@ def word_export(sim):
         # == COSTS
         doc.add_heading('Costs\n', 2)
         table = doc.add_table(rows=len(plan.costs.indiv)+6, cols=5, style='Light List Accent 1')
-        table = cost_table(sim, plan, table)
+        table = cost_table(plan, table)
         for cost in plan.costs.indiv:
             if cost.desc != 'N/A':
                 doc.add_paragraph(cost.title + ': ' + cost.desc)
@@ -719,7 +719,7 @@ def word_export(sim):
         doc.add_heading('Externalities\n', 2)
         table = doc.add_table(rows=len(plan.exts.indiv)+6, cols=5,
                               style='Light List Accent 1')
-        table = ext_table(sim, plan, table)
+        table = ext_table(plan, table)
         for ext in plan.exts.indiv:
             if ext.desc != 'N/A':
                 doc.add_paragraph(ext.title + ': ' + ext.desc)
@@ -781,7 +781,7 @@ def word_export_uncert(sim):
                       + 'The number of runs was determined with a '
                       + str(sim.tolerance) + '% tolerance.')
     for plan in sim.plan_list:
-        doc.add_paragraph('For ' + plan.name + ' (Alternative ' + str(plan.id_assign) + ') '
+        doc.add_paragraph('For ' + plan.name + ' (Alternative ' + str(plan.num) + ') '
                           + str(plan.mc_iters) + ' Monte-Carlo simulations were run.')
     doc.add_paragraph('The random number seed for these runs was ' + str(sim.seed) + '.')
 
@@ -798,10 +798,10 @@ def word_export_uncert(sim):
                       style='ListBullet')
     if sim.get_disaster_magnitude()[0] != "":
         doc.add_paragraph('Disaster Magnitude: ' + str(sim.get_disaster_magnitude()[0])
-                        + '% of build cost', style='ListBullet')
+                          + '% of build cost', style='ListBullet')
         doc.add_paragraph('Uncertainty in Disaster Magnitude: '
-                        + uncert_string(sim.get_disaster_magnitude()[2],
-                                        sim.get_disaster_magnitude()[1]), style='ListBullet')
+                          + uncert_string(sim.get_disaster_magnitude()[2],
+                                          sim.get_disaster_magnitude()[1]), style='ListBullet')
     if sim.risk_pref != "none":
         doc.add_paragraph('Risk Preference: ' + str(sim.risk_pref), style='ListBullet')
     doc.add_paragraph()
@@ -858,64 +858,80 @@ def word_export_uncert(sim):
             sum_tab.cell(idx, sum_index).text = '{:,.0f}'.format(plan.exts.total_p-plan.exts.total_n)
             sum_tab.cell(idx, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_tab.cell(idx+1, sum_index).text = ('(' + '{:,.0f}'.format(plan.ext_range[0]) + '; '
-                                            + '{:,.0f}'.format(plan.ext_range[1]) + ')')
+                                                   + '{:,.0f}'.format(plan.ext_range[1]) + ')')
             sum_tab.cell(idx+1, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_tab.cell(idx+2, sum_index).text = '{:,.0f}'.format(plan.net_w_ext)
             sum_tab.cell(idx+2, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(idx+3, sum_index).text = ('(' + '{:,.0f}'.format(plan.net_ext_range[0]) + '; '
-                                            + '{:,.0f}'.format(plan.net_ext_range[1]) + ')')
+            sum_tab.cell(idx+3, sum_index).text = ('(' + '{:,.0f}'.format(plan.net_ext_range[0])
+                                                   + '; '
+                                                   + '{:,.0f}'.format(plan.net_ext_range[1]) + ')')
             sum_tab.cell(idx+3, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_tab.cell(idx+4, sum_index).text = write_pct(plan.sir(w_ext=True), w_pct=False)
             sum_tab.cell(idx+4, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(idx+5, sum_index).text = ('(' + write_pct(plan.sir_ext_range[0], w_pct=False) + '; '
-                                                   + write_pct(plan.sir_ext_range[1], w_pct=False) + ')')
+            sum_tab.cell(idx+5, sum_index).text = ('('
+                                                   + write_pct(plan.sir_ext_range[0], w_pct=False)
+                                                   + '; '
+                                                   + write_pct(plan.sir_ext_range[1], w_pct=False)
+                                                   + ')')
             sum_tab.cell(idx+5, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_tab.cell(idx+6, sum_index).text = write_pct(plan.irr(w_ext=True), w_pct=False)
             sum_tab.cell(idx+6, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(idx+7, sum_index).text = ('(' + write_pct(plan.irr_ext_range[0], w_pct=False) + '; '
-                                                   + write_pct(plan.irr_ext_range[1], w_pct=False) + ')')
+            sum_tab.cell(idx+7, sum_index).text = ('('
+                                                   + write_pct(plan.irr_ext_range[0], w_pct=False)
+                                                   + '; '
+                                                   + write_pct(plan.irr_ext_range[1], w_pct=False)
+                                                   + ')')
             sum_tab.cell(idx+7, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_tab.cell(idx+8, sum_index).text = write_pct(plan.roi(w_ext=True), w_pct=False)
             sum_tab.cell(idx+8, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(idx+9, sum_index).text = ('(' + write_pct(plan.roi_ext_range[0], w_pct=False) + '; '
-                                                   + write_pct(plan.roi_ext_range[1], w_pct=False) + ')')
+            sum_tab.cell(idx+9, sum_index).text = ('('
+                                                   + write_pct(plan.roi_ext_range[0], w_pct=False)
+                                                   + '; '
+                                                   + write_pct(plan.roi_ext_range[1], w_pct=False)
+                                                   + ')')
             sum_tab.cell(idx+9, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             sum_tab.cell(idx+10, sum_index).text = write_pct(plan.non_d_roi(w_ext=True))
             sum_tab.cell(idx+10, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sum_tab.cell(idx+11, sum_index).text = ('(' + write_pct(plan.nond_roi_ext_range[0], w_pct=False) + '; '
-                                                   + write_pct(plan.nond_roi_ext_range[1], w_pct=False) + ')')
+            sum_tab.cell(idx+11, sum_index).text = ('('
+                                                    + write_pct(plan.nond_roi_ext_range[0], w_pct=False) + '; '
+                                                    + write_pct(plan.nond_roi_ext_range[1], w_pct=False) + ')')
             sum_tab.cell(idx+11, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
             idx += 12
         sum_tab.cell(idx, sum_index).text = '{:,.0f}'.format(plan.net)
         sum_tab.cell(idx, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
         sum_tab.cell(idx+1, sum_index).text = ('(' + '{:,.0f}'.format(plan.net_range[0]) + '; '
-                                        + '{:,.0f}'.format(plan.net_range[1]) + ')')
+                                               + '{:,.0f}'.format(plan.net_range[1]) + ')')
         sum_tab.cell(idx+1, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
         sum_tab.cell(idx+2, sum_index).text = write_pct(plan.sir(), w_pct=False)
         sum_tab.cell(idx+2, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        sum_tab.cell(idx+3, sum_index).text = ('(' + write_pct(plan.sir_range[0], w_pct=False) + '; '
-                                                + write_pct(plan.sir_range[1], w_pct=False) + ')')
+        sum_tab.cell(idx+3, sum_index).text = ('(' + write_pct(plan.sir_range[0], w_pct=False)
+                                               + '; '
+                                               + write_pct(plan.sir_range[1], w_pct=False) + ')')
         sum_tab.cell(idx+3, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
         sum_tab.cell(idx+4, sum_index).text = write_pct(plan.irr(), w_pct=False)
         sum_tab.cell(idx+4, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        sum_tab.cell(idx+5, sum_index).text = ('(' + write_pct(plan.irr_range[0], w_pct=False) + '; '
-                                                + write_pct(plan.irr_range[1], w_pct=False) + ')')
+        sum_tab.cell(idx+5, sum_index).text = ('(' + write_pct(plan.irr_range[0], w_pct=False)
+                                               + '; '
+                                               + write_pct(plan.irr_range[1], w_pct=False) + ')')
         sum_tab.cell(idx+5, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
         sum_tab.cell(idx+6, sum_index).text = write_pct(plan.roi(), w_pct=False)
         sum_tab.cell(idx+6, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        sum_tab.cell(idx+7, sum_index).text = ('(' + write_pct(plan.roi_range[0], w_pct=False) + '; '
-                                                + write_pct(plan.roi_range[1], w_pct=False) + ')')
+        sum_tab.cell(idx+7, sum_index).text = ('(' + write_pct(plan.roi_range[0], w_pct=False)
+                                               + '; '
+                                               + write_pct(plan.roi_range[1], w_pct=False) + ')')
         sum_tab.cell(idx+7, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
         sum_tab.cell(idx+8, sum_index).text = write_pct(plan.non_d_roi())
         sum_tab.cell(idx+8, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        sum_tab.cell(idx+9, sum_index).text = ('(' + write_pct(plan.nond_roi_range[0], w_pct=False) + '; '
-                                                + write_pct(plan.nond_roi_range[1], w_pct=False) + ')')
+        sum_tab.cell(idx+9, sum_index).text = ('(' + write_pct(plan.nond_roi_range[0], w_pct=False)
+                                               + '; '
+                                               + write_pct(plan.nond_roi_range[1], w_pct=False)
+                                               + ')')
         sum_tab.cell(idx+9, sum_index).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
         sum_index += 1
 
     for plan in sim.plan_list:
         doc.add_heading(plan.name, 1)
-        doc.add_heading('Alternative ' + str(plan.id_assign), 3)
+        doc.add_heading('Alternative ' + str(plan.num), 3)
         doc.add_heading('Fatalities Averted\n', 2)
         doc.add_paragraph('Number of Statistical Lives Saved: '
                           + '{:,.2f}'.format(plan.fat.stat_averted))
@@ -937,7 +953,7 @@ def word_export_uncert(sim):
         doc.add_heading('Resilience Dividend\n', 2)
         table = doc.add_table(rows=len(plan.nond_bens.indiv) + 4, cols=5,
                               style='Light List Accent 1')
-        table = nond_ben_table(sim, plan, table)
+        table = nond_ben_table(plan, table)
         for ben in plan.nond_bens.indiv:
             if ben.dist != 'none':
                 doc.add_paragraph(ben.title + ': ' + uncert_string(ben.dist, ben.range))
@@ -947,7 +963,7 @@ def word_export_uncert(sim):
         # == COSTS
         doc.add_heading('Costs\n', 2)
         table = doc.add_table(rows=len(plan.costs.indiv)+6, cols=5, style='Light List Accent 1')
-        table = cost_table(sim, plan, table)
+        table = cost_table(plan, table)
         for cost in plan.costs.indiv:
             if cost.dist != 'none':
                 doc.add_paragraph(cost.title + ': ' + uncert_string(cost.dist, cost.range))
@@ -958,7 +974,7 @@ def word_export_uncert(sim):
         doc.add_heading('Externalities\n', 2)
         table = doc.add_table(rows=len(plan.exts.indiv)+6, cols=5,
                               style='Light List Accent 1')
-        table = ext_table(sim, plan, table)
+        table = ext_table(plan, table)
         for ext in plan.exts.indiv:
             if ext.dist != 'none':
                 doc.add_paragraph(ext.title + ': ' + uncert_string(ext.dist, ext.range))

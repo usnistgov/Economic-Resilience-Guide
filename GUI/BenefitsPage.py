@@ -9,15 +9,12 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk     #for pretty buttons/labels
 
-import numpy as np
 
 from GUI.InfoPage import InfoPage
 
-from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT
+from GUI.Constants import SMALL_FONT, LARGE_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 from GUI.Constants import ENTRY_WIDTH
-
-from Data.ClassBenefits import Benefit
 
 #
 #
@@ -53,20 +50,23 @@ class BenefitsPage(tk.Frame):
         group1 = ttk.LabelFrame(self, text="Benefit Description")
         group1.grid(row=3, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        title_lbl = ttk.Label(group1, text="Title", font=SMALL_FONT)
-        title_lbl.grid(row=0, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group1, text="Title",
+                  font=SMALL_FONT).grid(row=0, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.title_ent = tk.Entry(group1, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.title_ent.insert(tk.END, "<enter a title for this benefit>")
         self.title_ent.grid(row=0, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        ben_lbl = ttk.Label(group1, text="Amount  $", font=SMALL_FONT)
-        ben_lbl.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group1, text="Amount  $",
+                  font=SMALL_FONT).grid(row=1, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.ben_ent = tk.Entry(group1, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.ben_ent.insert(tk.END, "<enter dollar value for this benefit>")
         self.ben_ent.grid(row=1, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        desc_lbl = ttk.Label(group1, text="Description", font=SMALL_FONT)
-        desc_lbl.grid(row=2, column=0, sticky="ne", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group1, text="Description",
+                  font=SMALL_FONT).grid(row=2, column=0, sticky="ne",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.desc_ent = tk.Text(group1, width=60, height=10, font=SMALL_FONT)
         self.desc_ent.insert(tk.END, "<enter a description for this benefit>")
         self.desc_ent.grid(row=2, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -75,9 +75,8 @@ class BenefitsPage(tk.Frame):
         group2 = ttk.LabelFrame(self, text="Plan Affected")
         group2.grid(row=3, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        plan_lbl = ttk.Label(group2, text="Which plan(s) does this benefit pertain to?",
-                             font=SMALL_FONT)
-        plan_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
+        ttk.Label(group2, text="Which plan(s) does this benefit pertain to?",
+                  font=SMALL_FONT).grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
         self.bools = [tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar(),
                       tk.BooleanVar(), tk.BooleanVar(), tk.BooleanVar()]
 
@@ -113,21 +112,18 @@ class BenefitsPage(tk.Frame):
 
         self.choice = tk.StringVar()
         self.choice.set("1")
-        dir_label = ttk.Label(group3,
-                              text="Is this a Direct Loss Reduction, Indirect Loss Reduction, or\n"
-                                   "Response/Recovery Cost Reduction?",
-                              font=SMALL_FONT)
-        dir_label.grid(row=0, column=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
+        ttk.Label(group3,
+                  text="Is this a Direct Loss Reduction, Indirect Loss Reduction, or\n"
+                       "Response/Recovery Cost Reduction?",
+                  font=SMALL_FONT).grid(row=0, column=0, sticky="ew",
+                                        padx=BASE_PADDING, pady=BASE_PADDING)
 
-        direct_rad = tk.Radiobutton(group3, text="Direct Reduction",
-                                    variable=self.choice, value="direct")
-        direct_rad.grid(sticky="w")
-        indirect_rad = tk.Radiobutton(group3, text="Indirect Reduction",
-                                      variable=self.choice, value="indirect")
-        indirect_rad.grid(sticky="w")
-        res_rec_rad = tk.Radiobutton(group3, text="Response/Recovery Reduction",
-                                     variable=self.choice, value="res-rec")
-        res_rec_rad.grid(sticky="w")
+        tk.Radiobutton(group3, text="Direct Reduction",
+                       variable=self.choice, value="direct").grid(sticky="w")
+        tk.Radiobutton(group3, text="Indirect Reduction",
+                       variable=self.choice, value="indirect").grid(sticky="w")
+        tk.Radiobutton(group3, text="Response/Recovery Reduction",
+                       variable=self.choice, value="res-rec").grid(sticky="w")
 
         #self.choice.trace("w", self.on_trace_change)
 
@@ -135,9 +131,8 @@ class BenefitsPage(tk.Frame):
         group4 = ttk.LabelFrame(self, text="Access Saved Benefits")
         group4.grid(row=4, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        hist_lbl = ttk.Label(group4, text="Edit, copy, or delete saved benefits.",
-                             font=SMALL_FONT)
-        hist_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
+        ttk.Label(group4, text="Edit, copy, or delete saved benefits.",
+                  font=SMALL_FONT).grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
         self.choices = []
         self.variable = tk.StringVar()
@@ -183,8 +178,7 @@ class BenefitsPage(tk.Frame):
 
 
         # ===== Manueverability/Information buttons
-        save_button = ttk.Button(self, text="Save Analysis",
-                                 command=lambda: self.data_cont.file_save())
+        save_button = ttk.Button(self, text="Save Analysis", command=self.data_cont.file_save)
         save_button.grid(row=1, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Add Benefit", command=self.add_ben)
         self.add_button.grid(row=5, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -194,7 +188,8 @@ class BenefitsPage(tk.Frame):
         back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se",
+                                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def hover(self, _event):
@@ -215,9 +210,9 @@ class BenefitsPage(tk.Frame):
                             "by editing the associated information, copying the associated "
                             "information (for ease), or deleting the benefit all together.\n\n"
                             "The following benefit types are defined:\n"
-                            "    Direct Reduction: The additional dollar amount of a cost that would "
-                            "have directly affected the plan’s associated stakeholder(s) had this "
-                            "plan NOT been implemented. Direct costs avoided.\n"
+                            "    Direct Reduction: The additional dollar amount of a cost that "
+                            "would have directly affected the plan’s associated stakeholder(s) "
+                            "had this plan NOT been implemented. Direct costs avoided.\n"
                             "    Indirect Reduction: The additional dollar amount of a cost that "
                             "would have affected individuals in the surrounding area or involved "
                             "with the stakeholder(s) had this plan NOT been implemented. Indirect "
@@ -231,12 +226,13 @@ class BenefitsPage(tk.Frame):
            and updates 'Saved Benefits' section"""
         if moveon:
             [valid, blank, err_messages] = self.check_page(printout=False)
-            if not (valid | blank):
+            if not valid | blank:
                 checker = messagebox.askyesno('Move Forward?',
-                                              'Your benefit was not saved. The following errors were found:\n'
-                                              + err_messages
+                                              'Your benefit was not saved. The following errors '
+                                              + "were found:\n" + err_messages
                                               + 'Select \'No\' if you wish to continue editing'
-                                              ' and \'Yes\' if you wish to move to the next page.')
+                                              + ' and \'Yes\' if you wish to move to the '
+                                              + 'next page.')
                 return checker
             if blank:
                 return True
@@ -256,7 +252,7 @@ class BenefitsPage(tk.Frame):
         del self.choices[:]
 
         for plan in self.data_cont.plan_list:
-            i = str(plan.id_assign)
+            i = str(plan.num)
             for ben in plan.bens.indiv:
                 choice_check = ben.title
                 if i == "0" and ((choice_check + " - <Base Plan>") not in self.choices):
@@ -294,9 +290,9 @@ class BenefitsPage(tk.Frame):
             for i in plan_num:
                 plan = self.data_cont.plan_list[i]
                 [valid, blank, err_messages] = plan.bens.save(new_title, new_type, new_amount,
-                                                          new_desc, err_messages)
+                                                              new_desc, err_messages)
 
-        if (not valid) & (not blank):
+        if (not valid) & (not blank) & printout:
             messagebox.showerror("ERROR", err_messages)
         return [valid, blank, err_messages]
 
@@ -412,8 +408,10 @@ class BenefitsPage(tk.Frame):
                 if ben.title == chosen_ben[0]:
                     ben_amount = ben.amount
                     ben_desc = ben.desc
-            del_text = ("Delete \'" + chosen_ben[0] + "\' from " + self.data_cont.plan_list[chosen_ben[1]].name + " Plan ?\n\n"
-                        + "Amount: $" + '{:,.2f}'.format(ben_amount) + "\n\nDescription: " + str(ben_desc))
+            del_text = ("Delete \'" + chosen_ben[0] + "\' from "
+                        + self.data_cont.plan_list[chosen_ben[1]].name + " Plan ?\n\n"
+                        + "Amount: $" + '{:,.2f}'.format(ben_amount)
+                        + "\n\nDescription: " + str(ben_desc))
             confirm = messagebox.askokcancel("Confirmation", del_text)
             if confirm:
                 confirm_delete()

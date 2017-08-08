@@ -10,13 +10,10 @@ from tkinter import messagebox
 from tkinter import ttk     #for pretty buttons/labels
 
 from GUI.InfoPage import InfoPage
-from GUI.AnalysisPage import run_main_page
 
-from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT
+from GUI.Constants import SMALL_FONT, LARGE_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 from GUI.Constants import ENTRY_WIDTH
-
-from Data.ClassNonDBens import Benefit
 
 #
 #
@@ -201,7 +198,7 @@ class NonDBensPage(tk.Frame):
 
         # ===== Manueverability/Information buttons
         save_button = ttk.Button(self, text="Save Analysis",
-                                 command=lambda: self.data_cont.file_save())
+                                 command=self.data_cont.file_save)
         save_button.grid(row=1, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Add Benefit", command=self.add_ben)
         self.add_button.grid(row=5, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -211,7 +208,8 @@ class NonDBensPage(tk.Frame):
         back_button.grid(row=6, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se",
+                                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def hover(self, _event):
@@ -271,7 +269,7 @@ class NonDBensPage(tk.Frame):
         del self.choices[:]
 
         for plan in self.data_cont.plan_list:
-            i = str(plan.id_assign)
+            i = str(plan.num)
             for ben in plan.nond_bens.indiv:
                 if i == "0" and ((ben.title + " - <Base Plan>") not in self.choices):
                     self.choices.append(ben.title + " - <Base Plan>")
@@ -315,13 +313,17 @@ class NonDBensPage(tk.Frame):
         if len(plan_num) == 0:
             err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
             plan = self.data_cont.plan_list[0]
-            [valid, blank, err_messages] = plan.nond_bens.save(new_title, new_times, new_type, new_amount, new_desc, err_messages, blank=True)
+            [valid, blank, err_messages] = plan.nond_bens.save(new_title, new_times, new_type,
+                                                               new_amount, new_desc, err_messages,
+                                                               blank=True)
         else:
             for i in plan_num:
                 plan = self.data_cont.plan_list[i]
-                [valid, blank, err_messages] = plan.nond_bens.save(new_title, new_times, new_type, new_amount, new_desc, err_messages)
-                
-        if (not valid) & printout:
+                [valid, blank, err_messages] = plan.nond_bens.save(new_title, new_times, new_type,
+                                                                   new_amount, new_desc,
+                                                                   err_messages)
+
+        if (not valid) & (not blank) & printout:
             messagebox.showerror("ERROR", err_messages)
         return [valid, blank, err_messages]
 
@@ -351,7 +353,7 @@ class NonDBensPage(tk.Frame):
         self.ben_ent.delete(0, tk.END)
         self.ben_ent.insert(tk.END, '{:,.2f}'.format(old_ben.amount))
         self.desc_ent.delete('1.0', tk.END)
-        self.desc_ent.insert(tk.END,old_ben.desc)
+        self.desc_ent.insert(tk.END, old_ben.desc)
         self.non_d_ben_recurr_selection.set(old_ben.ben_type)
         self.year_start_ent.delete(0, tk.END)
         self.year_start_ent.insert(tk.END, old_ben.times[0])
@@ -427,6 +429,7 @@ class NonDBensPage(tk.Frame):
             #popup = tk.Tk()
 
             def confirm_delete():
+                """Confirms that the delete is desired and deletes the item."""
                 # ===== Removes the externality from the list
                 chosen_plan = self.data_cont.plan_list[chosen_ben[1]]
                 for ben in chosen_plan.nond_bens.indiv:
@@ -524,25 +527,27 @@ class NonDBensPage(tk.Frame):
         self.plan5.grid_remove()
         self.plan6.grid_remove()
 
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 0:
-            self.plan1.configure(text=self.controller.frames[InfoPage].name_ents[0].get()
+        info_page = self.controller.frames[InfoPage]
+
+        if int(info_page.num_plans_ent.get()) > 0:
+            self.plan1.configure(text=info_page.name_ents[0].get()
                                  +" (Plan 1)")
             self.plan1.grid()
 
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 1:
-            self.plan2.configure(text=self.controller.frames[InfoPage].name_ents[1].get()+" (Plan 2)")
+        if int(info_page.num_plans_ent.get()) > 1:
+            self.plan2.configure(text=info_page.name_ents[1].get()+" (Plan 2)")
             self.plan2.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 2:
-            self.plan3.configure(text=self.controller.frames[InfoPage].name_ents[2].get()+" (Plan 3)")
+        if int(info_page.num_plans_ent.get()) > 2:
+            self.plan3.configure(text=info_page.name_ents[2].get()+" (Plan 3)")
             self.plan3.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 3:
-            self.plan4.configure(text=self.controller.frames[InfoPage].name_ents[3].get()+" (Plan 4)")
+        if int(info_page.num_plans_ent.get()) > 3:
+            self.plan4.configure(text=info_page.name_ents[3].get()+" (Plan 4)")
             self.plan4.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 4:
-            self.plan5.configure(text=self.controller.frames[InfoPage].name_ents[4].get()+" (Plan 5)")
+        if int(info_page.num_plans_ent.get()) > 4:
+            self.plan5.configure(text=info_page.name_ents[4].get()+" (Plan 5)")
             self.plan5.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 5:
-            self.plan6.configure(text=self.controller.frames[InfoPage].name_ents[5].get()+" (Plan 6)")
+        if int(info_page.num_plans_ent.get()) > 5:
+            self.plan6.configure(text=info_page.name_ents[5].get()+" (Plan 6)")
             self.plan6.grid()
 
         self.year_start_lbl.configure(state="disabled")

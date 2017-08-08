@@ -566,12 +566,13 @@ def run_u_main_page(data):
                                   font=SMALL_FONT).grid(row=tot_idx+11, column=i+1,
                                                         sticky="e", **pad_opts)
                     if (plan.exts.total_p - plan.exts.total_n) >= 0:
-                        ttk.Label(group0, text='${:,.0f}'.format(plan.exts.total_p - plan.exts.total_n),
+                        ttk.Label(group0,
+                                  text='${:,.0f}'.format(plan.exts.total_p - plan.exts.total_n),
                                   font=BOLD_FONT).grid(row=tot_idx+12, column=i+1,
                                                        sticky="e", **pad_opts)
                     else:
                         ttk.Label(group0,
-                                  text='(' + '${:,.0f}'.format(plan.exts.total_p - plan.exts.total_n) + ')',
+                                  text='('+'${:,.0f}'.format(plan.exts.total_p-plan.exts.total_n)+')',
                                   font=BOLD_FONT).grid(row=tot_idx+12, column=i+1,
                                                        sticky="e", **pad_opts)
                     if plan.ext_range[1] >= 0:
@@ -611,32 +612,44 @@ def run_u_main_page(data):
                                   font=SMALL_FONT).grid(row=tot_idx+17, column=i+1,
                                                         sticky="e", **pad_opts)
                     ttk.Label(group0,
-                            text=write_pct(plan.sir_ext_range[0], w_pct=False),
-                            font=SMALL_FONT).grid(row=tot_idx+19, column=i+1, sticky="e", **pad_opts)
+                              text=write_pct(plan.sir_ext_range[0], w_pct=False),
+                              font=SMALL_FONT).grid(row=tot_idx+19, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.sir(w_ext=True), w_pct=False),
-                            font=BOLD_FONT).grid(row=tot_idx+20, column=i+1, sticky="e", **pad_opts)
+                              font=BOLD_FONT).grid(row=tot_idx+20, column=i+1,
+                                                   sticky="e", **pad_opts)
                     ttk.Label(group0,
-                            text=write_pct(plan.sir_ext_range[1], w_pct=False),
-                            font=SMALL_FONT).grid(row=tot_idx+21, column=i+1, sticky="e", **pad_opts)
+                              text=write_pct(plan.sir_ext_range[1], w_pct=False),
+                              font=SMALL_FONT).grid(row=tot_idx+21, column=i+1,
+                                                    sticky="e", **pad_opts)
 
                     ttk.Label(group0, text=write_pct(plan.irr_range[0]),
-                            font=SMALL_FONT).grid(row=tot_idx+23, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+23, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.irr(w_ext=True)),
-                            font=SMALL_FONT).grid(row=tot_idx+24, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+24, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.irr_range[1]),
-                            font=SMALL_FONT).grid(row=tot_idx+25, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+25, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.roi_ext_range[0]),
-                            font=SMALL_FONT).grid(row=tot_idx+26, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+27, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.roi(w_ext=True)),
-                            font=SMALL_FONT).grid(row=tot_idx+27, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+28, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.roi_ext_range[1]),
-                            font=SMALL_FONT).grid(row=tot_idx+28, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+29, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.nond_roi_ext_range[0]),
-                            font=SMALL_FONT).grid(row=tot_idx+30, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+31, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.non_d_roi(w_ext=True)),
-                            font=SMALL_FONT).grid(row=tot_idx+31, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+32, column=i+1,
+                                                    sticky="e", **pad_opts)
                     ttk.Label(group0, text=write_pct(plan.nond_roi_ext_range[1]),
-                            font=SMALL_FONT).grid(row=tot_idx+32, column=i+1, sticky="e", **pad_opts)
+                              font=SMALL_FONT).grid(row=tot_idx+33, column=i+1,
+                                                    sticky="e", **pad_opts)
 
                 if plan.net_range[0] >= 0:
                     ttk.Label(group0, text='${:,.0f}'.format(plan.net_range[0]),
@@ -705,7 +718,7 @@ def run_u_main_page(data):
             button_index = 6
             exp_button = ttk.Button(self, text="Export Summary", command=self.export)
             exp_button.grid(row=button_index)
-            info_button = ttk.Button(self, text="More Information", command=self.info)
+            info_button = ttk.Button(self, text="More Information", command=info)
             info_button.grid(row=button_index, sticky="w")
 
         def export(self):
@@ -745,36 +758,36 @@ def run_u_main_page(data):
 
             popup.mainloop()
 
-        def info(self):
-            """Provides information to the user"""
-            messagebox.showinfo("More Information",
-                                "For information regrading any of the particular benefits or "
-                                "costs, please refer back to the previous pages of the particular"
-                                " benefit or cost. The corresponding pages contain specific "
-                                "information to their related benefit or cost.\n\n"
-                                "The following terms are defined:\n\n"
-                                "    Savings-to-Investment Ratio:\n"
-                                "            Used to determine whether the potential savings of a "
-                                "project justifies the inital investment and following maintenance"
-                                " costs. The higher the ratio, the greater the savings; this "
-                                "number can also be negative.\n\n"
-                                "    Internal Rate of Return:\n"
-                                "            This is the discount rate that makes the Net Present "
-                                "Value of all net cash flows of a project equal zero. It measures "
-                                "the profitability of potential investments. Generally speaking, "
-                                "the higher this number, the more desirable the project.\n\n"
-                                "    Return on Investment:\n"
-                                "            Measures the amount of return on an investment "
-                                " relative to the investment's cost. The annual benefit is divided"
-                                " by the total cost, resulting in a ratio. The higher this number,"
-                                " the higher the annual return is on a project.\n\n"
-                                "    Non-Disaster ROI:\n"
-                                "            Return on Investment, assuming that no disaster occurs"
-                                " within the planning horizon.\n\n\n"
-                                "Links to NIST's Economic Decision Guide:\n"
-                                "http://www.nist.gov/el/resilience/guide.cfm\n"
-                                "http://nvlpubs.nist.gov/nistpubs/"
-                                "SpecialPublications/NIST.SP.1197.pdf")
+    def info():
+        """Provides information to the user"""
+        messagebox.showinfo("More Information",
+                            "For information regrading any of the particular benefits or "
+                            "costs, please refer back to the previous pages of the particular"
+                            " benefit or cost. The corresponding pages contain specific "
+                            "information to their related benefit or cost.\n\n"
+                            "The following terms are defined:\n\n"
+                            "    Savings-to-Investment Ratio:\n"
+                            "            Used to determine whether the potential savings of a "
+                            "project justifies the inital investment and following maintenance"
+                            " costs. The higher the ratio, the greater the savings; this "
+                            "number can also be negative.\n\n"
+                            "    Internal Rate of Return:\n"
+                            "            This is the discount rate that makes the Net Present "
+                            "Value of all net cash flows of a project equal zero. It measures "
+                            "the profitability of potential investments. Generally speaking, "
+                            "the higher this number, the more desirable the project.\n\n"
+                            "    Return on Investment:\n"
+                            "            Measures the amount of return on an investment "
+                            " relative to the investment's cost. The annual benefit is divided"
+                            " by the total cost, resulting in a ratio. The higher this number,"
+                            " the higher the annual return is on a project.\n\n"
+                            "    Non-Disaster ROI:\n"
+                            "            Return on Investment, assuming that no disaster occurs"
+                            " within the planning horizon.\n\n\n"
+                            "Links to NIST's Economic Decision Guide:\n"
+                            "http://www.nist.gov/el/resilience/guide.cfm\n"
+                            "http://nvlpubs.nist.gov/nistpubs/"
+                            "SpecialPublications/NIST.SP.1197.pdf")
 
 
     root = UMainPage(data)

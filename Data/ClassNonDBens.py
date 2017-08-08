@@ -2,32 +2,36 @@
         and the non-disaster related benefits class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-07
 """
 
-import math
 import numpy as np
 
 from Data.distributions import uniDistInv, triDistInv, gauss_dist_inv, none_dist, discrete_dist_inv
+from Data.distributions import calc_one_time, calc_recur
 
 class NonDBens():
     """ Holds a list of all of the benefits and performs the benefit-related calculations."""
     def __init__(self, discount_rate, horizon):
+        # === The list of all non-disaster related benefits
         self.indiv = []
 
+        # === The sums used for the final analysis
         self.one_sum = 0
         self.r_sum = 0
 
         self.total = 0
 
+        # === Horizon and discount rate needed for calc_one_time and calc_recur
         self.horizon = float(horizon)
         self.discount_rate = float(discount_rate)
 
+        # === Uncertainties ranges
         self.one_range = [0, 0]
         self.r_range = [0, 0]
 
     def new_ben(self, line):
         """ Makes a new benefit and adds it to the list of benefit types. """
+        # === If we are adding uncertainty
         if line[0] == 'Uncertainty':
             self.indiv[-1].dist = line[1]
             self.indiv[-1].range = list(line[2:8])
@@ -47,31 +51,11 @@ class NonDBens():
         self.r_sum = 0
         for ben in self.indiv:
             if ben.ben_type == "one-time":
-                self.one_sum += self.calc_one_time(ben.amount, ben.times[0])
+                self.one_sum += calc_one_time(self.discount_rate, ben.amount, ben.times[0])
             elif ben.ben_type == "recurring":
-                self.r_sum += self.calc_recur(ben.amount, ben.times[0], ben.times[1])
-            else:
-                pass
-                #print(ben.ben_type)
+                self.r_sum += calc_recur(self.discount_rate, self.horizon,
+                                         ben.amount, ben.times[0], ben.times[1])
         self.total = self.one_sum + self.r_sum
-
-    def calc_one_time(self, value, time):
-        """Equation used for One-time OMR costs"""
-        value = float(value)
-        time = float(time)
-        return (math.exp(-(float(self.discount_rate) / 100) * time)) * value
-
-    def calc_recur(self, value, start, rate):
-        """Equation used for Recurring OMR costs"""
-        total = 0
-        year = float(start)
-        value = float(value)
-        rate = float(rate)
-
-        while year <= float(self.horizon):
-            total += value * math.exp(-(float(self.discount_rate) / 100) * year)
-            year += rate
-        return total
 
     def one_iter(self, old_ben_list):
         """ Creates one instance of Benefits with all benefits within uncertainty ranges."""
@@ -91,65 +75,72 @@ class NonDBens():
     def save(self, title, times, ben_type, amount, desc, err_messages, blank=False):
         """ Attempts to save a benefit."""
         field_dict = {}
-        if blank:
-            valid = False
-        else:
-            valid = True
-        # ===== Mandatory fields cannot be left blank or left alone
+
+        # ===== Checking the title field
         if title == "" or title == "<enter a title for this benefit>":
             err_messages += "Title field has been left empty!\n\n"
             valid = False
-        else:
+        elif ',' in title:
+            err_messages += "There cannot be a comma in the title.\n\n"
+            valid = False
             blank = False
+        else:
+            field_dict['title'] = title
+            blank = False
+
+        # ==== Checking the description field
         if desc in {"", "<enter a description for this benefit>\n"}:
             desc = ['N/A']
         else:
             desc = desc.replace('\n', '')
             blank = False
-        field_dict['desc'] = [desc]
-        # ===== Ben cannot have a duplicate title
-        for plan in self.indiv:
-            if title == plan.title:
-                err_messages += title + " is already used as a benefit title for this plan. "
-                err_messages += "Please input a different title.\n\n"
-                valid = False
-        # No comma in title
-        if "," in title:
-            err_messages += "Title cannot have a comma. Please change the title.\n\n"
-            valid = False
-        # Set title in dict
-        field_dict['title'] = title
+            for plan in self.indiv:
+                if title == plan.title:
+                    err_messages += title + " is already used as a benefit title for this plan. "
+                    err_messages += "Please input a different title.\n\n"
+                    valid = False
 
-        # ===== Cost must be a positive number
+        # ===== Checking the amount field
         try:
-            amount = amount.replace(',','')
-            amount = float(amount)
-            blank = False
-            if amount < 0:
-                err_messages += "Benefit must be a positive number. "
-                err_messages += "Perhaps you should enter that as a cost.\n"
+            amount = amount.replace(',', '')#.replace(' ', '')
+            if float(amount) < 0:
+                err_messages += "Dollar value must be a positive number. "
+                err_messages += "Perhaps this is a cost?\n"
                 err_messages += "Please enter a positive amount.\n\n"
-                blank = False
                 valid = False
+            blank = False
+            field_dict['amount'] = float(amount)
         except ValueError:
+            valid = False
             if amount not in {"", "<enter an amount for this benefit>"}:
                 blank = False
             err_messages += "Dollar value of the benefit must be a number. "
             err_messages += "Please enter an amount.\n\n"
-            valid = False
-        field_dict['amount'] = amount
 
+        # ===== Checking the description field
+        if desc in {"", "<enter a description for this benefit>\n"}:
+            desc = ["N/A"]
+        else:
+            desc = desc.replace('\n', '')
+            blank = False
+        field_dict['desc'] = [desc]
+
+        # ===== Checking the benefit type
+        if ben_type not in ["one-time", "recurring"]:
+            err_messages += "A 'Benefit Type' has not been selected!\n\n"
+            valid = False
         try:
-            float(times[0])
+            if float(times[0]) < 0:
+                err_messages += "Starting year must be a positive number. "
+                err_messages += "Please enter a positive amount.\n\n"
+                valid = False
+            blank = False
         except ValueError:
             err_messages += "Starting year must be number. Please enter an amount.\n\n"
             valid = False
-        if "-" in times[0]:
-            err_messages += "Starting year must be a positive number. "
-            err_messages += "Please enter a positive amount.\n\n"
-            valid = False
 
         if ben_type == "recurring":
+            blank = False
             try:
                 if float(times[1]) <= 0:
                     err_messages += "Recurring rate must be a positive number. "
@@ -160,11 +151,12 @@ class NonDBens():
                 valid = False
         field_dict['ben_type'] = ben_type
         field_dict['times'] = times
-        if valid:
+
+        if not blank and valid:
             self.indiv.append(Benefit(**field_dict))
-            return [valid, blank, "Benefit has been successfully added!"]
-        else:
-            return [valid, blank, err_messages]
+            err_messages += "Benefit has been successfully added!"
+
+        return [valid, blank, err_messages]
 
 
 class Benefit():
@@ -176,11 +168,7 @@ class Benefit():
         self.ben_type = ben_type
         self.times = times
         self.amount = float(amount)
-        self.desc = ""
-        for i in range(len(desc)):
-            if i != 0:
-                self.desc += ','
-            self.desc += desc[i]
+        self.set_desc(desc)
         self.range = ['<insert uncertainty>',
                       '<insert uncertainty>',
                       '<insert uncertainty>',
@@ -194,5 +182,15 @@ class Benefit():
 
         self.range = []
         for item in new_range:
-            self.range.append(item.replace(',',''))
+            self.range.append(item.replace(',', ''))
         self.dist = distribution
+
+    def set_desc(self, new_desc):
+        """ Sets the description. """
+        self.desc = ""
+        for item in new_desc:
+            if self.desc != "" and not self.desc.endswith(","):
+                self.desc += ','
+            self.desc += item
+        if self.desc == 'N/A,':
+            self.desc = 'N/A'

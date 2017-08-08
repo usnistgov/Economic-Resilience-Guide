@@ -5,7 +5,6 @@
                   the first page the user will input data on.
 """
 
-import sys
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk     #for pretty buttons/labels
@@ -248,10 +247,12 @@ class InfoPage(tk.Frame):
             # === Places spacing so that buttons are on the bottom right
         space_lbl = ttk.Label(group7, text=" " * 106)
         space_lbl.grid(row=0, column=1)
-        next_button = ttk.Button(group7, text="Next>>", command=lambda: self.check_page(controller, 'CostPage'))
+        next_button = ttk.Button(group7, text="Next>>",
+                                 command=lambda: self.check_page(controller, 'CostPage'))
         next_button.grid(row=0, column=7, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        menu_button = ttk.Button(group7, text="Menu", command=lambda: self.check_page(controller, 'DirectoryPage'))
+        menu_button = ttk.Button(group7, text="Menu",
+                                 command=lambda: self.check_page(controller, 'DirectoryPage'))
         menu_button.grid(row=0, column=3, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
     def restore(self):
@@ -318,7 +319,8 @@ class InfoPage(tk.Frame):
                     err_messages += "Hazard Recurrence must be greater than zero.\n\n"
                 if float(self.recur_range[1].get()) <= 0:
                     valid = False
-                    err_messages += "Hazard Recurrence standard deviation must be greater than zero.\n\n"
+                    err_messages += "Hazard Recurrence standard deviation must be "
+                    err_messages += "greater than zero.\n\n"
             except ValueError:
                 valid = False
                 err_messages += "All Hazard Recurrence values must be numbers.\n\n"
@@ -366,7 +368,8 @@ class InfoPage(tk.Frame):
                     err_messages += "Hazard Magnitude must be greater than zero.\n\n"
                 if float(self.mag_range[1].get()) <= 0:
                     valid = False
-                    err_messages += "Hazard Magnitude standard deviation must be greater than zero.\n\n"
+                    err_messages += "Hazard Magnitude standard deviation must be "
+                    err_messages += "greater than zero.\n\n"
             except ValueError:
                 valid = False
                 err_messages += "All Hazard Magnitude values must be numbers.\n\n"
@@ -398,9 +401,6 @@ class InfoPage(tk.Frame):
                 valid = False
                 err_messages += "All Hazard Magnitude inputs must be numbers.\n\n"
 
-        not_neutral = self.preference.get() != "neutral"
-        not_averse = self.preference.get() != "averse"
-        not_accepting = self.preference.get() != "accepting"
         if self.preference.get() not in ['neutral', 'averse', 'accepting', 'none']:
             err_messages += "A risk preference has not been selected! Please select one.\n\n"
             valid = False
@@ -422,14 +422,16 @@ class InfoPage(tk.Frame):
 
         if data.plan_list == []:
             data.plan_list.append(Plan(0, "Base",
-                                    [self.recur_choice.get(), dis_recurr],
-                                    [self.mag_choice.get(), dis_mag],
-                                    data.discount_rate, data.horizon, data.stat_life, self.data_cont.parties))
+                                       [self.recur_choice.get(), dis_recurr],
+                                       [self.mag_choice.get(), dis_mag],
+                                       data.discount_rate, data.horizon, data.stat_life,
+                                       self.data_cont.parties))
             for i in range(1, data.num_plans):
                 data.plan_list.append(Plan(i, self.name_ents[i-1].get(),
-                                        [self.recur_choice.get(), dis_recurr],
-                                        [self.mag_choice.get(), dis_mag],
-                                        data.discount_rate, data.horizon, data.stat_life, self.data_cont.parties))
+                                           [self.recur_choice.get(), dis_recurr],
+                                           [self.mag_choice.get(), dis_mag],
+                                           data.discount_rate, data.horizon, data.stat_life,
+                                           self.data_cont.parties))
         else:
             old_num_plans = len(data.plan_list)
             new_num_plans = data.num_plans
@@ -444,9 +446,10 @@ class InfoPage(tk.Frame):
                                              data.discount_rate, data.horizon, data.stat_life)
                 for j in range(old_num_plans, new_num_plans):
                     data.plan_list.append(Plan(j, self.name_ents[j-1].get(),
-                                          [self.recur_choice.get(), dis_recurr],
-                                          [self.mag_choice.get(), dis_mag],
-                                          data.discount_rate, data.horizon, data.stat_life, self.data_cont.parties))
+                                               [self.recur_choice.get(), dis_recurr],
+                                               [self.mag_choice.get(), dis_mag],
+                                               data.discount_rate, data.horizon, data.stat_life,
+                                               self.data_cont.parties))
             elif old_num_plans > new_num_plans:
                 data.plan_list[0].update(0, 'Base', [self.recur_choice.get(), dis_recurr],
                                          [self.mag_choice.get(), dis_mag],
@@ -466,10 +469,10 @@ class InfoPage(tk.Frame):
         """Shows extra information for the user (for clarification)"""
         messagebox.showinfo("More Information",
                             "In the EDGeS Tool, the terms are defined in the following manner:\n"
-                            "    Planning Horizon: The time span – measured in years – for which the "
-                            "project’s costs and benefits will be assessed in the analysis.\n"
-                            "    Base Scenario:  Often referred to as the “business as usual” case. "
-                            "It refers to the option against which the other identified alterative"
+                            "    Planning Horizon: The time span – measured in years – for which "
+                            "the project’s costs and benefits will be assessed in the analysis.\n"
+                            "    Base Scenario:  Often referred to as the “business as usual” case."
+                            " It refers to the option against which the other identified alterative"
                             " scenarios are compared.\n"
                             "    Real Discount Rate: Often referred to as the “time value of "
                             "money.” Typically, a dollar is worth more today than it would be "
@@ -480,8 +483,8 @@ class InfoPage(tk.Frame):
                             "hazard occurs after its last occurrence. In this version of EDGeS "
                             "only a single hazard will be considered. Future versions of the EDGeS"
                             " Tool may add functionality to deal with compound hazards directly.\n"
-                            "    Hazard Magnitude: The total damage the defined hazard is expected to "
-                            "inflict upon occurrence. The magnitude is measured as the fraction "
+                            "    Hazard Magnitude: The total damage the defined hazard is expected "
+                            "tp inflict upon occurrence. The magnitude is measured as the fraction "
                             "of total replacement cost for a project.\n"
                             "    Risk preference: The willingness of the user/community to take on "
                             "the risk(s) associated with the consequences of potential disruptive "
@@ -511,17 +514,17 @@ class InfoPage(tk.Frame):
                     self.name_ents[i].configure(text="", state="disabled")
             elif choice < 0:
                 self.num_plans_ent.set(0)
-                self.on_trace_choice("","","")
+                self.on_trace_choice("", "", "")
             else:
                 #print('set 6', choice)
                 self.num_plans_ent.set(6)
-                self.on_trace_choice("","","")
+                self.on_trace_choice("", "", "")
         except ValueError:
             if self.num_plans_ent.get() == "":
                 pass
             else:
                 self.num_plans_ent.set(0)
-                self.on_trace_choice("","","")
+                self.on_trace_choice("", "", "")
 
     def on_trace_change_recur(self, _name, _index, _mode):
         """Triggers refresh when the uncertainty choices change."""
@@ -592,7 +595,7 @@ class InfoPage(tk.Frame):
             for label in self.mag_discrete_label:
                 label.grid_remove()
             self.mag_range[0].grid(row=4, column=1,
-                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                                   padx=FIELDX_PADDING, pady=FIELDY_PADDING)
             for i in range(1, len(self.mag_range)):
                 self.mag_range[i].grid_remove()
         elif self.mag_choice.get() == "gauss":
@@ -604,9 +607,9 @@ class InfoPage(tk.Frame):
             for label in self.mag_discrete_label:
                 label.grid_remove()
             self.mag_range[0].grid(row=4, column=1,
-                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                                   padx=FIELDX_PADDING, pady=FIELDY_PADDING)
             self.mag_range[1].grid(row=5, column=1,
-                                     padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                                   padx=FIELDX_PADDING, pady=FIELDY_PADDING)
             for i in range(2, len(self.mag_range)):
                 self.mag_range[i].grid_remove()
         elif self.mag_choice.get() == "discrete":
@@ -635,6 +638,6 @@ class InfoPage(tk.Frame):
                 label.grid_remove()
             for i in range(3):
                 self.mag_range[i].grid(row=self.mag_range.index(self.mag_range[i])+4,
-                                         column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+                                       column=1, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
             for i in range(3, len(self.mag_range)):
                 self.mag_range[i].grid_remove()

@@ -73,7 +73,7 @@ class Application(tk.Tk):
                       'AnalysisInfo': AnalysisInfo}
         cont = frame_dict[cont_string]
         frame = self.frames[cont]
-        frame.on_trace_change("", "","")
+        frame.on_trace_change("", "", "")
         self.container.canvas.xview_moveto(0)
         self.container.canvas.yview_moveto(0)
         frame.tkraise()
@@ -127,7 +127,7 @@ class StartPage(tk.Frame):
                             "Government. Pursuant to title 17 United States Code Section 105, "
                             "works of NIST employees are not subject to copyright protection in \n"
                             "the United States and are considered to be in the public domain. "
-                            "Permission to freely use, copy, modify, and distribute this software \n"
+                            "Permission to freely use, copy, modify, and distribute this software\n"
                             "and its documentation without fee is hereby granted, provided that "
                             "this notice and disclaimer of warranty appears in all copies.\n"
                             "THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND, "
@@ -143,7 +143,8 @@ class StartPage(tk.Frame):
                             "WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER OR NOT INJURY WAS "
                             "SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE,\nAND WHETHER OR NOT "
                             "LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,\nOR USE OF, "
-                            "THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.", font=XS_FONT).grid(row=7, sticky="s")
+                            "THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.",
+                 font=XS_FONT).grid(row=7, sticky="s")
 
     def select(self, controller):
         """Makes the OK button interact with the two given radio buttons"""
@@ -167,25 +168,28 @@ class StartPage(tk.Frame):
             if filename == "":
                 pass
             elif filename[-4:] != ".csv":
-                tk.messagebox.showerror('File Read Error', 'The file selected was not a .csv file and thus could not be a save file. Please select a different file.')
+                tk.messagebox.showerror('File Read Error', 'The file selected was not a .csv file '
+                                                           'and thus could not be a save file. '
+                                                           'Please select a different file.')
             else:
                 try:
                     controller.data_cont = Simulation()
                     controller.data_cont.file_read(file_name=filename)
                     controller.cont_list = [controller.data_cont]
                     for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
-                                ExternalitiesPage, ExternalitiesUncertaintiesPage,
-                                BenefitsPage, BenefitsUncertaintiesPage,
-                                FatalitiesPage, NonDBensPage,
-                                NonDBensUncertaintiesPage, AnalysisInfo):
-                        frame = page(controller.container.interior, controller, controller.cont_list)
+                                 ExternalitiesPage, ExternalitiesUncertaintiesPage,
+                                 BenefitsPage, BenefitsUncertaintiesPage,
+                                 FatalitiesPage, NonDBensPage,
+                                 NonDBensUncertaintiesPage, AnalysisInfo):
+                        frame = page(controller.container.interior, controller,
+                                     controller.cont_list)
                         controller.frames[page] = frame
                         frame.grid(row=0, column=0, sticky="nsew")
 
                     # === Changes these fields so that the .trace methods are envoked
                     # ===  and the respective widgets are altered
                     controller.frames[InfoPage].num_plans_ent.insert(tk.END,
-                                                                    controller.data_cont.num_plans-1)
+                                                                     controller.data_cont.num_plans-1)
                     for i in range(1, controller.data_cont.num_plans):
                         controller.frames[InfoPage].name_ents[i-1].delete(0, tk.END)
                         name = controller.data_cont.plan_list[i].name
@@ -201,27 +205,30 @@ class StartPage(tk.Frame):
                     page.dis_ent.insert(tk.END, controller.data_cont.discount_rate)
                     controller.frames[FatalitiesPage].life_ent.delete(0, tk.END)
                     controller.frames[FatalitiesPage].life_ent.insert(tk.END,
-                                                                    controller.data_cont.stat_life)
+                                                                      controller.data_cont.stat_life)
+                    first = controller.data_cont.plan_list[0]
                     for entry in page.recur_range:
                         entry.delete(0, tk.END)
-                        entry.insert(tk.END, controller.data_cont.plan_list[0].recurr_range[page.recur_range.index(entry)])
+                        entry.insert(tk.END, first.recurr_range[page.recur_range.index(entry)])
                     for entry in page.mag_range:
                         entry.delete(0, tk.END)
-                        entry.insert(tk.END, controller.data_cont.plan_list[0].mag_range[page.mag_range.index(entry)])
+                        entry.insert(tk.END, first.mag_range[page.mag_range.index(entry)])
 
-                    page.recur_choice.set(controller.data_cont.plan_list[0].recurr_dist)
+                    page.recur_choice.set(first.recurr_dist)
 
-                    page.mag_choice.set(controller.data_cont.plan_list[0].mag_dist)
+                    page.mag_choice.set(first.mag_dist)
 
                     page.preference.set(controller.data_cont.risk_pref)
 
                     # ===== Transitions to DirectoryPage
                     controller.show_frame('DirectoryPage')
-                except Exception: #IndexError:
-                    tk.messagebox.showerror('File Read Error', 'The save file chosen is improperly formatted. Please choose a different file.')
+                except ValueError: #Exception: #IndexError:
+                    tk.messagebox.showerror('File Read Error', 'The save file chosen is '
+                                                               'improperly formatted. Please '
+                                                               'choose a different file.')
         else:
             return
-    
+
     def on_trace_change(self, _name, _index, _mode):
         """ Passes to allow on_trace_change of other pages."""
         pass

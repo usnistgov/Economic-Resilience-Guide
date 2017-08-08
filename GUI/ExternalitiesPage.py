@@ -11,11 +11,9 @@ from tkinter import ttk     #for pretty buttons/labels
 
 from GUI.InfoPage import InfoPage
 
-from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT
+from GUI.Constants import SMALL_FONT, LARGE_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 from GUI.Constants import ENTRY_WIDTH
-
-from Data.ClassExternalities import Externality
 
 #
 #
@@ -228,7 +226,7 @@ class ExternalitiesPage(tk.Frame):
 
         # ===== Manueverability/Information buttons
         save_button = ttk.Button(self, text="Save Analysis",
-                                 command=lambda: self.data_cont.file_save())
+                                 command=self.data_cont.file_save)
         save_button.grid(row=0, column=1, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Add Externality", command=self.add_ext)
         self.add_button.grid(row=6, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -309,10 +307,10 @@ class ExternalitiesPage(tk.Frame):
 
         for plan in self.data_cont.plan_list:
             for ext in plan.exts.indiv:
-                if plan.id_assign == 0:
+                if plan.num == 0:
                     to_add = ext.title + " - <Base Plan>"
                 else:
-                    to_add = ext.title + " - <Plan " + str(plan.id_assign) + ">"
+                    to_add = ext.title + " - <Plan " + str(plan.num) + ">"
                 if to_add not in self.choices:
                     self.choices.append(to_add)
 
@@ -338,22 +336,22 @@ class ExternalitiesPage(tk.Frame):
         new_amount = self.ext_ent.get()
         new_type = self.recur_selection.get()
         new_times = [self.year_start_ent.get(), self.year_rate_ent.get(), 0]
-        pm = self.sign_select.get()
+        plus_minus = self.sign_select.get()
         party = self.new_party.get()
         if len(plan_num) == 0:
             err_messages += "No affected plans have been chosen! Please choose a plan.\n\n"
             plan = self.data_cont.plan_list[0]
             [valid, blank, err_messages] = plan.exts.save(new_title, new_desc, new_amount,
                                                           new_type, new_times,
-                                                          err_messages, pm, party, blank=True)
+                                                          err_messages, plus_minus, party, blank=True)
         else:
             for i in plan_num:
                 plan = self.data_cont.plan_list[i]
                 [valid, blank, err_messages] = plan.exts.save(new_title, new_desc, new_amount,
                                                               new_type, new_times,
-                                                              err_messages, pm, party)
+                                                              err_messages, plus_minus, party)
 
-        if (not valid) & (not blank):
+        if (not valid) & (not blank) & printout:
             messagebox.showerror("ERROR", err_messages)
         return [valid, blank, err_messages]
 
@@ -384,7 +382,7 @@ class ExternalitiesPage(tk.Frame):
         self.desc_ent.delete('1.0', tk.END)
         self.desc_ent.insert(tk.END, old_ext.desc)
 
-        self.sign_select.set(old_ext.pm)
+        self.sign_select.set(old_ext.plus_minus)
         self.recur_selection.set(old_ext.ext_type)
         self.year_start_ent.delete(0, tk.END)
         self.year_start_ent.insert(tk.END, old_ext.times[0])

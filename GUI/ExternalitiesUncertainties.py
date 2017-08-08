@@ -1,8 +1,9 @@
 """
    File:          ExternalitiesUncertainties.py
    Author:        Shannon Craig
-   Description:   Interacts with EconGuide.py, builds the GUI for adding uncertainties to externalities,
-                  the page for the user to input Externalities uncertainty distributions.
+   Description:   Interacts with EconGuide.py, builds the GUI for adding uncertainties
+                  to externalities, the page for the user to input Externalities
+                  uncertainty distributions.
 """
 
 import matplotlib
@@ -24,7 +25,7 @@ matplotlib.use("TkAgg")
 
 #
 #
-###################################### Externalities Uncertainties ######################################
+################################### Externalities Uncertainties ###################################
 #
 #
 class ExternalitiesUncertaintiesPage(tk.Frame):
@@ -35,11 +36,12 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
         [self.data_cont] = data_cont_list
         self.controller = controller
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="There is often uncertainty surrounding the exact externalities.\n"
-                                     "The externalities associated with each alternative are listed "
-                                     "below. The type of externality and the dollar amount associated "
-                                     "with the externality is indicated.\nFor each externality, please "
-                                     "select the associated uncertainty description. Each type of "
+        label = ttk.Label(self, text="There is often uncertainty surrounding the exact "
+                                     "externalities.\nThe externalities associated with each "
+                                     "alternative are listed below. The type of externality and "
+                                     "the dollar amount associated with the externality is "
+                                     "indicated.\nFor each externality, please select the "
+                                     "associated uncertainty description. Each type of "
                                      "uncertainty distribution requires key information.\n"
                                      "Please provide this information in the boxes below the "
                                      "distribution type you select.\nFurther information is "
@@ -158,10 +160,10 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
         for plan in self.data_cont.plan_list:
             for ext in plan.exts.indiv:
                 new_values = []
-                for entry in self.ranges[plan.id_assign][plan.exts.indiv.index(ext)]:
-                    new_values.append(entry.get().replace(',',''))
+                for entry in self.ranges[plan.num][plan.exts.indiv.index(ext)]:
+                    new_values.append(entry.get().replace(',', ''))
                 ext.add_uncertainty(new_values,
-                                    self.choices[plan.id_assign][plan.exts.indiv.index(ext)].get())
+                                    self.choices[plan.num][plan.exts.indiv.index(ext)].get())
         self.on_trace_change('_name', '_index', '_mode')
 
         return valid
@@ -169,13 +171,12 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
     def check_page(self, printout=True):
         """Ensures that all required fields are properly filled out before continuing.
            Returns a bool"""
-        #TODO: Fix this function
         err_messages = ""
         valid = True
         for plan in self.data_cont.plan_list:
             for ext in plan.exts.indiv:
-                dist = self.choices[plan.id_assign][plan.exts.indiv.index(ext)].get()
-                nums = self.ranges[plan.id_assign][plan.exts.indiv.index(ext)]
+                dist = self.choices[plan.num][plan.exts.indiv.index(ext)].get()
+                nums = self.ranges[plan.num][plan.exts.indiv.index(ext)]
                 try:
                     assert dist in ['none', 'gauss', 'rect', 'tri', 'discrete']
                 except AssertionError:
@@ -187,7 +188,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                         entry.insert(tk.END, '<insert uncertainty>')
                 elif dist == 'gauss':
                     try:
-                        if float(nums[0].get().replace(',','')) <= 0:
+                        if float(nums[0].get().replace(',', '')) <= 0:
                             err_messages += "Standard deviation must be greater than zero (" + ext.title + ").\n\n"
                     except ValueError:
                         valid = False
@@ -198,12 +199,12 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                 elif dist == 'discrete':
                     for entry in nums:
                         try:
-                            float(entry.get().replace(',',''))
+                            float(entry.get().replace(',', ''))
                         except ValueError:
                             valid = False
                             err_messages += "All inputs must be numbers (" + ext.title + ").\n\n"
                     try:
-                        assert float(nums[0].get().replace(',','')) <= float(nums[1].get().replace(',','')) <= float(nums[2].get().replace(',',''))
+                        assert float(nums[0].get().replace(',', '')) <= float(nums[1].get().replace(',', '')) <= float(nums[2].get().replace(',', ''))
                         disc_sum = float(nums[3].get()) + float(nums[4].get()) + float(nums[5].get())
                         if disc_sum != 100:
                             valid = False
@@ -214,7 +215,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                     except ValueError:
                         pass
                     try:
-                        assert float(ext.amount) in [float(nums[0].get().replace(',','')), float(nums[1].get().replace(',','')), float(nums[2].get().replace(',',''))]
+                        assert float(ext.amount) in [float(nums[0].get().replace(',', '')), float(nums[1].get().replace(',', '')), float(nums[2].get().replace(',', ''))]
                     except AssertionError:
                         valid = False
                         err_messages += "One of the discrete options must be your point estimate (" + ext.title + ").\n\n"
@@ -222,7 +223,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                         pass
                 else:
                     try:
-                        bound = float(nums[0].get().replace(',','')) <= float(ext.amount) <= float(nums[1].get().replace(',',''))
+                        bound = float(nums[0].get().replace(',', '')) <= float(ext.amount) <= float(nums[1].get().replace(',', ''))
                         if not bound:
                             valid = False
                             err_messages += "Lower bound must be below Upper bound (" + ext.title + ").\n\n"
@@ -255,25 +256,25 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
         for plan in self.data_cont.plan_list:
             row_index = 0
             self.groups.append(ttk.LabelFrame(self, text=plan.name))
-            self.groups[-1].grid(row=4+plan.id_assign, sticky="ew",
-                            padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+            self.groups[-1].grid(row=4+plan.num, sticky="ew",
+                                 padx=FIELDX_PADDING, pady=FIELDY_PADDING)
             rads.append([])
             self.ranges.append([])
             self.labels.append([])
             for ext in plan.exts.indiv:
                 choice = plan.exts.indiv.index(ext)
-                self.choices[plan.id_assign][choice].set(ext.dist)
+                self.choices[plan.num][choice].set(ext.dist)
                 titles = ttk.Label(self.groups[-1], text=ext.title + " - $" + '{:,.2f}'.format(ext.amount),
                                    font=SMALL_FONT)
                 titles.grid(row=row_index, column=0, sticky="w",
                             padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                rads[plan.id_assign].append([tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="none"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="gauss"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="tri"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="rect"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.id_assign][choice], value="discrete")])
-                self.ranges[plan.id_assign].append([tk.Entry(self.groups[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT) for i in range(6)])
-                self.labels[plan.id_assign].append([])
+                rads[plan.num].append([tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="none"),
+                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="gauss"),
+                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="tri"),
+                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="rect"),
+                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="discrete")])
+                self.ranges[plan.num].append([tk.Entry(self.groups[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT) for i in range(6)])
+                self.labels[plan.num].append([])
                 for col in range(5):
                     fig_label = ttk.Label(self.groups[-1])
                     fig_label.grid(row=row_index + 1, column=col)
@@ -281,52 +282,52 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                     canvas = FigureCanvasTkAgg(fig, master=fig_label)
                     canvas.get_tk_widget().grid(row=1, column=col+1)
                     canvas.show()
-                    rads[plan.id_assign][choice][col].grid(row=row_index + 3, column=col)
+                    rads[plan.num][choice][col].grid(row=row_index + 3, column=col)
                     rad_label = ttk.Label(self.groups[-1], text=rad_labels[col], font=SMALL_FONT)
                     rad_label.grid(row=row_index + 2, column=col)
 
-                if self.choices[plan.id_assign][choice].get() == "none":
+                if self.choices[plan.num][choice].get() == "none":
                     row_index += 4
-                    for entry in self.ranges[plan.id_assign][choice]:
+                    for entry in self.ranges[plan.num][choice]:
                         entry.grid_remove()
-                elif self.choices[plan.id_assign][choice].get() == "gauss":
-                    self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Standard Deviation ($)")]
-                    self.labels[plan.id_assign][choice][0].grid(row=row_index + 4, column=0)
-                    for entry in self.ranges[plan.id_assign][choice]:
+                elif self.choices[plan.num][choice].get() == "gauss":
+                    self.labels[plan.num][choice] = [tk.Label(self.groups[-1], text="Standard Deviation ($)")]
+                    self.labels[plan.num][choice][0].grid(row=row_index + 4, column=0)
+                    for entry in self.ranges[plan.num][choice]:
                         entry.grid_remove()
-                    self.ranges[plan.id_assign][choice][0].grid(row=row_index + 4, column=1)
+                    self.ranges[plan.num][choice][0].grid(row=row_index + 4, column=1)
                     row_index += 5
-                elif self.choices[plan.id_assign][choice].get() == "discrete":
-                    self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Lowest Amount ($)"),
+                elif self.choices[plan.num][choice].get() == "discrete":
+                    self.labels[plan.num][choice] = [tk.Label(self.groups[-1], text="Lowest Amount ($)"),
                                                            tk.Label(self.groups[-1], text="Middle Amount ($)"),
                                                            tk.Label(self.groups[-1], text="Highest Amount ($)"),
                                                            tk.Label(self.groups[-1], text="Likelihood of Lowest Amount (%)"),
                                                            tk.Label(self.groups[-1], text="Likelihood of Middle Amount (%)"),
                                                            tk.Label(self.groups[-1], text="Likelihood of Highest Amount (%)")]
-                    for label in self.labels[plan.id_assign][choice][0:3]:
-                        label.grid(row=row_index+self.labels[plan.id_assign][choice].index(label)+5, column=0)
-                    for label in self.labels[plan.id_assign][choice][3:6]:
-                        label.grid(row=row_index+self.labels[plan.id_assign][choice].index(label)+2, column=2)
-                    for entry in self.ranges[plan.id_assign][choice][0:3]:
-                        entry.grid(row=row_index+self.ranges[plan.id_assign][choice].index(entry)+5, column=1,
+                    for label in self.labels[plan.num][choice][0:3]:
+                        label.grid(row=row_index+self.labels[plan.num][choice].index(label)+5, column=0)
+                    for label in self.labels[plan.num][choice][3:6]:
+                        label.grid(row=row_index+self.labels[plan.num][choice].index(label)+2, column=2)
+                    for entry in self.ranges[plan.num][choice][0:3]:
+                        entry.grid(row=row_index+self.ranges[plan.num][choice].index(entry)+5, column=1,
                                    padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                    for entry in self.ranges[plan.id_assign][choice][3:6]:
-                        entry.grid(row=row_index+self.ranges[plan.id_assign][choice].index(entry)+2, column=3,
+                    for entry in self.ranges[plan.num][choice][3:6]:
+                        entry.grid(row=row_index+self.ranges[plan.num][choice].index(entry)+2, column=3,
                                    padx=FIELDX_PADDING, pady=FIELDY_PADDING)
                     row_index += 8
                 else:
-                    self.labels[plan.id_assign][choice] = [tk.Label(self.groups[-1], text="Lower Bound ($)"),
+                    self.labels[plan.num][choice] = [tk.Label(self.groups[-1], text="Lower Bound ($)"),
                                                            tk.Label(self.groups[-1], text="Upper Bound ($)")]
-                    self.labels[plan.id_assign][choice][0].grid(row=row_index+4, column=0)
-                    self.labels[plan.id_assign][choice][1].grid(row=row_index+4, column=2)
-                    for entry in self.ranges[plan.id_assign][choice]:
+                    self.labels[plan.num][choice][0].grid(row=row_index+4, column=0)
+                    self.labels[plan.num][choice][1].grid(row=row_index+4, column=2)
+                    for entry in self.ranges[plan.num][choice]:
                         entry.grid_remove()
-                    self.ranges[plan.id_assign][choice][0].grid(row=row_index+4, column=1)
-                    self.ranges[plan.id_assign][choice][1].grid(row=row_index+4, column=3)
-                    row_index+= 5
-                for entry in self.ranges[plan.id_assign][choice]:
+                    self.ranges[plan.num][choice][0].grid(row=row_index+4, column=1)
+                    self.ranges[plan.num][choice][1].grid(row=row_index+4, column=3)
+                    row_index += 5
+                for entry in self.ranges[plan.num][choice]:
                     try:
-                        text = '{:,.2f}'.format(float(ext.range[self.ranges[plan.id_assign][choice].index(entry)]))
+                        text = '{:,.2f}'.format(float(ext.range[self.ranges[plan.num][choice].index(entry)]))
                     except ValueError:
-                        text = ext.range[self.ranges[plan.id_assign][choice].index(entry)]
+                        text = ext.range[self.ranges[plan.num][choice].index(entry)]
                     entry.insert(tk.END, text)

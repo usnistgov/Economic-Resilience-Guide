@@ -1,18 +1,21 @@
 """ The externalities package for the list of externalities and the externality class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-07
 """
-import math
+
 import numpy as np
 
 from Data.distributions import uniDistInv, triDistInv, gauss_dist_inv, none_dist, discrete_dist_inv
+from Data.distributions import calc_one_time, calc_recur
 
 class Externalities():
     """ Holds a list of all of the externalities
         and performs the externality-related calculations."""
     def __init__(self, discount_rate, horizon, parties):
+        # === The list of each individual externality
         self.indiv = []
+
+        # === The sums used for the final analysis
         self.one_sum_p = 0
         self.one_sum_n = 0
         self.r_sum_p = 0
@@ -20,11 +23,14 @@ class Externalities():
         self.total_p = self.one_sum_p + self.r_sum_p
         self.total_n = self.one_sum_n + self.r_sum_n
 
+        # === The third parties affected for assignment
         self.parties = parties
 
+        # === Discount rate, horizon for calc_one_time and calc_recur
         self.discount_rate = float(discount_rate)
         self.horizon = float(horizon)
 
+        # === Uncertainties ranges
         self.one_p_range = [0, 0]
         self.one_n_range = [0, 0]
         self.r_p_range = [0, 0]
@@ -32,15 +38,18 @@ class Externalities():
 
 
     def new_ext(self, line):
-        """ Makes a new externality and adds it to the list of externality types. """
+        """ From the file read-in, makes a new externality
+            and adds it to the list of externality types. """
+        # === If we are adding uncertainty
         if line[0] == 'Uncertainty':
             self.indiv[-1].dist = line[1]
             self.indiv[-1].range = list(line[2:8])
+        # === For the thrid-party, positive/negative line
         elif line[0] == "positive":
-            self.indiv[-1].pm = '+'
+            self.indiv[-1].plus_minus = '+'
             self.indiv[-1].set_party(line[1])
         elif line[0] == "negative":
-            self.indiv[-1].pm = '-'
+            self.indiv[-1].plus_minus = '-'
             self.indiv[-1].set_party(line[1])
         else:
             opts = {}
@@ -61,91 +70,77 @@ class Externalities():
         self.r_sum_n = 0
 
         for ext in self.indiv:
-            if ext.pm == "+":
+            if ext.plus_minus == "+":
                 if ext.ext_type == "one-time":
-                    self.one_sum_p += self.calc_one_time(ext.amount, ext.times[0])
+                    self.one_sum_p += calc_one_time(self.discount_rate, ext.amount, ext.times[0])
                 elif ext.ext_type == "recurring":
-                    self.r_sum_p += self.calc_recur(ext.amount, ext.times[0], ext.times[1])
-            elif ext.pm == "-":
+                    self.r_sum_p += calc_recur(self.discount_rate, self.horizon,
+                                               ext.amount, ext.times[0], ext.times[1])
+            elif ext.plus_minus == "-":
                 if ext.ext_type == "one-time":
-                    self.one_sum_n += self.calc_one_time(ext.amount, ext.times[0])
+                    self.one_sum_n += calc_one_time(self.discount_rate, ext.amount, ext.times[0])
                 elif ext.ext_type == "recurring":
-                    self.r_sum_n += self.calc_recur(ext.amount, ext.times[0], ext.times[1])
+                    self.r_sum_n += calc_recur(self.discount_rate, self.horizon,
+                                               ext.amount, ext.times[0], ext.times[1])
 
         self.total_p = self.one_sum_p + self.r_sum_p
         self.total_n = self.one_sum_n + self.r_sum_n
 
-    def calc_one_time(self, value, time):
-        """Equation used for One-time OMR costs"""
-        time = float(time)
-        value = float(value)
-        return (math.exp(-(float(self.discount_rate) / 100) * time)) * value
-
-    def calc_recur(self, value, start, rate):
-        """Equation used for Recurring OMR costs"""
-        value = float(value)
-        year = float(start)
-        rate = float(rate)
-        total = 0
-
-        while year <= float(self.horizon):
-            total += value * math.exp(-(float(self.discount_rate) / 100) * (year))
-            year += rate
-        return total
-
-    def save(self, title, desc, amount, new_type, times, err_messages, pm, party, blank=False):
+    def save(self, title, desc, amount, new_type, times, err_messages, plus_minus, party,
+             blank=False):
         """ Saves the fields if possible and returns applicable error messages if not."""
         field_dict = {}
-        if blank:
-            valid = False
-        else:
-            valid = True
-        # == TITLE
-        # Title cannot be left blank
+
+        # ===== Checking the title field
         if title in {"", "<enter a title for this externality>"}:
             err_messages += "Title field has been left empty!\n\n"
             valid = False
-        else:
-            blank = False
-        # Title cannot match other titles in same plan
-        for plan in self.indiv:
-            if title == plan.title:
-                err_messages += title + " is already used as an externality title for this plan. "
-                err_messages += "Please input a different title.\n\n"
-                valid = False
-        # No comma in title
-        if "," in title:
-            err_messages += "Title cannot have a comma. Please change the title.\n\n"
+        elif ',' in title:
+            err_messages += "There cannot be a comma in the title.\n\n"
             valid = False
-        # Set title in dict
-        field_dict['title'] = title
-        # == COST
-        # Cost must be a number
-        try:
-            amount = amount.replace(',','')
-            amount = float(amount)
             blank = False
-            if amount < 0:
+        else:
+            field_dict['title'] = title
+            blank = False
+            for plan in self.indiv:
+                if title == plan.title:
+                    err_messages += title + " is already used as an externality title for this "
+                    err_messages += "plan. Please input a different title.\n\n"
+                    valid = False
+
+        # ===== Checking the amount field
+        try:
+            amount = amount.replace(',', '')#.replace(' ', '')
+            if float(amount) < 0:
                 err_messages += "Dollar value of the externality must be positive. "
                 err_messages += "Please enter a positive amount.\n\n"
-                blank = False
                 valid = False
-
+            blank = False
+            field_dict['amount'] = float(amount)
         except ValueError:
+            valid = False
             if amount not in {"", "<enter an amount for this externality>"}:
                 blank = False
             err_messages += "Dollar value of the externality must be a number. "
             err_messages += "Please enter an amount.\n\n"
-            valid = False
-        field_dict['amount'] = amount
-        # == TYPE
-        # Type must be either one-time or recurring
+
+        # ===== Checking the description field
+        if desc in {"", "<enter a description for this externality>\n"}:
+            field_dict['desc'] = ['N/A']
+        else:
+            desc = desc.replace('\n', '')
+            blank = False
+        field_dict['desc'] = [desc]
+
+        # ===== Checking the externality type
         if new_type not in {"one-time", "recurring"}:
             err_messages += "Type cannot be left empty. \n\n"
             valid = False
-        field_dict['ext_type'] = new_type
-        # == TIMES
-        # Start year must be less than end date
+        else:
+            field_dict['ext_type'] = new_type
+            blank = False
+
+        # ===== Checking year fields
         if times[2] != 0:
             if times[0] >= times[2]:
                 err_messages += "End year cannot be before starting year."
@@ -165,39 +160,31 @@ class Externalities():
             if (float(times[1]) <= 0) & (new_type == "recurring"):
                 err_messages += "Cannot recur every " + str(times[1]) +" years. "
                 err_messages += "Please enter a positive amount.\n\n"
-                blank = False
                 valid = False
         except ValueError:
-            pass
-        field_dict['times'] = times
-        # == POSITIVE/NEGATIVE
-        # Must be defined as a positive or negative externality
-        if (pm == '+') | (pm == '-'):
-            field_dict['pm'] = pm
+            field_dict['times'] = times
+
+        # ===== Checking if a positive or negative externality
+        if (plus_minus == '+') | (plus_minus == '-'):
+            field_dict['plus_minus'] = plus_minus
             blank = False
         else:
             err_messages += "Must choose if this is a positive or negative externality. \n\n"
             valid = False
-        # == PARTY
+
+        # ===== Checking Party-Affected
         if party == "":
             err_messages += "Must choose a party affected.\n\n"
             valid = False
         else:
             field_dict['new_party'] = party
             blank = False
-        # == DESCRIPTION
-        # Set blank description to N/A or non-blank description to dict
-        if desc in {"", "<enter a description for this externality>\n"}:
-            field_dict['desc'] = ['N/A']
-        else:
-            desc = desc.replace('\n', '')
-            blank = False
-        field_dict['desc'] = [desc]
-        if valid:
+
+        # ===== Adding the cost if valid and returning error messages if not.
+        if not blank and valid:
             self.indiv.append(Externality(**field_dict))
-            return [valid, blank, "Externality has been successfully added!"]
-        else:
-            return [valid, blank, err_messages]
+            err_messages = "Externality has been successfully added!"
+        return [valid, blank, err_messages]
 
     def one_iter(self, old_ext_list):
         """ Creates one instance of Externalities with all exts within uncertainty ranges."""
@@ -208,7 +195,7 @@ class Externalities():
             ext_dict = {'title': ext.title,
                         'ext_type': ext.ext_type,
                         'times': ext.times,
-                        'pm': ext.pm,
+                        'plus_minus': ext.plus_minus,
                         'new_party': ext.third_party,
                         'parties': ext.parties,
                         'desc': ext.desc}
@@ -219,20 +206,18 @@ class Externalities():
 
 class Externality():
     """ Holds all of the information about externalities. """
-    def __init__(self, title="none", amount=0, ext_type='none', times=[0, 0, 0], pm='none',
+    def __init__(self, title="none", amount=0, ext_type='none', times=None, plus_minus='none',
                  new_party='none', parties=['none'], desc="N/A"):
         self.title = title
         self.amount = float(amount)
         self.ext_type = ext_type
         self.times = []
+        if times is None:
+            times = [0, 0, 0]
         for item in times:
             self.times.append(float(item))
-        self.pm = pm
-        self.desc = ""
-        for i in range(len(desc)):
-            if i != 0:
-                self.desc += ','
-            self.desc += desc[i]
+        self.plus_minus = plus_minus
+        self.set_desc(desc)
         self.parties = parties
         self.third_party = self.set_party(new_party)
         self.range = ['<insert uncertainty>',
@@ -248,7 +233,7 @@ class Externality():
 
         self.range = []
         for item in new_range:
-            self.range.append(item.replace(',',''))
+            self.range.append(item.replace(',', ''))
         self.dist = distribution
 
     def set_party(self, new_party):
@@ -262,3 +247,13 @@ class Externality():
             self.parties.append(new_party)
             self.third_party = new_party
         return self.third_party
+
+    def set_desc(self, new_desc):
+        """ Sets the description. """
+        self.desc = ""
+        for item in new_desc:
+            if self.desc != "" and not self.desc.endswith(","):
+                self.desc += ','
+            self.desc += item
+        if self.desc == 'N/A,':
+            self.desc = 'N/A'

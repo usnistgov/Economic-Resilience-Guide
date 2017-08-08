@@ -9,15 +9,11 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk     #for pretty buttons/labels
 
-import numpy as np
-
 from GUI.InfoPage import InfoPage
 
-from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT
+from GUI.Constants import SMALL_FONT, LARGE_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 from GUI.Constants import ENTRY_WIDTH
-
-from Data.ClassCosts import Cost
 
 #
 #
@@ -216,7 +212,7 @@ class CostPage(tk.Frame):
             moveon = self.add_cost(moveon=True)
             if moveon:
                 controller.show_frame(go_to_place)
-        
+
         def menu():
             """ Tries to save the input and sends the user to the Directory Page.
             If save unsuccessful, asks user for verification to move on."""
@@ -238,7 +234,8 @@ class CostPage(tk.Frame):
         back_button.grid(row=7, column=0, sticky="sw", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=7, column=1, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu", command=menu).grid(row=7, column=0, sticky="se",
+                                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
     def hover(self, _event):
@@ -258,9 +255,9 @@ class CostPage(tk.Frame):
                             "editing the associated information, copying the associated "
                             "information (for ease), or deleting the cost all together.\n\n"
                             "The following cost types are defined:\n"
-                            "    Immediate Direct: Costs that affect the immediate stakeholder(s) as "
-                            "soon as the corresponding plan is implemented. Examples are building "
-                            "or construction costs.\n"
+                            "    Immediate Direct: Costs that affect the immediate stakeholder(s) "
+                            "as soon as the corresponding plan is implemented. Examples are "
+                            "building or construction costs.\n"
                             "    Immediate Indirect: Costs affecting users that have some form of "
                             "dependence on either the stakeholder(s) of the environment "
                             "surrounding the project’s implementation area.\n"
@@ -298,7 +295,7 @@ class CostPage(tk.Frame):
         del self.choices[:]
 
         for plan in self.data_cont.plan_list:
-            i = str(plan.id_assign)
+            i = str(plan.num)
             for cost in plan.costs.indiv:
                 choice_check = cost.title
                 if i == "0" and ((choice_check + " - <Base Plan>") not in self.choices):
@@ -339,10 +336,10 @@ class CostPage(tk.Frame):
             for i in plan_num:
                 plan = self.data_cont.plan_list[i]
                 [valid, blank, err_messages] = plan.costs.save(new_title, new_type, new_omr_type,
-                                                           new_amount, new_times, new_desc,
-                                                           err_messages)
+                                                               new_amount, new_times, new_desc,
+                                                               err_messages)
 
-        if (not valid) & printout:
+        if (not valid) & (not blank) & printout:
             messagebox.showerror("ERROR", err_messages)
         return [valid, blank, err_messages]
 

@@ -125,9 +125,8 @@ class AnalysisInfo(tk.Frame):
 
         # Save analysis
         ttk.Button(self, text="Save Analysis",
-                   command=lambda: self.data_cont.file_save()).grid(row=5, sticky="w",
-                                                                    padx=FIELDX_PADDING,
-                                                                    pady=FIELDY_PADDING)
+                   command=self.data_cont.file_save).grid(row=5, sticky="w",
+                                                          padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
     def info(self):
         """Provides information to the user"""
@@ -201,9 +200,9 @@ class AnalysisInfo(tk.Frame):
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
             if valid:
-                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
-                                        "\nPlease be patient while they compute.\n\n",
-                                        seed, conf, tol, break_point)
+                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time "
+                                          "to run.\nPlease be patient while they compute.\n\n",
+                                          seed, conf, tol, break_point)
                 #self.data_cont.monte(seed, conf, tol, high_iters=break_point)
                 run_u_main_page(self.data_cont)
         else:
@@ -258,9 +257,9 @@ class AnalysisInfo(tk.Frame):
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
             if valid:
-                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
-                                        "\nPlease be patient while they compute.\n\n",
-                                        seed, conf, tol, break_point)
+                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time "
+                                          "to run.\nPlease be patient while they compute.\n\n",
+                                          seed, conf, tol, break_point)
                 word_export_uncert(self.data_cont)
                 #self.data_cont.word_export_uncert()
         else:
@@ -314,9 +313,9 @@ class AnalysisInfo(tk.Frame):
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
             if valid:
-                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run."
-                                        "\nPlease be patient while they compute.\n\n",
-                                        seed, conf, tol, break_point)
+                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time "
+                                          "to run.\nPlease be patient while they compute.\n\n",
+                                          seed, conf, tol, break_point)
                 csv_export_uncert(self.data_cont)
                 #self.data_cont.csv_export_uncert()
         else:
@@ -372,9 +371,9 @@ class AnalysisInfo(tk.Frame):
                 messagebox.showerror("Error",
                                      "The maximum number of iterations must be an integer value.")
             if valid:
-                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time to run.\n"
-                                        "Please be patient while they compute.\n\n",
-                                        seed, conf, tol, break_point)
+                self.processingPleaseWait("\n\nThe Monte-Carlo simulations will take some time "
+                                          "to run.\nPlease be patient while they compute.\n\n",
+                                          seed, conf, tol, break_point)
                 word_export_uncert(self.data_cont)
                 csv_export_uncert(self.data_cont)
             #self.data_cont.word_export_uncert()

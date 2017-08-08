@@ -1,20 +1,20 @@
 """ The costs package for the list of costs and the cost class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-07
 """
 
-import math
 import numpy as np
 
 from Data.distributions import uniDistInv, triDistInv, gauss_dist_inv, none_dist, discrete_dist_inv
+from Data.distributions import calc_recur, calc_one_time
 
 class Costs():
     """ Holds a list of all of the costs and performs the cost-related calculations."""
-
     def __init__(self, discount_rate, horizon):
-
+        # === The list of each individual cost
         self.indiv = []
+
+        # === The sums used for the final analysis
         self.d_sum = 0
         self.i_sum = 0
         self.omr_1_sum = 0
@@ -22,16 +22,20 @@ class Costs():
 
         self.total = 0
 
+        # === Disount rate and horizon needed for calc_one_time and calc_recurr
         self.discount_rate = float(discount_rate)
         self.horizon = float(horizon)
 
+        # Uncertainties results ranges
         self.direct_range = [0, 0]
         self.indirect_range = [0, 0]
         self.omr_one_range = [0, 0]
         self.omr_r_range = [0, 0]
 
     def new_cost(self, line):
-        """ Makes a new cost and adds it to the list of cost types. """
+        """ From the file read-in Makes a new cost
+            and adds it to the list of cost types. """
+        # === If we are adding uncertainty
         if line[0] == 'Uncertainty':
             self.indiv[-1].dist = line[1]
             self.indiv[-1].range = list(line[2:8])
@@ -60,91 +64,74 @@ class Costs():
                 self.i_sum += cost.amount
             elif cost.cost_type == "omr":
                 if cost.omr_type == "one-time":
-                    self.omr_1_sum += self.calc_one_time(cost.amount, cost.times[0])
+                    self.omr_1_sum += calc_one_time(self.discount_rate, cost.amount, cost.times[0])
                 elif cost.omr_type == "recurring":
-                    self.omr_r_sum += self.calc_recur(cost.amount, cost.times[0], cost.times[1])
+                    self.omr_r_sum += calc_recur(self.discount_rate, self.horizon,
+                                                 cost.amount, cost.times[0], cost.times[1])
         self.total = self.d_sum + self.i_sum + self.omr_1_sum + self.omr_r_sum
 
-    def calc_one_time(self, value, time):
-        """Equation used for One-time OMR costs"""
-        time = float(time)
-        value = float(value)
-        return (math.exp(-(float(self.discount_rate) / 100) * time)) * value
 
-    def calc_recur(self, value, start, rate):
-        """Equation used for Recurring OMR costs"""
-        value = float(value)
-        year = float(start)
-        rate = float(rate)
-        total = 0
-
-        while year <= float(self.horizon):
-            total += value * math.exp(-(float(self.discount_rate) / 100) * (year))
-            year += rate
-        return total
 
     def save(self, title, cost_type, omr_type, amount, omr_times, desc, err_messages, blank=False):
-        """ Saves the fields if possible and returns applicable error messages if not."""
+        """ Saves the fields if possible and returns applicable error messages if not.
+            If no plan is chosen, blank must be set to True."""
         field_dict = {}
-        if blank:
-            valid = False
-        else:
-            valid = True
-        # ===== Mandatory fields cannot be left blank or left alone
+
+        # ===== Checking the title field
         if title == "" or title == "<enter a title for this cost>":
             err_messages += "Title field has been left empty!\n\n"
             valid = False
-        else:
+        elif ',' in title:
+            err_messages += "There cannot be a comma in the title.\n\n"
+            valid = False
             blank = False
+        else:
+            field_dict['title'] = title
+            blank = False
+            for plan in self.indiv:
+                if title == plan.title:
+                    err_messages += title + " is already used as an cost title for this plan. "
+                    err_messages += "Please input a different title.\n\n"
+                    valid = False
 
-        if cost_type != "direct" and cost_type != "indirect" and cost_type != "omr":
+        # ==== Checking the amount field
+        try:
+            amount = amount.replace(',', '')#.replace(' ', '')
+            if float(amount) < 0:
+                err_messages += "Dollar value must be a positive amount. "
+                err_messages += "Perhaps this is a non-disaster related benefit?\n"
+                err_messages += "Please enter a positive amount.\n\n"
+                valid = False
+            blank = False
+            field_dict['amount'] = float(amount)
+        except ValueError:
+            valid = False
+
+        # ===== Checking the description field
+        if desc in {"", "<enter a description for this benefit>\n"}:
+            desc = ["N/A"]
+        else:
+            desc = desc.replace('\n', '')
+            blank = False
+        field_dict['desc'] = [desc]
+
+        # ===== Checking cost type
+        if cost_type not in {"direct", "indirect", "omr"}:
             err_messages += "A 'Cost Type' has not been selected!\n\n"
             valid = False
         else:
+            blank = False
             field_dict['cost_type'] = cost_type
 
-        # ===== Cost cannot have a duplicate title
-        for plan in self.indiv:
-            if title == plan.title:
-                err_messages += title + " is already used as an cost title for this plan. "
-                err_messages += "Please input a different title.\n\n"
-                valid = False
-        # No comma in title
-        if "," in title:
-            err_messages += "Title cannot have a comma. Please change the title.\n\n"
-            valid = False
-        # Set title in dict
-        field_dict['title'] = title
-
-        # ===== Cost must be a positive number
-        try:
-            amount = amount.replace(',','')
-            float(amount)
-            blank = False
-            field_dict['amount'] = amount
-        except ValueError:
-            if amount not in {"", "<enter an amount for this cost>"}:
-                blank = False
-            err_messages += "Dollar value of the cost must be a number. Please enter an amount.\n\n"
-            valid = False
-        if "-" in amount:
-            err_messages += "Cost must be a positive number."
-            err_messages += "Perhaps you should enter that as a benefit.\n"
-            err_messages += "Please enter a positive amount.\n\n"
-            blank = False
-            valid = False
-
-        # ===== Omr Fields must be filled if OMR is selected
+        # ===== Checking OMR fields
         if cost_type == "omr":
             try:
-                float(omr_times[0])
+                if float(omr_times[0]) < 0:
+                    err_messages += "Starting year must be a positive number. "
+                    err_messages += "Please enter a positive amount.\n\n"
+                    valid = False
             except ValueError:
                 err_messages += "Starting year must be number. Please enter an amount.\n\n"
-                valid = False
-            if "-" in omr_times[0]:
-                err_messages += "Starting year must be a positive number. "
-                err_messages += "Please enter a positive amount.\n\n"
-                blank = False
                 valid = False
 
             if omr_type == "recurring":
@@ -158,17 +145,12 @@ class Costs():
                     valid = False
             field_dict['omr_type'] = omr_type
         field_dict['omr_times'] = omr_times
-        # Set blank description to N/A or non-blank description to dict
-        if desc in {"", "<enter a description for this cost>\n"}:
-            field_dict['desc'] = ['N/A']
-        else:
-            desc = desc.replace('\n', '')
-            field_dict['desc'] = [desc]
-        if valid:
+
+        # ===== Adding the cost if valid and returning error messages if not.
+        if not blank and valid:
             self.indiv.append(Cost(**field_dict))
-            return [valid, blank, "Cost has been successfully added!"]
-        else:
-            return [valid, blank, err_messages]
+            err_messages = "Cost has been successfully added!"
+        return [valid, blank, err_messages]
 
     def one_iter(self, old_cost_list):
         """ Creates one Cost instance with all costs within set uncertainty range."""
@@ -199,11 +181,7 @@ class Cost():
         self.omr_type = omr_type
         self.amount = float(amount)
         self.times = omr_times
-        self.desc = ""
-        for i in range(len(desc)):
-            if i != 0:
-                self.desc += ','
-            self.desc += desc[i]
+        self.set_desc(desc)
         if self.omr_type != "none":
             for num in self.times:
                 try:
@@ -226,5 +204,15 @@ class Cost():
 
         self.range = []
         for item in new_range:
-            self.range.append(item.replace(',',''))
+            self.range.append(item.replace(',', ''))
         self.dist = distribution
+
+    def set_desc(self, new_desc):
+        """ Sets the description. """
+        self.desc = ""
+        for item in new_desc:
+            if self.desc != "" and not self.desc.endswith(","):
+                self.desc += ','
+            self.desc += item
+        if self.desc == 'N/A,':
+            self.desc = 'N/A'

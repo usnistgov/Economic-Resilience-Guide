@@ -1,7 +1,6 @@
 """ The simulation package for the list of plans and the plans class.
     Author: Shannon Grubb
             shannon.grubb@nist.gov
-    2017-07
 """
 
 import csv
@@ -25,8 +24,11 @@ from NewIRR import irr_for_all
 
 class Simulation():
     """ Holds all of the plans and does all of the larger calculations. """
+    # These are the default third-parties
     parties = ['Developer', 'Title holder(s)', 'Lender(s)', 'Tenants', 'Users', 'Community']
+
     def __init__(self):
+        # The pieces that are the same for every plan.
         self.title = ""
         self.plan_list = []
         self.num_plans = 0
@@ -196,10 +198,12 @@ class Simulation():
                         irr_ext_totals.append(-2)
                     else:
                         irr_ext_totals.append(new_sim.irr(w_ext=True))
-                    sim_list = [[sir_totals,new_sim.sir()], [sir_ext_totals,new_sim.sir(w_ext=True)],
-                                [roi_totals,new_sim.roi()], [roi_ext_totals,new_sim.roi(w_ext=True)],
-                                [nond_roi_totals,new_sim.non_d_roi()],
-                                [nond_roi_ext_totals,new_sim.non_d_roi(w_ext=True)]]
+                    sim_list = [[sir_totals, new_sim.sir()],
+                                [sir_ext_totals, new_sim.sir(w_ext=True)],
+                                [roi_totals, new_sim.roi()],
+                                [roi_ext_totals, new_sim.roi(w_ext=True)],
+                                [nond_roi_totals, new_sim.non_d_roi()],
+                                [nond_roi_ext_totals, new_sim.non_d_roi(w_ext=True)]]
                     for item in sim_list:
                         if isinstance(item[1], str):
                             item[0].append(-1)
@@ -244,7 +248,7 @@ class Simulation():
                 old_iters = num_iters
                 num_iters = num_iters + low_iters#2 * num_iters
                 if num_iters >= high_iters:
-                    messagebox.showwarning("Maximum number of runs","The maximum number of "
+                    messagebox.showwarning("Maximum number of runs", "The maximum number of "
                                            "Monte-Carlo runs has been reached for "
                                            + plan.name + '. The results may not have converged.')
 
@@ -287,12 +291,14 @@ class Simulation():
             plan.net_range = [net_totals[first_num], net_totals[last_num]]
             plan.net_ext_range = [net_ext_totals[first_num], net_ext_totals[last_num]]
             plan.bens.direct_range = [ben_direct_totals[first_num], ben_direct_totals[last_num]]
-            plan.bens.indirect_range = [ben_indirect_totals[first_num], ben_indirect_totals[last_num]]
+            plan.bens.indirect_range = [ben_indirect_totals[first_num],
+                                        ben_indirect_totals[last_num]]
             plan.bens.res_rec_range = [res_rec_totals[first_num], res_rec_totals[last_num]]
             plan.fat.num_range = [fat_num_totals[first_num], fat_num_totals[last_num]]
             plan.fat.value_range = [fat_value_totals[first_num], fat_value_totals[last_num]]
             plan.costs.direct_range = [cost_direct_totals[first_num], cost_direct_totals[last_num]]
-            plan.costs.indirect_range = [cost_indirect_totals[first_num], cost_indirect_totals[last_num]]
+            plan.costs.indirect_range = [cost_indirect_totals[first_num],
+                                         cost_indirect_totals[last_num]]
             plan.costs.omr_one_range = [cost_omr_1_totals[first_num], cost_omr_1_totals[last_num]]
             plan.costs.omr_r_range = [cost_omr_r_totals[first_num], cost_omr_r_totals[last_num]]
             plan.nond_bens.one_range = [nond_1_totals[first_num], nond_1_totals[last_num]]
@@ -309,7 +315,8 @@ class Simulation():
             plan.roi_range = [roi_totals[first_num], roi_totals[last_num]]
             plan.roi_ext_range = [roi_ext_totals[first_num], roi_ext_totals[last_num]]
             plan.nond_roi_range = [nond_roi_totals[first_num], nond_roi_totals[last_num]]
-            plan.nond_roi_ext_range = [nond_roi_ext_totals[first_num], nond_roi_ext_totals[last_num]]
+            plan.nond_roi_ext_range = [nond_roi_ext_totals[first_num],
+                                       nond_roi_ext_totals[last_num]]
 
             if plan.irr_range[0] == -1:
                 plan.irr_range[0] = '---'
@@ -369,18 +376,27 @@ class Simulation():
                 mid = some_range[0]
                 new_range = [some_range[1], some_range[2], 0, 0, 0, 0]
             return [mid, new_range]
+
+        # The distributions
         dist_dict = {'tri':triDistInv, 'rect':uniDistInv, 'none':none_dist,
                      'discrete':discrete_dist_inv, 'gauss':gauss_dist_inv}
+
+        # The recurrence with a different frequency
         new_recurr = dist_dict[my_plan.recurr_dist](np.random.uniform(),
-                                                    to_pass(my_plan.recurr_dist, my_plan.recurr_range)[0],
-                                                    to_pass(my_plan.recurr_dist, my_plan.recurr_range)[1])
+                                                    to_pass(my_plan.recurr_dist,
+                                                            my_plan.recurr_range)[0],
+                                                    to_pass(my_plan.recurr_dist,
+                                                            my_plan.recurr_range)[1])
         new_mag = dist_dict[my_plan.mag_dist](np.random.uniform(),
                                               to_pass(my_plan.mag_dist, my_plan.mag_range)[0],
                                               to_pass(my_plan.mag_dist, my_plan.mag_range)[1])
-        delta_plan = Plan(my_plan.id_assign, my_plan.name,
+        # Creates a new plan (empty)
+        delta_plan = Plan(my_plan.num, my_plan.name,
                           [my_plan.recurr_dist, [new_recurr, my_plan.recurr_range]],
                           [my_plan.mag_dist, [new_mag, my_plan.mag_range]], self.discount_rate,
                           self.horizon, self.stat_life, self.parties)
+
+        # Fills the new plan with the various parts
         delta_plan.bens = delta_plan.bens.one_iter(my_plan.bens.indiv)
         delta_plan.exts = delta_plan.exts.one_iter(my_plan.exts.indiv)
         delta_plan.costs = delta_plan.costs.one_iter(my_plan.costs.indiv)
@@ -394,7 +410,7 @@ class Plan():
     def __init__(self, plan_id, plan_name, disaster_recurrence, disaster_magnitude,
                  discount_rate, horizon, stat_life, parties):
         # Basic Information
-        self.id_assign = int(plan_id)
+        self.num = int(plan_id)
         self.name = plan_name
         self.recurr_dist = disaster_recurrence[0]
         self.recurr_range = disaster_recurrence[1]
@@ -406,7 +422,8 @@ class Plan():
             self.recurrence = disaster_recurrence[1][0]
         elif self.recurr_dist == "discrete":
             self.recurr_uncert = list(disaster_recurrence)
-            self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
+            self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2],
+                                   disaster_recurrence[1][3]])
         else:
             self.recurr_uncert = disaster_recurrence[1]
             self.recurrence = disaster_recurrence[1][1]
@@ -422,7 +439,8 @@ class Plan():
             self.magnitude = [disaster_magnitude[1][0]]
         elif self.mag_dist == "discrete":
             self.mag_uncert = list(disaster_magnitude)
-            self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2], disaster_magnitude[1][3]])
+            self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2],
+                                  disaster_magnitude[1][3]])
         else:
             self.mag_uncert = list(disaster_magnitude[1])
             self.magnitude = disaster_magnitude[1][1]
@@ -450,8 +468,9 @@ class Plan():
 
     def update(self, plan_id, plan_name, disaster_recurrence, disaster_magnitude,
                discount_rate, horizon, stat_life):
+        """ Updates all of the aspects of the simulation. """
         # Basic Information
-        self.id_assign = int(plan_id)
+        self.num = int(plan_id)
         self.name = plan_name
         self.recurr_dist = disaster_recurrence[0]
         self.recurr_range = disaster_recurrence[1]
@@ -463,7 +482,8 @@ class Plan():
             self.recurrence = disaster_recurrence[1][0]
         elif self.recurr_dist == "discrete":
             self.recurr_uncert = list(disaster_recurrence[1])
-            self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2], disaster_recurrence[1][3]])
+            self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2],
+                                   disaster_recurrence[1][3]])
         else:
             self.recurr_uncert = list(disaster_recurrence[1])
             self.recurrence = disaster_recurrence[1][1]
@@ -477,7 +497,8 @@ class Plan():
             self.magnitude = disaster_magnitude[1][0]
         elif self.mag_dist == "discrete":
             self.mag_uncert = list(disaster_magnitude[1])
-            self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2], disaster_magnitude[1][3]])
+            self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2],
+                                  disaster_magnitude[1][3]])
         else:
             self.mag_uncert = list(disaster_magnitude[1])
             self.magnitude = disaster_magnitude[1][1]
@@ -514,7 +535,8 @@ class Plan():
 
     def save_plan(self, new_file):
         """ Saves a plan into the file."""
-        new_file.write('Plan ' + str(self.id_assign) + ',' + self.name + ',')
+        # The first few lines
+        new_file.write('Plan ' + str(self.num) + ',' + self.name + ',')
         new_file.write(self.recurr_dist + ',')
         if self.recurr_dist in {'discrete', 'rect', 'tri'}:
             to_write = []
@@ -550,8 +572,9 @@ class Plan():
             for item in to_write:
                 new_file.write(str(item) + ',')
         new_file.write('\n')
+        # Costs
         for cost in self.costs.indiv:
-            new_file.write(',Costs,' + cost.title + ',' + cost.cost_type + ',' + cost.omr_type + ',')
+            new_file.write(',Costs,'+cost.title+','+cost.cost_type+','+cost.omr_type+',')
             for time in cost.times:
                 new_file.write(str(time) + ',')
             new_file.write(str(cost.amount) + ',' + str(cost.desc) + '\n')
@@ -562,6 +585,7 @@ class Plan():
                 else:
                     new_file.write(',0')
             new_file.write('\n')
+        # Benefits
         for ben in self.bens.indiv:
             new_file.write(',Benefits,' + ben.title + ',' + ben.ben_type + ',')
             new_file.write(str(ben.amount) + ',' + str(ben.desc) + '\n')
@@ -572,13 +596,14 @@ class Plan():
                 else:
                     new_file.write(',0')
             new_file.write('\n')
+        # Externalities
         for ext in self.exts.indiv:
             new_file.write(',Externalities,' + ext.title + ',' + ext.ext_type)
             for entry in ext.times:
                 new_file.write(',' + str(entry))
             new_file.write(',' + str(ext.amount) + ',' + str(ext.desc) + '\n')
             new_file.write(',Externalities,')
-            if ext.pm == '+':
+            if ext.plus_minus == '+':
                 new_file.write('positive,')
             else:
                 new_file.write('negative,')
@@ -590,8 +615,9 @@ class Plan():
                 else:
                     new_file.write(',0')
             new_file.write('\n')
+        # Non-Disaster Related Benefits
         for nond_ben in self.nond_bens.indiv:
-            new_file.write(',Non-Disaster Benefits,' + nond_ben.title + ',' + nond_ben.ben_type + ',')
+            new_file.write(',Non-Disaster Benefits,'+nond_ben.title+','+nond_ben.ben_type+',')
             for item in nond_ben.times:
                 new_file.write(str(item) + ',')
             new_file.write(str(nond_ben.amount) + ',' + str(nond_ben.desc) + '\n')
@@ -602,21 +628,12 @@ class Plan():
                 else:
                     new_file.write(',0')
             new_file.write('\n')
+        # Fatalities
         new_file.write(',Fatalities,' + str(self.fat.averted) + ',' + str(self.fat.desc) + '\n')
 
-    def sum_it(self, horizon):
-        """ Sums up all of the individual pieces. """
-        self.total_bens = 0
-        self.total_costs = 0
-        self.net = 0
-        horizon = int(horizon)
-        # Note: Fatilites does all summing every time it is updated.
-        self.costs.make_sum()
-        self.bens.make_sum()
-        self.exts.make_sum()
-        self.nond_bens.make_sum()
-
-        # Makes cash flows for IRR
+    def make_cash_flows(self, horizon):
+        """ Makes cash flows for IRR
+            Author: David Webb """
         rec_list = []
         ot_list = []
         for ben in self.nond_bens.indiv:
@@ -646,7 +663,7 @@ class Plan():
                 amount = -float(item.amount)
             else:
                 is_ext = True
-                if item.pm == "+":
+                if item.plus_minus == "+":
                     amount = float(item.amount)
                 else:
                     amount = -float(item.amount)
@@ -666,7 +683,7 @@ class Plan():
                 amount = -float(item.amount)
             else:
                 is_ext = True
-                if item.pm == "+":
+                if item.plus_minus == "+":
                     amount = float(item.amount)
                 else:
                     amount = -float(item.amount)
@@ -675,7 +692,7 @@ class Plan():
                 time_series.append([float(item.times[0]), amount])
 
         time_series.sort(key=lambda x: x[0])
-        time_series_w_ext.sort(key=lambda x:x[0])
+        time_series_w_ext.sort(key=lambda x: x[0])
         prev = -1
         for i in range(len(time_series)):
             if abs(time_series[i][0]-prev) <= self.tol:
@@ -699,6 +716,21 @@ class Plan():
         for item in time_series_w_ext:
             if item[0] != -1:
                 self.annual_cash_flows_w_ext.append(item)
+
+
+    def sum_it(self, horizon):
+        """ Sums up all of the individual pieces. """
+        self.total_bens = 0
+        self.total_costs = 0
+        self.net = 0
+        horizon = int(horizon)
+        # Note: Fatilites does all summing every time it is updated.
+        self.costs.make_sum()
+        self.bens.make_sum()
+        self.exts.make_sum()
+        self.nond_bens.make_sum()
+
+        self.make_cash_flows(horizon)
 
         self.total_bens = self.bens.total + self.fat.stat_value_averted + self.nond_bens.total
         self.total_costs = self.costs.total
