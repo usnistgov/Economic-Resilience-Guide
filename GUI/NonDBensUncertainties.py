@@ -95,8 +95,7 @@ class NonDBensUncertaintiesPage(tk.Frame):
 
 
         # ===== Manueverability/Information buttons
-        save_button = ttk.Button(self, text="Save Analysis",
-                                 command=lambda: self.data_cont.file_save())
+        save_button = ttk.Button(self, text="Save Analysis", command=self.data_cont.file_save)
         save_button.grid(row=1, column=0, sticky="se", padx=BASE_PADDING, pady=BASE_PADDING)
         self.add_button = ttk.Button(self, text="Update Uncertainties",
                                      command=self.add_uncertainty)
@@ -190,13 +189,15 @@ class NonDBensUncertaintiesPage(tk.Frame):
                 except AssertionError:
                     valid = False
 
+                choices = [nums[i].get().replace(',', '').replace(' ', '') for i in range(6)]
+
                 if dist == 'none':
                     for entry in nums:
                         entry.delete(0, tk.END)
                         entry.insert(tk.END, '<insert uncertainty>')
                 elif dist == 'gauss':
                     try:
-                        if float(nums[0].get().replace(',', '')) <= 0:
+                        if float(choices[0]) <= 0:
                             err_messages += "Standard deviation must be greater than zero."
                             err_messages += " (" + ben.title + ").\n\n"
                     except ValueError:
@@ -206,15 +207,15 @@ class NonDBensUncertaintiesPage(tk.Frame):
                         entry.delete(0, tk.END)
                         entry.insert(tk.END, '<insert uncertainty>')
                 elif dist == 'discrete':
-                    for entry in nums:
+                    for entry in choices:
                         try:
-                            float(entry.get().replace(',', ''))
+                            float(entry)
                         except ValueError:
                             valid = False
                             err_messages += "All inputs must be numbers (" + ben.title + ").\n\n"
                     try:
-                        assert float(nums[0].get().replace(',', '')) <= float(nums[1].get().replace(',', '')) <= float(nums[2].get().replace(',', ''))
-                        disc_sum = float(nums[3].get()) + float(nums[4].get()) + float(nums[5].get())
+                        assert float(choices[0]) <= float(choices[1]) <= float(choices[2])
+                        disc_sum = float(choices[3]) + float(choices[4]) + float(choices[5])
                         if disc_sum != 100:
                             valid = False
                             err_messages += "Discrete likelihoods must add to 100% ("
@@ -226,9 +227,9 @@ class NonDBensUncertaintiesPage(tk.Frame):
                     except ValueError:
                         pass
                     try:
-                        assert float(ben.amount) in [float(nums[0].get().replace(',', '')),
-                                                     float(nums[1].get().replace(',', '')),
-                                                     float(nums[2].get().replace(',', ''))]
+                        assert float(ben.amount) in [float(choices[0]),
+                                                     float(choices[1]),
+                                                     float(choices[2])]
                     except AssertionError:
                         valid = False
                         err_messages += "One of the discrete options must be your point estimate "
@@ -237,7 +238,7 @@ class NonDBensUncertaintiesPage(tk.Frame):
                         pass
                 else:
                     try:
-                        bound = float(nums[0].get().replace(',', '')) <= float(ben.amount) <= float(nums[1].get().replace(',', ''))
+                        bound = float(choices[0]) <= float(ben.amount) <= float(choices[1])
                         if not bound:
                             valid = False
                             err_messages += "Lower bound must be below Upper bound "

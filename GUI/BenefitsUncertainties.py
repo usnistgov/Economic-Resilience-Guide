@@ -185,7 +185,7 @@ class BenefitsUncertaintiesPage(tk.Frame):
                 except AssertionError:
                     valid = False
 
-                choices = [nums[i].get().replace(',', '') for i in range(6)]
+                choices = [nums[i].get().replace(',', '').replace(' ', '') for i in range(6)]
 
                 if dist == 'none':
                     for entry in nums:

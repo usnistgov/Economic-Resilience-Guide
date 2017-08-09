@@ -10,7 +10,6 @@ from matplotlib.figure import Figure
 CACHEDIR = mkdtemp()
 MEM = Memory(cachedir=CACHEDIR, verbose=0)
 
-
 matplotlib.use("TkAgg")
 
 @MEM.cache
