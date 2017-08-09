@@ -1,5 +1,5 @@
 Title,Riverbend v2,,Horizon,50
-Discount Rate,3.0,,Risk Pref,neutral,,Value of Stat Life,7500000
+Discount Rate,3.0,,Risk Pref,neutral,,Value of Stat Life,0
 BEGIN PLANS
 Plan 0,Base,none,25,0,0,0,0,0,none,6.25,0,0,0,0,0,
 ,Fatalities,0.0,N/A
