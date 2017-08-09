@@ -59,28 +59,32 @@ class InfoPage(tk.Frame):
 
         group0 = ttk.LabelFrame(self)
         group0.grid(row=0, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
-        new_label = ttk.Label(group0, text="Input the project name, the list of alternatives, "
-                                           "the planning horizon,the calculated \n"
-                                           "real discount rate for discounting future costs to "
-                                           "present values, and hazard specifics.", font=SMALL_FONT)
-        new_label.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group0, text="Input the project name, the list of alternatives, "
+                  "the planning horizon,the calculated \n"
+                  "real discount rate for discounting future costs to "
+                  "present values, and hazard specifics.",
+                  font=SMALL_FONT).grid(row=1, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
 
-        info_button = ttk.Button(group0, text="More Information", command=self.show_info)
-        info_button.grid(row=1, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(group0, text="More Information",
+                   command=self.show_info).grid(row=1, column=1, sticky="w",
+                                                padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         # ===== Project Description Specifics
         group1 = ttk.LabelFrame(self, text="Project Description")
         group1.grid(row=2, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        name_lbl = ttk.Label(group1, text="Name", font=SMALL_FONT)
-        name_lbl.grid(row=0, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group1, text="Name",
+                  font=SMALL_FONT).grid(row=0, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.name_ent = tk.Entry(group1, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.name_ent.insert(tk.END, "<enter project name>")
         self.name_ent.grid(row=0, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        hor_lbl = ttk.Label(group1, text="Planning Horizon", font=SMALL_FONT)
-        hor_lbl.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group1, text="Planning Horizon",
+                  font=SMALL_FONT).grid(row=1, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.hor_ent = tk.Entry(group1, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.hor_ent.insert(tk.END, "<enter number of years for analysis>")
         self.hor_ent.grid(row=1, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -90,8 +94,9 @@ class InfoPage(tk.Frame):
         group2.grid(row=3, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
         self.choices = [1, 2, 3, 4, 5, 6]
-        num_plans_lbl = ttk.Label(group2, text="Number of Alternative Plans", font=SMALL_FONT)
-        num_plans_lbl.grid(row=0, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group2, text="Number of Alternative Plans",
+                  font=SMALL_FONT).grid(row=0, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.num_plans_ent = ttk.Combobox(group2, textvariable=self.choice_var, font=SMALL_FONT,
                                           width=ENTRY_WIDTH, values=self.choices)
         self.num_plans_ent.insert(tk.END, 0)
@@ -100,11 +105,12 @@ class InfoPage(tk.Frame):
         self.choice_var.trace("w", self.on_trace_choice)
         # ^ Updates other widgets when this field is updated
 
-        base_lbl = ttk.Label(group2, text="Base scenario", font=SMALL_FONT)
-        base_lbl.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        base_2_lbl = ttk.Label(group2, text="---------------------------------------------------",
-                               font=SMALL_FONT)
-        base_2_lbl.grid(row=1, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group2, text="Base scenario",
+                  font=SMALL_FONT).grid(row=1, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group2, text="---------------------------------------------------",
+                  font=SMALL_FONT).grid(row=1, column=1, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         self.name_lbls = [ttk.Label(group2, text="Alternative 1", font=SMALL_FONT),
                           ttk.Label(group2, text="Alternative 2", font=SMALL_FONT),
@@ -128,16 +134,18 @@ class InfoPage(tk.Frame):
         group3 = ttk.LabelFrame(self, text="Discount Rate")
         group3.grid(row=4, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        dis_lbl = ttk.Label(group3, text="Real Discount Rate", font=SMALL_FONT)
-        dis_lbl.grid(row=0, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group3, text="Real Discount Rate",
+                  font=SMALL_FONT).grid(row=0, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.dis_ent = tk.Entry(group3, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.dis_ent.insert(tk.END, "5.00")
         self.dis_ent.grid(row=0, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        percent_lbl = ttk.Label(group3, text="%", font=SMALL_FONT)
-        percent_lbl.grid(row=0, column=2, sticky='w', pady=FIELDY_PADDING)
+        ttk.Label(group3, text="%", font=SMALL_FONT).grid(row=0, column=2, sticky='w',
+                                                          pady=FIELDY_PADDING)
 
-        def_button = ttk.Button(group3, text="Restore Default", command=self.restore)
-        def_button.grid(row=2, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(group3, text="Restore Default",
+                   command=self.restore).grid(row=2, column=0, sticky="w",
+                                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         group4 = ttk.LabelFrame(self, text="Hazard Recurrence")
         group4.grid(row=5, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
@@ -229,8 +237,9 @@ class InfoPage(tk.Frame):
         group6.grid(row=7, stick="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
         self.preference = tk.StringVar()
         self.preference.set("none")
-        risk_lbl = ttk.Label(group6, text="Define Risk Preference", font=SMALL_FONT)
-        risk_lbl.grid(row=14, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group6, text="Define Risk Preference",
+                  font=SMALL_FONT).grid(row=14, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.neutral = ttk.Radiobutton(group6, text="Risk Neutral",
                                        variable=self.preference, value="neutral")
         self.neutral.grid(row=15, column=0, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -245,15 +254,19 @@ class InfoPage(tk.Frame):
         group7 = ttk.LabelFrame(self)
         group7.grid(row=8, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
             # === Places spacing so that buttons are on the bottom right
-        space_lbl = ttk.Label(group7, text=" " * 106)
-        space_lbl.grid(row=0, column=1)
-        next_button = ttk.Button(group7, text="Next>>",
-                                 command=lambda: self.check_page(controller, 'CostPage'))
-        next_button.grid(row=0, column=7, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group7, text=" " * 106).grid(row=0, column=1)
+        ttk.Button(group7, text="Next>>",
+                   command=lambda: self.check_page(controller,
+                                                   'CostPage')).grid(row=0, column=7, sticky="se",
+                                                                     padx=FIELDX_PADDING,
+                                                                     pady=FIELDY_PADDING)
 
-        menu_button = ttk.Button(group7, text="Menu",
-                                 command=lambda: self.check_page(controller, 'DirectoryPage'))
-        menu_button.grid(row=0, column=3, sticky="se", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(group7, text="Menu",
+                   command=lambda: self.check_page(controller,
+                                                   'DirectoryPage')).grid(row=0, column=3,
+                                                                          sticky="se",
+                                                                          padx=FIELDX_PADDING,
+                                                                          pady=FIELDY_PADDING)
 
     def restore(self):
         """restores default discount value"""

@@ -285,12 +285,23 @@ class NonDBensUncertaintiesPage(tk.Frame):
                                    font=SMALL_FONT)
                 titles.grid(row=row_index, column=0, sticky="w",
                             padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-                rads[plan.num].append([tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="none"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="gauss"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="tri"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="rect"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="discrete")])
-                self.ranges[plan.num].append([tk.Entry(self.groups[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT) for i in range(6)])
+                rads[plan.num].append([tk.Radiobutton(self.groups[-1],
+                                                      variable=self.choices[plan.num][choice],
+                                                      value="none"),
+                                       tk.Radiobutton(self.groups[-1],
+                                                      variable=self.choices[plan.num][choice],
+                                                      value="gauss"),
+                                       tk.Radiobutton(self.groups[-1],
+                                                      variable=self.choices[plan.num][choice],
+                                                      value="tri"),
+                                       tk.Radiobutton(self.groups[-1],
+                                                      variable=self.choices[plan.num][choice],
+                                                      value="rect"),
+                                       tk.Radiobutton(self.groups[-1],
+                                                      variable=self.choices[plan.num][choice],
+                                                      value="discrete")])
+                self.ranges[plan.num].append([tk.Entry(self.groups[-1], width=int(ENTRY_WIDTH/2),
+                                                       font=SMALL_FONT) for i in range(6)])
                 self.labels[plan.num].append([])
                 for col in range(5):
                     fig_label = ttk.Label(self.groups[-1])
@@ -308,35 +319,43 @@ class NonDBensUncertaintiesPage(tk.Frame):
                     for entry in self.ranges[plan.num][choice]:
                         entry.grid_remove()
                 elif self.choices[plan.num][choice].get() == "gauss":
-                    self.labels[plan.num][choice] = [tk.Label(self.groups[-1], text="Standard Deviation ($)")]
+                    self.labels[plan.num][choice] = [tk.Label(self.groups[-1],
+                                                              text="Standard Deviation ($)")]
                     self.labels[plan.num][choice][0].grid(row=row_index + 4, column=0)
                     for entry in self.ranges[plan.num][choice]:
                         entry.grid_remove()
                     self.ranges[plan.num][choice][0].grid(row=row_index + 4, column=1)
                     row_index += 5
                 elif self.choices[plan.num][choice].get() == "discrete":
-                    self.labels[plan.num][choice] = [tk.Label(self.groups[-1], text="Lowest Amount ($)"),
-                                                           tk.Label(self.groups[-1], text="Middle Amount ($)"),
-                                                           tk.Label(self.groups[-1], text="Highest Amount ($)"),
-                                                           tk.Label(self.groups[-1], text="Likelihood of Lowest Amount (%)"),
-                                                           tk.Label(self.groups[-1], text="Likelihood of Middle Amount (%)"),
-                                                           tk.Label(self.groups[-1], text="Likelihood of Highest Amount (%)")]
+                    self.labels[plan.num][choice] = [tk.Label(self.groups[-1],
+                                                              text="Lowest Amount ($)"),
+                                                     tk.Label(self.groups[-1],
+                                                              text="Middle Amount ($)"),
+                                                     tk.Label(self.groups[-1],
+                                                              text="Highest Amount ($)"),
+                                                     tk.Label(self.groups[-1], text="Likelihood of Lowest Amount (%)"),
+                                                     tk.Label(self.groups[-1], text="Likelihood of Middle Amount (%)"),
+                                                     tk.Label(self.groups[-1], text="Likelihood of Highest Amount (%)")]
                     for label in self.labels[plan.num][choice][0:3]:
-                        label.grid(row=row_index+self.labels[plan.num][choice].index(label)+5, column=0)
+                        label.grid(row=row_index+self.labels[plan.num][choice].index(label)+5,
+                                   column=0)
                     for label in self.labels[plan.num][choice][3:6]:
-                        label.grid(row=row_index+self.labels[plan.num][choice].index(label)+2, column=2)
+                        label.grid(row=row_index+self.labels[plan.num][choice].index(label)+2,
+                                   column=2)
                     for entry in self.ranges[plan.num][choice][0:3]:
-                        entry.grid(row=row_index+self.ranges[plan.num][choice].index(entry)+5, column=1,
+                        entry.grid(row=row_index+self.ranges[plan.num][choice].index(entry)+5,
+                                   column=1,
                                    padx=FIELDX_PADDING, pady=FIELDY_PADDING)
                     for entry in self.ranges[plan.num][choice][3:6]:
-                        entry.grid(row=row_index+self.ranges[plan.num][choice].index(entry)+2, column=3,
+                        entry.grid(row=row_index+self.ranges[plan.num][choice].index(entry)+2,
+                                   column=3,
                                    padx=FIELDX_PADDING, pady=FIELDY_PADDING)
                     row_index += 8
                 else:
                     self.labels[plan.num][choice] = [tk.Label(self.groups[-1],
-                                                                    text="Lower Bound ($)"),
-                                                           tk.Label(self.groups[-1],
-                                                                    text="Upper Bound ($)")]
+                                                              text="Lower Bound ($)"),
+                                                     tk.Label(self.groups[-1],
+                                                              text="Upper Bound ($)")]
                     self.labels[plan.num][choice][0].grid(row=row_index+4, column=0)
                     self.labels[plan.num][choice][1].grid(row=row_index+4, column=2)
                     for entry in self.ranges[plan.num][choice]:
@@ -346,8 +365,8 @@ class NonDBensUncertaintiesPage(tk.Frame):
                     row_index += 5
                 for entry in self.ranges[plan.num][choice]:
                     try:
-                        text = float(ben.range[self.ranges[plan.num][choice].index(entry)])
-                        text = '{:,.2f}'.format(text)
+                        text = ben.range[self.ranges[plan.num][choice].index(entry)]
+                        text = '{:,.2f}'.format(float(text))
                     except ValueError:
                         text = ben.range[self.ranges[plan.num][choice].index(entry)]
                     entry.insert(tk.END, text)

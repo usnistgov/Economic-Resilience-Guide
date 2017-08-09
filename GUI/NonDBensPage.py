@@ -49,20 +49,23 @@ class NonDBensPage(tk.Frame):
         group1 = ttk.LabelFrame(self, text="Benefit Description")
         group1.grid(row=3, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        title_lbl = ttk.Label(group1, text="Title", font=SMALL_FONT)
-        title_lbl.grid(row=0, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group1, text="Title",
+                  font=SMALL_FONT).grid(row=0, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.title_ent = tk.Entry(group1, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.title_ent.insert(tk.END, "<enter a title for this benefit>")
         self.title_ent.grid(row=0, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        ben_lbl = ttk.Label(group1, text="Amount  $", font=SMALL_FONT)
-        ben_lbl.grid(row=1, column=0, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group1, text="Amount  $",
+                  font=SMALL_FONT).grid(row=1, column=0, sticky="e",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.ben_ent = tk.Entry(group1, width=ENTRY_WIDTH, font=SMALL_FONT)
         self.ben_ent.insert(tk.END, "<enter an amount for this benefit>")
         self.ben_ent.grid(row=1, column=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
-        desc_lbl = ttk.Label(group1, text="Description", font=SMALL_FONT)
-        desc_lbl.grid(row=2, column=0, sticky="ne", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Label(group1, text="Description",
+                  font=SMALL_FONT).grid(row=2, column=0, sticky="ne",
+                                        padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.desc_ent = tk.Text(group1, width=60, height=10, font=SMALL_FONT)
         self.desc_ent.insert(tk.END, "<enter a description for this benefit>")
         self.desc_ent.grid(row=2, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
@@ -71,9 +74,8 @@ class NonDBensPage(tk.Frame):
         group2 = ttk.LabelFrame(self, text="Plan Affected")
         group2.grid(row=3, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        plan_lbl = ttk.Label(group2, text="Which plan(s) does this benefit pertain to?",
-                             font=SMALL_FONT)
-        plan_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
+        ttk.Label(group2, text="Which plan(s) does this benefit pertain to?",
+                  font=SMALL_FONT).grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
         self.b_bool = tk.BooleanVar()
         self.p1_bool = tk.BooleanVar()
         self.p2_bool = tk.BooleanVar()
@@ -111,19 +113,19 @@ class NonDBensPage(tk.Frame):
         # ===== Allows for recurrence
         self.group5 = ttk.LabelFrame(self, text="Recurring Non-Disaster Related Benefits")
         self.group5.grid(row=4, column=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
-        non_d_ben_recurr_lbl = ttk.Label(self.group5,
-                                         text="Choose how often this benefit will occur.",
-                                         font=SMALL_FONT)
-        non_d_ben_recurr_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
+        ttk.Label(self.group5, text="Choose how often this benefit will occur.",
+                  font=SMALL_FONT).grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
         self.non_d_ben_recurr_selection = tk.StringVar()
         self.non_d_ben_recurr_selection.set("1")
-        one_time_rad = ttk.Radiobutton(self.group5, text="One-Time Occurrence",
-                                       variable=self.non_d_ben_recurr_selection, value="one-time")
-        one_time_rad.grid(row=1, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        recurring_rad = ttk.Radiobutton(self.group5, text="Recurring Occurrence",
-                                        variable=self.non_d_ben_recurr_selection, value="recurring")
-        recurring_rad.grid(row=2, sticky="w", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Radiobutton(self.group5, text="One-Time Occurrence",
+                        variable=self.non_d_ben_recurr_selection,
+                        value="one-time").grid(row=1, sticky="w",
+                                               padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Radiobutton(self.group5, text="Recurring Occurrence",
+                        variable=self.non_d_ben_recurr_selection,
+                        value="recurring").grid(row=2, sticky="w",
+                                                padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
         # === Changes upcoming fields depending on NDBR choice
         self.non_d_ben_recurr_selection.trace("w", self.on_trace_change)
@@ -150,9 +152,8 @@ class NonDBensPage(tk.Frame):
         group4 = ttk.LabelFrame(self, text="Access Saved Benefits")
         group4.grid(row=4, column=1, sticky="ew", padx=FRAME_PADDING, pady=FRAME_PADDING)
 
-        hist_lbl = ttk.Label(group4, text="Edit, copy, or delete saved non-disaster\n"
-                                          "related benefits", font=SMALL_FONT)
-        hist_lbl.grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
+        ttk.Label(group4, text="Edit, copy, or delete saved non-disaster\nrelated benefits",
+                  font=SMALL_FONT).grid(row=0, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
 
         self.choices = []
         self.variable = tk.StringVar()
@@ -246,8 +247,8 @@ class NonDBensPage(tk.Frame):
             [valid, blank, err_messages] = self.check_page(printout=False)
             if not (valid | blank):
                 checker = messagebox.askyesno('Move Forward?',
-                                              'Your benefit was not saved. The following errors were found:\n'
-                                              + err_messages
+                                              'Your benefit was not saved. The following errors '
+                                              + 'were found:\n' + err_messages
                                               + 'Select \'No\' if you wish to continue editing and'
                                               ' \'Yes\' if you wish to move to the next page.')
                 return checker
@@ -444,8 +445,10 @@ class NonDBensPage(tk.Frame):
                 if ben.title == chosen_ben[0]:
                     ben_amount = ben.amount
                     ben_desc = ben.desc
-            del_text = ("Delete \'" + chosen_ben[0] + "\' from " + self.data_cont.plan_list[chosen_ben[1]].name + " Plan?\n\n"
-                        + "Amount: $" + '{:,.2f}'.format(ben_amount) + "\n\nDescription: " + str(ben_desc))
+            del_text = ("Delete \'" + chosen_ben[0] + "\' from "
+                        + self.data_cont.plan_list[chosen_ben[1]].name + " Plan?\n\n"
+                        + "Amount: $" + '{:,.2f}'.format(ben_amount) + "\n\nDescription: "
+                        + str(ben_desc))
             confirm = messagebox.askokcancel("Confirmation", del_text)
             if confirm:
                 confirm_delete()
