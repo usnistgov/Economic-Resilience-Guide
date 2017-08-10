@@ -5,8 +5,8 @@ block_cipher = None
 
 a = Analysis(['EconGuide.py'],
              pathex=['C:\\Users\\sac5\\Desktop\\Decision Guide Tool\\Economic-Resilience-Guide'],
-             binaries=None,
-             datas=None,
+             binaries=[],
+             datas=[],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],

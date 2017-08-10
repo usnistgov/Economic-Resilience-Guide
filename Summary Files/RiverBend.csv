@@ -1,0 +1,44 @@
+Outputs of Economic Evaluation: [Riverbend v2]
+Number of Alternatives: 2
+Planning Horizon: 50 years
+Discount Rate: 5.0%
+Disaster Rate: Every 25 years
+Disaster Magnitude: ['6.25']% of build cost
+Risk Preference: neutral
+Statistical Value of a Life: $7500000
+,Base Case,Alternative 1,Alternative 2
+,Base,Retrofit,New Bridge
+Benefits
+Disaster Economic Benefits
+Response and Recovery Costs,$0.0,$451705.9683527613,$752843.2805879355
+Direct Loss Reduction,$0.0,$195739.25295286323,$0.0
+Indirect Losses,$0.0,$1505686.561175871,$2634951.482057774
+Disaster Non-Market Benefits
+Value of Statistical Lives Saved,$0.0,$564632.4604409516,$1129264.9208819033
+Number of Statistical Lives Saved,0.0,0.2,0.4
+Non-disaster Related Benefits
+One-Time,$0,$0,$0
+Recurring
+,$0,$0,$1790316.7013322278
+Costs
+Direct Costs,$0,$3000000.0,$6750000.0
+Indirect Costs,$0,$500000.0,$295000.0
+OMR
+One-Time,$0,$0,$0
+Recurring,$0,$0,$513999.92495248263
+Externalities
+Positive
+One-Time,$0,$0,$0
+Recurring,$0,$0,$2796635.815984061
+Negative
+One-Time,$0,$0,$0
+Recurring,$0,$0,$0
+Total: Present Expected Value
+Benefits,$0.0,$2717764.2429224467,$6307376.384859841
+Costs,$0,$3500000.0,$7558999.924952483
+Net,$0.0,$-782235.7570775533,$-1251623.5400926415
+Net with Externalities,$0.0,$-782235.7570775533,$1545012.2758914195
+Savings-to-Investment Ratio,0,-0.22349593059358666,-0.17766125480378162
+Internal Rate of Return (%),---,3.4515380859375,3.7933349609375
+Return on Investment (%),0,1.5530081388128267,1.6688388536793088
+Non-Disaster ROI (%),0,0,0.47369141926363556
