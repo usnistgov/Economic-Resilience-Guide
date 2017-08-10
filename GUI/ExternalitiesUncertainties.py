@@ -1,6 +1,6 @@
 """
    File:          ExternalitiesUncertainties.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for adding uncertainties
                   to externalities, the page for the user to input Externalities
                   uncertainty distributions.

@@ -1,6 +1,6 @@
 """
    File:          ExternalitiesPage.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for the ExternalitiesPage,
                   the page for the user to input externalities.
 """

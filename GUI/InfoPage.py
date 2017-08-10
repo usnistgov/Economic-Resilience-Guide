@@ -1,6 +1,6 @@
 """
    File:          InfoPage.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for the InfoPage,
                   the first page the user will input data on.
 """

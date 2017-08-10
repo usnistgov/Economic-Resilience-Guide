@@ -1,6 +1,6 @@
 """
    File:          DirectoryPage.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for the DirectoryPage
                   which allows the user to go to any page.
 """

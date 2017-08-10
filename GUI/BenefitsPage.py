@@ -1,6 +1,6 @@
 """
    File:          BenefitsPage.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for the BenefitsPage,
                   the page for the user to input Disaster-Related Benefits.
 """

@@ -1,6 +1,6 @@
 """
    File:          NonDBensUncertainties.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for adding uncertainties to
                   non-disaster benefits, the page for the user to input Non D Benefits
                   uncertainty distributions.

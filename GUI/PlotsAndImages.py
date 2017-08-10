@@ -63,3 +63,12 @@ def rect_dist():
     y_pts = [0, 0, 1, 1, 1, 1, 1, 0, 0]
     sub.plot(x_pts, y_pts)
     return fig
+
+@MEM.cache
+def histogram(points):
+    """ Plots a histogram of points."""
+    fig = Figure(figsize=(6, 6), dpi=100)
+    sub = fig.add_subplot(111)
+    sub.axis('on')
+    sub.hist(points, bins=100)
+    return fig

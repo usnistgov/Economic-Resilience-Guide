@@ -1,6 +1,6 @@
 """
    File:          FatalitiesPage.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for the FatalitiesPage,
                   the page for the user to input Fatalities.
 """

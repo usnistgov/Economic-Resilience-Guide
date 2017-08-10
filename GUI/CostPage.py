@@ -1,6 +1,6 @@
 """
    File:          CostPage.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for the CostPage,
                   the page for the user to input Costs.
 """

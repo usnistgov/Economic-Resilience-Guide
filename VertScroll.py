@@ -1,7 +1,7 @@
 """
    File:          VertScroll.py
    Author:        Username Gonzo on stackOverflow,
-                  Shannon Craig
+                  Shannon Grubb
    Description:   Gives a scrollbar to all pages, especially for use in long ones. Note that
                   I made several notable changes, however a majority of the code is copied
                   directly from that given by Gonzo in the following question on Stack Overflow.

@@ -140,7 +140,7 @@ class Simulation():
             cost_totals = []
             ext_totals = []
             net_totals = []
-            net_ext_totals = []
+            plan.net_ext_totals = []
             irr_totals = []
             irr_ext_totals = []
             sir_totals = []
@@ -185,7 +185,7 @@ class Simulation():
                     cost_totals.append(new_sim.total_costs)
                     ext_totals.append(new_sim.exts.total_p - new_sim.exts.total_n)
                     net_totals.append(new_sim.net)
-                    net_ext_totals.append(new_sim.net_w_ext)
+                    plan.net_ext_totals.append(new_sim.net_w_ext)
                     if new_sim.irr() == "---":
                         irr_totals.append(-1)
                     elif new_sim.irr() == "No Valid IRR":
@@ -237,13 +237,13 @@ class Simulation():
                     cost_ben_net[2] = True
                 # Test net with externalities
                 tol = abs(plan.net_w_ext * tol_percent + 0.001)
-                if abs(np.mean(net_ext_totals) - old_ext_net) < tol:
+                if abs(np.mean(plan.net_ext_totals) - old_ext_net) < tol:
                     cost_ben_net[3] = True
 
                 old_ben = np.mean(ben_totals)
                 old_cost = np.mean(cost_totals)
                 old_net = np.mean(net_totals)
-                old_ext_net = np.mean(net_ext_totals)
+                old_ext_net = np.mean(plan.net_ext_totals)
 
                 old_iters = num_iters
                 num_iters = num_iters + low_iters#2 * num_iters
@@ -260,7 +260,7 @@ class Simulation():
             ben_totals.sort()
             cost_totals.sort()
             net_totals.sort()
-            net_ext_totals.sort()
+            plan.net_ext_totals.sort()
             ben_direct_totals.sort()
             ben_indirect_totals.sort()
             fat_num_totals.sort()
@@ -289,7 +289,7 @@ class Simulation():
             plan.ben_range = [ben_totals[first_num], ben_totals[last_num]]
             plan.cost_range = [cost_totals[first_num], cost_totals[last_num]]
             plan.net_range = [net_totals[first_num], net_totals[last_num]]
-            plan.net_ext_range = [net_ext_totals[first_num], net_ext_totals[last_num]]
+            plan.net_ext_range = [plan.net_ext_totals[first_num], plan.net_ext_totals[last_num]]
             plan.bens.direct_range = [ben_direct_totals[first_num], ben_direct_totals[last_num]]
             plan.bens.indirect_range = [ben_indirect_totals[first_num],
                                         ben_indirect_totals[last_num]]

@@ -1,6 +1,6 @@
 """
    File:          AnalysisPage.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the final analysis results.
 """
 

@@ -1,6 +1,6 @@
 """
    File:          BenefitsUncertainties.py
-   Author:        Shannon Craig
+   Author:        Shannon Grubb
    Description:   Interacts with EconGuide.py, builds the GUI for adding uncertainties to benefits,
                   the page for the user to input Benefits uncertainty distributions.
     * NOTE: This page is a prototype uncertainties page.
