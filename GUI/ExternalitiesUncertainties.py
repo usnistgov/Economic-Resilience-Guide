@@ -106,7 +106,8 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
         finished_button = ttk.Button(self, text="Next>>", command=save_and_next)
         finished_button.grid(row=13, column=0, sticky="se",
                              padx=FIELDX_PADDING, pady=FIELDY_PADDING)
-        ttk.Button(self, text="Menu", command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        ttk.Button(self, text="Menu",
+                   command=menu).grid(row=13, column=0, padx=FIELDX_PADDING, pady=FIELDY_PADDING)
 
     def show_info(self):
         """ Pulls up information for the Externalities page."""
@@ -125,8 +126,8 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                             "information are as follows:\n"
                             "•	‘Gaussian’ is a common continuous probability distribution. The "
                             "assumption is that the Gaussian distribution is symmetric in this "
-                            "Tool. The user needs to define the ‘standard deviation ($)’ from the point "
-                            "estimate defined by the user for the externality.\n"
+                            "Tool. The user needs to define the ‘standard deviation ($)’ from the "
+                            "point estimate defined by the user for the externality.\n"
                             "•	‘Triangle’ is a continuous probability distribution. This "
                             "distribution can be defined to be symmetric or asymmetric around the "
                             "cost point estimate. The user needs to provide a ‘Lower bound ($)’ "
@@ -189,7 +190,8 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                 elif dist == 'gauss':
                     try:
                         if float(nums[0].get().replace(',', '')) <= 0:
-                            err_messages += "Standard deviation must be greater than zero (" + ext.title + ").\n\n"
+                            err_messages += "Standard deviation must be greater than zero ("
+                            err_messages += ext.title + ").\n\n"
                     except ValueError:
                         valid = False
                         err_messages += "All inputs must be numbers (" + ext.title +").\n\n"
@@ -269,10 +271,10 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                 titles.grid(row=row_index, column=0, sticky="w",
                             padx=FIELDX_PADDING, pady=FIELDY_PADDING)
                 rads[plan.num].append([tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="none"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="gauss"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="tri"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="rect"),
-                                             tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="discrete")])
+                                       tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="gauss"),
+                                       tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="tri"),
+                                       tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="rect"),
+                                       tk.Radiobutton(self.groups[-1], variable=self.choices[plan.num][choice], value="discrete")])
                 self.ranges[plan.num].append([tk.Entry(self.groups[-1], width=int(ENTRY_WIDTH/2), font=SMALL_FONT) for i in range(6)])
                 self.labels[plan.num].append([])
                 for col in range(5):
@@ -299,11 +301,11 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                     row_index += 5
                 elif self.choices[plan.num][choice].get() == "discrete":
                     self.labels[plan.num][choice] = [tk.Label(self.groups[-1], text="Lowest Amount ($)"),
-                                                           tk.Label(self.groups[-1], text="Middle Amount ($)"),
-                                                           tk.Label(self.groups[-1], text="Highest Amount ($)"),
-                                                           tk.Label(self.groups[-1], text="Likelihood of Lowest Amount (%)"),
-                                                           tk.Label(self.groups[-1], text="Likelihood of Middle Amount (%)"),
-                                                           tk.Label(self.groups[-1], text="Likelihood of Highest Amount (%)")]
+                                                     tk.Label(self.groups[-1], text="Middle Amount ($)"),
+                                                     tk.Label(self.groups[-1], text="Highest Amount ($)"),
+                                                     tk.Label(self.groups[-1], text="Likelihood of Lowest Amount (%)"),
+                                                     tk.Label(self.groups[-1], text="Likelihood of Middle Amount (%)"),
+                                                     tk.Label(self.groups[-1], text="Likelihood of Highest Amount (%)")]
                     for label in self.labels[plan.num][choice][0:3]:
                         label.grid(row=row_index+self.labels[plan.num][choice].index(label)+5, column=0)
                     for label in self.labels[plan.num][choice][3:6]:
@@ -317,7 +319,7 @@ class ExternalitiesUncertaintiesPage(tk.Frame):
                     row_index += 8
                 else:
                     self.labels[plan.num][choice] = [tk.Label(self.groups[-1], text="Lower Bound ($)"),
-                                                           tk.Label(self.groups[-1], text="Upper Bound ($)")]
+                                                     tk.Label(self.groups[-1], text="Upper Bound ($)")]
                     self.labels[plan.num][choice][0].grid(row=row_index+4, column=0)
                     self.labels[plan.num][choice][1].grid(row=row_index+4, column=2)
                     for entry in self.ranges[plan.num][choice]:
