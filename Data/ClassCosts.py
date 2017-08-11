@@ -108,7 +108,7 @@ class Costs():
             valid = False
 
         # ===== Checking the description field
-        if desc in {"", "<enter a description for this benefit>\n"}:
+        if desc in {"", "<enter a description for this cost>\n"}:
             desc = ["N/A"]
         else:
             desc = desc.replace('\n', '')
