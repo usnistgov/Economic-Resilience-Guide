@@ -88,8 +88,6 @@ class HistogramPage(tk.Frame):
             if moveon:
                 controller.show_frame(go_to_place)
 
-
-
         # ===== Manueverability/Information buttons
         save_button = ttk.Button(self, text="Save Analysis",
                                  command=self.data_cont.file_save)

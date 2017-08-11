@@ -406,7 +406,7 @@ class InfoPage(tk.Frame):
                 pass
         else:
             try:
-                bound = float(self.mag_range[0].get()) <= float(self.mag_range[1]) <= float(self.mag_range[2].get())
+                bound = float(self.mag_range[0].get()) <= float(self.mag_range[1].get()) <= float(self.mag_range[2].get())
                 if not bound:
                     valid = False
                     err_messages += "Hazard Magnitude lower bound must be below upper bound.\n\n"
