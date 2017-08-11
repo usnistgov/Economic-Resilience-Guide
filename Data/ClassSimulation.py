@@ -390,10 +390,17 @@ class Simulation():
         new_mag = dist_dict[my_plan.mag_dist](np.random.uniform(),
                                               to_pass(my_plan.mag_dist, my_plan.mag_range)[0],
                                               to_pass(my_plan.mag_dist, my_plan.mag_range)[1])
+        
+        def for_plan(dist, mid, some_range):
+            """ Sends the for plan."""
+            if dist == "discrete":
+                return some_range
+            else:
+                return [mid, some_range]
         # Creates a new plan (empty)
         delta_plan = Plan(my_plan.num, my_plan.name,
-                          [my_plan.recurr_dist, [new_recurr, my_plan.recurr_range]],
-                          [my_plan.mag_dist, [new_mag, my_plan.mag_range]], self.discount_rate,
+                          [my_plan.recurr_dist, for_plan(my_plan.recurr_dist, new_recurr, my_plan.recurr_range)],
+                          [my_plan.mag_dist, for_plan(my_plan.mag_dist, new_mag, my_plan.mag_range)], self.discount_rate,
                           self.horizon, self.stat_life, self.parties)
 
         # Fills the new plan with the various parts
@@ -422,8 +429,8 @@ class Plan():
             self.recurrence = disaster_recurrence[1][0]
         elif self.recurr_dist == "discrete":
             self.recurr_uncert = list(disaster_recurrence)
-            self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][2],
-                                   disaster_recurrence[1][3]])
+            self.recurrence = max([disaster_recurrence[1][0], disaster_recurrence[1][1],
+                                   disaster_recurrence[1][2]])
         else:
             self.recurr_uncert = disaster_recurrence[1]
             self.recurrence = disaster_recurrence[1][1]
@@ -439,8 +446,8 @@ class Plan():
             self.magnitude = [disaster_magnitude[1][0]]
         elif self.mag_dist == "discrete":
             self.mag_uncert = list(disaster_magnitude)
-            self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][2],
-                                  disaster_magnitude[1][3]])
+            self.magnitude = max([disaster_magnitude[1][0], disaster_magnitude[1][1],
+                                  disaster_magnitude[1][2]])
         else:
             self.mag_uncert = list(disaster_magnitude[1])
             self.magnitude = disaster_magnitude[1][1]
