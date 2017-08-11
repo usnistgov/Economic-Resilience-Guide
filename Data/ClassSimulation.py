@@ -409,6 +409,12 @@ class Simulation():
         delta_plan.costs = delta_plan.costs.one_iter(my_plan.costs.indiv)
         delta_plan.fat.update(my_plan.fat.averted, [my_plan.fat.desc], self.stat_life)
         delta_plan.nond_bens = delta_plan.nond_bens.one_iter(my_plan.nond_bens.indiv)
+
+        # Specific pieces
+        delta_plan.bens.dis_rate = new_recurr
+        delta_plan.fat.disaster_rate = float(new_recurr)
+        delta_plan.fat.update(delta_plan.fat.averted, [delta_plan.fat.desc], self.stat_life)
+
         return delta_plan
 
 class Plan():
