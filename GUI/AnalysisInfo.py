@@ -77,9 +77,9 @@ class AnalysisInfo(tk.Frame):
                                  command=lambda: self.both(self.uncert_select.get()))
         both_button.grid(row=1, column=2, sticky="ew", padx=BASE_PADDING, pady=BASE_PADDING)
         both_button.grid_columnconfigure(2, weight=1)
-        #text_button = ttk.Button(button_group, text="View histogram",
-        #                         command=lambda:self.controller.show_frame('HistogramPage'))
-        #text_button.grid(row=2)
+        text_button = ttk.Button(button_group, text="View histogram",
+                                 command=lambda:self.controller.show_frame('HistogramPage'))
+        text_button.grid(row=2)
 
         # Uncertainty Information Group
         uncert_group = ttk.LabelFrame(self, text="Information on Monte-Carlo calculations")

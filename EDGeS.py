@@ -25,7 +25,7 @@ from GUI.NonDBensPage import NonDBensPage
 from GUI.NonDBensUncertainties import NonDBensUncertaintiesPage
 from GUI.AnalysisInfo import AnalysisInfo
 
-#from GUI.Histograms import HistogramPage
+from GUI.Histograms import HistogramPage
 
 from GUI.Constants import LARGE_FONT, XS_FONT
 from GUI.Constants import BASE_PADDING
@@ -72,8 +72,8 @@ class Application(tk.Tk):
                       'FatalitiesPage': FatalitiesPage,
                       'NonDBensPage': NonDBensPage,
                       'NonDBensUncertaintiesPage': NonDBensUncertaintiesPage,
-                      'AnalysisInfo': AnalysisInfo}#,
-                      #'HistogramPage': HistogramPage}
+                      'AnalysisInfo': AnalysisInfo,
+                      'HistogramPage': HistogramPage}
         cont = frame_dict[cont_string]
         frame = self.frames[cont]
         frame.on_trace_change("", "", "")
@@ -159,8 +159,8 @@ class StartPage(tk.Frame):
                          ExternalitiesPage, ExternalitiesUncertaintiesPage,
                          BenefitsPage, BenefitsUncertaintiesPage,
                          FatalitiesPage, NonDBensPage,
-                         NonDBensUncertaintiesPage, AnalysisInfo):#,
-                         #HistogramPage):
+                         NonDBensUncertaintiesPage, AnalysisInfo,
+                         HistogramPage):
                 frame = page(controller.container.interior, controller, controller.cont_list)
                 controller.frames[page] = frame
                 frame.grid(row=0, column=0, sticky="nsew")
@@ -184,8 +184,8 @@ class StartPage(tk.Frame):
                                  ExternalitiesPage, ExternalitiesUncertaintiesPage,
                                  BenefitsPage, BenefitsUncertaintiesPage,
                                  FatalitiesPage, NonDBensPage,
-                                 NonDBensUncertaintiesPage, AnalysisInfo):#,
-                                 #HistogramPage):
+                                 NonDBensUncertaintiesPage, AnalysisInfo,
+                                 HistogramPage):
                         frame = page(controller.container.interior, controller,
                                      controller.cont_list)
                         controller.frames[page] = frame

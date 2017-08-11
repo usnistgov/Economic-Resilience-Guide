@@ -105,6 +105,7 @@ class Costs():
             blank = False
             field_dict['amount'] = float(amount)
         except ValueError:
+            err_messages += "Amount must be a number.\n\n"
             valid = False
 
         # ===== Checking the description field
@@ -112,6 +113,7 @@ class Costs():
             desc = ["N/A"]
         else:
             desc = desc.replace('\n', '')
+            print('here?')
             blank = False
         field_dict['desc'] = [desc]
 
