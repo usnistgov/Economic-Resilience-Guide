@@ -112,17 +112,30 @@ class HistogramPage(tk.Frame):
         for group in self.groups:
             group.grid_forget()
             group.destroy()
-        self.groups = []
+        self.groups = [ttk.LabelFrame(self, text='Every Plan')]
+        self.groups[0].grid(row=4, sticky="ew", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
+        many = []
+        labels = []
         for plan in self.data_cont.plan_list:
             self.groups.append(ttk.LabelFrame(self, text=plan.name))
-            self.groups[-1].grid(row=4+plan.num, sticky="ew",
+            self.groups[-1].grid(row=5+plan.num, sticky="ew",
                                  padx=FIELDX_PADDING, pady=FIELDY_PADDING)
             fig_label = ttk.Label(self.groups[-1])
-            fig_label.grid(row=1, column=plan.num+1)
+            fig_label.grid(row=1, column=plan.num+2)
             try:
                 fig = histogram(plan.net_ext_totals)
+                many.append(plan.net_ext_totals)
+                labels.append(plan.name)
             except AttributeError:
                 fig = histogram([0])
+                many.append([0])
+                labels.append(['Data not run'])
             canvas = FigureCanvasTkAgg(fig, master=fig_label)
-            canvas.get_tk_widget().grid(row=1, column=plan.num+1)
+            canvas.get_tk_widget().grid(row=1, column=plan.num+2)
             canvas.show()
+        fig_label = ttk.Label(self.groups[0])
+        fig_label.grid(row=1, column=1)
+        fig = histogram(many, many=True)
+        canvas = FigureCanvasTkAgg(fig, master=fig_label)
+        canvas.get_tk_widget().grid(row=1, column=1)
+        canvas.show()

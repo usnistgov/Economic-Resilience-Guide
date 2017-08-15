@@ -1,95 +1,85 @@
-Title,Hosptial v2,,Horizon,100
-Discount Rate,8.0,,Risk Pref,none,,Value of Stat Life,7900000
+Title,Hospital V2,,Horizon,100
+Discount Rate,8.0,,Risk Pref,averse,,Value of Stat Life,7900000
 BEGIN PLANS
-Plan 0,Base,discrete,5,50,55,15,55,30,none,0.0625,0,0,0,0,0,
-,Fatalities,0.0,N/A,,,,,,,,,,,,
+Plan 0,Base,none,50,0,0,0,0,0,tri,5,15,50,0,0,0,
+,Fatalities,0.0,N/A
 END PLAN
-Plan 1,Site 1 (Suburb),discrete,5,50,55,15,55,30,none,0.0625,0,0,0,0,0,
-,Costs,Total Direct Costs,direct,none,0,0,0,60300000.0,All direct costs for the project,
-,Costs,Uncertainty,none,0,0,0,0,0,0
-,Costs,Indirect Costs,indirect,none,0,0,0,18090000.0,All indirect costs for site 1,
-,Costs,Uncertainty,none,0,0,0,0,0,0
-,Costs,Total OMR costs,omr,recurring,4,1,0,610000.0,All OMR costs for site 1,
-,Costs,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Strucutral Damage,direct,22500000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Income,indirect,250000000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Mold Remediation,res-rec,18000000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Evacuation,res-rec,75000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Divert Ambulance,indirect,2200000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 1 Aggregated DRB correction,one-time,1.0,0.0,0.0,5860000.0,<enter a description for this externality>,
-,Externalities,negative,DRB Correction
+Plan 1,Alt 1,none,50,0,0,0,0,0,tri,5,15,50,0,0,0,
+,Costs,Alt  1 Direct,direct,none,0,0,0,60300000.0,N/A
+,Costs,Uncertainty,discrete,44019000,60300000,108540000,25,50,25
+,Costs,Alt 1 Indirect,indirect,none,0,0,0,18090000.0,N/A
+,Costs,Uncertainty,discrete,13205700,18090000,32562000,25,50,25
+,Costs,Alt 1 Decommissioning,omr,one-time,4,0,0,2000000.0,N/A
+,Costs,Uncertainty,discrete,1700000,2000000,3000000,25,50,25
+,Costs,Alt 1 OMR Recurring,omr,recurring,4,1,0,611000.0,N/A
+,Costs,Uncertainty,gauss,50000,0,0,0,0,0
+,Benefits,Alt 1 Direct Reduction,direct,22500000.0,N/A
+,Benefits,Uncertainty,tri,18750000,26250000,0,0,0,0
+,Benefits,Alt 1 Indirect Reduction,indirect,252200000.0,N/A
+,Benefits,Uncertainty,rect,226980000,277420000,0,0,0,0
+,Benefits,Alt 1 R&R Reduction,res-rec,18075000.0,N/A
+,Benefits,Uncertainty,gauss,1205000,0,0,0,0,0
+,Externalities,Worker relocation,one-time,4.0,0.0,0.0,4000000.0,Worker relocation externality assumes that the hospital does not cover any relocation costs for employees and 1% of employees have to relocate,
+,Externalities,negative,employees
 ,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 2 Aggregated DRB correction,one-time,2.0,0.0,0.0,5860000.0,<enter a description for this externality>,
-,Externalities,negative,DRB Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 3 Aggregated DRB correction,one-time,3.0,0.0,0.0,5860000.0,<enter a description for this externality>,
-,Externalities,negative,DRB Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 1 Fatalities Averted correction,one-time,1.0,0.0,0.0,6320000.0,<enter a description for this externality>,
-,Externalities,negative,FA Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 2 Fatalities Averted correction,one-time,2.0,0.0,0.0,6320000.0,<enter a description for this externality>,
-,Externalities,negative,FA Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 3 Fatalities Averted correction,one-time,3.0,0.0,0.0,6320000.0,<enter a description for this externality>,
-,Externalities,negative,FA Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Non-Disaster Benefits,Reduced Commute Time,recurring,4,1,0,31600000.0,<enter a description for this externality>,
+,Non-Disaster Benefits,Medical Error Reduction,recurring,4,1,0,31600000.0,N/A
 ,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
-,Non-Disaster Benefits,Reduced Commute Time,recurring,4,1,0,271540.0,<enter a description for this externality>,
+,Non-Disaster Benefits,Site 1: Decrease in nosocomial infections (non fatal),recurring,4,1,0,272000.0,N/A
 ,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
-,Non-Disaster Benefits,Sale of old hospital,one-time,4,0,0,2000000.0,<enter a description for this externality>,
+,Non-Disaster Benefits,Sale of old hospital,one-time,4,0,0,2000000.0,N/A
 ,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
-,Fatalities,40.0,N/A,,,,,,,,,,,,
+,Non-Disaster Benefits,Fatalities averted correction Year 1,one-time,1,0,0,-6320000.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Fatalities averted correction Year 2,one-time,2,0,0,-6320000.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Fatalities averted correction Year 3,one-time,3,0,0,-6320000.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Site 1 DRB correction Year 1,one-time,1,0,0,-5855500.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Site 1 DRB correction Year 2,one-time,2,0,0,-5855500.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Site 1 DRB correction Year 3,one-time,3,0,0,-5855500.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Fatalities,40.0,N/A
 END PLAN
-Plan 2,Site 2 (City Center),discrete,5,50,55,15,55,30,none,0.0625,0,0,0,0,0,
-,Costs,Total Direct Costs,direct,none,0,0,0,65670000.0,All Direct Costs for Site 2,
-,Costs,Uncertainty,none,0,0,0,0,0,0
-,Costs,Indirect Costs,indirect,none,0,0,0,19700000.0,All indirect costs for Site 2,
-,Costs,Uncertainty,none,0,0,0,0,0,0
-,Costs,Total OMR costs,omr,recurring,4,1,0,570000.0,All OMR costs for site 2,
-,Costs,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Strucutral Damage,direct,22500000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Income,indirect,271000000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Mold Remediation,res-rec,19000000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Evacuation,res-rec,75000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Benefits,Divert Ambulance,indirect,2200000.0,<enter a description for this externality>,
-,Benefits,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 1 Aggregated DRB correction,one-time,1.0,0.0,0.0,6400000.0,<enter a description for this externality>,
-,Externalities,negative,DRB Correction
+Plan 2,Alt 2,none,50,0,0,0,0,0,tri,5,15,50,0,0,0,
+,Costs,Alt 2 Direct,direct,none,0,0,0,65670000.0,N/A
+,Costs,Uncertainty,discrete,58446300,65670000,157608000,25,50,25
+,Costs,Alt 2 Indirect,indirect,none,0,0,0,19700000.0,N/A
+,Costs,Uncertainty,discrete,17533890,19700000,47282400,25,50,25
+,Costs,Alt 2 OMR One-Time,omr,one-time,4,0,0,2000000.0,N/A
+,Costs,Uncertainty,discrete,1700000,2000000,3000000,25,50,25
+,Costs,Alt 2 OMR Recurring,omr,recurring,4,1,0,570000.0,N/A
+,Costs,Uncertainty,gauss,30000,0,0,0,0,0
+,Benefits,Alt 2 Direct Reduction,direct,27500000.0,N/A
+,Benefits,Uncertainty,tri,22916666.67,32083333.33,0,0,0,0
+,Benefits,Alt 2 Indirect Reduction,indirect,273200000.0,N/A
+,Benefits,Uncertainty,rect,248363636,298036364,0,0,0,0
+,Benefits,Alt 2 R&R Reduction,res-rec,19075000.0,N/A
+,Benefits,Uncertainty,gauss,1271667,0,0,0,0,0
+,Externalities,Crime reduction ,recurring,4.0,1.0,0.0,303750.0,Crime reduction externality assumes the hospital will help increase community safety reducing the violent crime rate of the surrounding area by 2%,
+,Externalities,positive,community
 ,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 2 Aggregated DRB correction,one-time,2.0,0.0,0.0,6400000.0,<enter a description for this externality>,
-,Externalities,negative,DRB Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 3 Aggregated DRB correction,one-time,3.0,0.0,0.0,6400000.0,<enter a description for this externality>,
-,Externalities,negative,DRB Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 1 Fatalities Averted correction,one-time,1.0,0.0,0.0,6320000.0,<enter a description for this externality>,
-,Externalities,negative,FA Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 2 Fatalities Averted correction,one-time,2.0,0.0,0.0,6320000.0,<enter a description for this externality>,
-,Externalities,negative,FA Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Externalities,Year 3 Fatalities Averted correction,one-time,3.0,0.0,0.0,6320000.0,<enter a description for this externality>,
-,Externalities,negative,FA Correction
-,Externalities,Uncertainty,none,0,0,0,0,0,0
-,Non-Disaster Benefits,Reduced Commute Time,recurring,4,1,0,15800000.0,<enter a description for this externality>,
+,Non-Disaster Benefits,Site 2: Medical Error Reduction,recurring,4,1,0,15800000.0,N/A
 ,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
-,Non-Disaster Benefits,Reduced Commute Time,recurring,4,1,0,203655.0,<enter a description for this externality>,
-,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
-,Non-Disaster Benefits,Sale of old hospital,one-time,4,0,0,2000000.0,<enter a description for this externality>,
+,Non-Disaster Benefits,Site 2: Decrease in nosocomial infections (non fatal),recurring,4,1,0,204000.0,N/A
 ,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
 ,Non-Disaster Benefits,Site 2: Decrease in travel distance,recurring,4,1,0,15800000.0,N/A
 ,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
-,Fatalities,40.0,N/A,,,,,,,,,,,,
+,Non-Disaster Benefits,Sale of old hospital,one-time,4,0,0,2000000.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Fatalities averted correction Year 1,one-time,1,0,0,-6320000.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Fatalities averted correction Year 2,one-time,2,0,0,-6320000.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Fatalities averted correction Year 3,one-time,3,0,0,-6320000.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Site 2 DRB correction Year 1,one-time,1,0,0,-6395500.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Site 2 DRB correction Year 2,one-time,2,0,0,-6395500.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Site 2 DRB correction Year 3,one-time,3,0,0,-6395500.0,N/A
+,Non-Disaster Benefits,Uncertainty,none,0,0,0,0,0,0
+,Fatalities,40.0,N/A
 END PLAN
 END FILE

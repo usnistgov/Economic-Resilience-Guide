@@ -65,10 +65,25 @@ def rect_dist():
     return fig
 
 @MEM.cache
-def histogram(points):
+def histogram(points, many=False, labels=None):
     """ Plots a histogram of points."""
-    fig = Figure(figsize=(6, 6), dpi=100)
-    sub = fig.add_subplot(111)
-    sub.axis('on')
-    sub.hist(points, bins=100)
-    return fig
+    colors = ['k', 'b', 'g', 'r', 'c', 'm', 'y']
+    if not many:
+        fig = Figure(figsize=(5, 5), dpi=100)
+        sub = fig.add_subplot(111)
+        sub.axes.get_xaxis().set_visible(True)
+        sub.axes.get_yaxis().set_visible(False)
+        sub.hist(points, bins=100)
+        return fig
+    else:
+        fig = Figure(figsize=(5, 5), dpi=100)
+        sub = fig.add_subplot(111)
+        sub.axis('off')
+        for point in points:
+            index = points.index(point)
+            sub1 = sub.twinx()
+            sub1.hist(point, bins=100, alpha=0.5, color=colors[index])#, label=labels[index])
+            sub1.axes.get_yaxis().set_visible(False)
+            sub1.axes.get_xaxis().set_visible(True)
+        #fig.legend([sub], labels, loc='upper right')
+        return fig
