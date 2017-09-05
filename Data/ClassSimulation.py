@@ -552,8 +552,12 @@ class Plan():
         new_file.write('Plan ' + str(self.num) + ',' + self.name + ',')
         new_file.write(self.recurr_dist + ',')
         if self.recurr_dist in {'discrete', 'rect', 'tri'}:
+            if isinstance(self.recurr_uncert[0], list):
+                recurr_uncert = self.recurr_uncert[0]
+            else:
+                recurr_uncert = self.recurr_uncert
             to_write = []
-            for item in self.recurr_uncert:
+            for item in recurr_uncert:
                 to_write.append(item)
             while len(to_write) < 6:
                 to_write.append(0)

@@ -128,7 +128,7 @@ class Externalities():
 
         # ===== Checking the description field
         if desc in {"", "<enter a description for this externality>\n"}:
-            field_dict['desc'] = ['N/A']
+            field_dict['desc'] = 'N/A'
         else:
             desc = desc.replace('\n', '')
             blank = False

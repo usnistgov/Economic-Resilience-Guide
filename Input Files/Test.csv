@@ -1,10 +1,50 @@
-Title,Some name,,Horizon,90
-Discount Rate,5.0,,Risk Pref,none,,Value of Stat Life,7500000
+Title,Riverbend v2,,Horizon,50
+Discount Rate,3.0,,Risk Pref,neutral,,Value of Stat Life,7500000
 BEGIN PLANS
-Plan 0,Base,none,39,0,0,0,0,0,none,,0,0,0,0,0,
-,Fatalities,0,N/A
+Plan 0,Base,discrete,10,25,50,33,34,33,none,6.25,0,0,0,0,0,
+,Fatalities,0.0,N/A
 END PLAN
-Plan 1,asd,none,39,0,0,0,0,0,none,,0,0,0,0,0,
-,Fatalities,0,N/A
+Plan 1,Retrofit,discrete,10,25,50,33,34,33,none,6.25,0,0,0,0,0,
+,Costs,Retrofit Indirect Cost,indirect,none,0,0,0,500000.0,Indirect costs for retrofitting the old bridge. This includes indirect costs of the retrofit actions as well as costs associated with diverted traffic.
+,Costs,Uncertainty,tri,475000,750000,0,0,0,0
+,Costs,Retrofit Direct Cost,direct,none,0,0,0,3000000.0,Cost to retrofit the old bridge.
+,Costs,Uncertainty,tri,2850000,3840000,0,0,0,0
+,Benefits,Retrofit Indirect Loss Reduction,indirect,2000000.0,Estimated reduction in indirect losses as a result of a seismic event with a 25 year return period.
+,Benefits,Uncertainty,gauss,600000,0,0,0,0,0
+,Benefits,Retrofit Response and Recovery,res-rec,600000.0,Estimated reduction in response in recovery costs for a seismic event with a 25 year return period.
+,Benefits,Uncertainty,gauss,180000,0,0,0,0,0
+,Benefits,Retrofit Direct Loss Reduction,direct,260000.0,Estimated reduction in direct losses as a result of a seismic event with a 25 year return period.
+,Benefits,Uncertainty,none,0,0,0,0,0,0
+,Fatalities,0.1,Estimated reduction in the number of fatalities due to a seismic event with a 25 year return period.
+END PLAN
+Plan 2,New Bridge,discrete,10,25,50,33,34,33,none,6.25,0,0,0,0,0,
+,Costs,New Bridge OMR,omr,recurring,1,1,0,25000.0,Cost of operating and maintaining new bridge. Includes costs of inspection as well as maintenance and deck and superstructure repair.
+,Costs,Uncertainty,rect,21375,30000,0,0,0,0
+,Costs,Additional Roadwork Indirect Cost,indirect,none,0,0,0,120000.0,Indirect costs to construct and update roadways to accommodate the new bridge.
+,Costs,Uncertainty,tri,114000,144000,0,0,0,0
+,Costs,Bridge Construction Indirect Cost,indirect,none,0,0,0,175000.0,Indirect costs associated with the construction of the new bridge including the costs of an environmental impact study.
+,Costs,Uncertainty,tri,166250,224000,0,0,0,0
+,Costs,Additional Roadwork Direct Cost,direct,none,0,0,0,2500000.0,Cost to construct and update roadways to accommodate the new bridge.
+,Costs,Uncertainty,tri,2375000,3000000,0,0,0,0
+,Costs,Bridge Construction Direct Cost,direct,none,0,0,0,4250000.0,Cost of new bridge including any right of way or land acquisition costs.
+,Costs,Uncertainty,tri,4037500,5440000,0,0,0,0
+,Costs,Additional Roadwork OMR,omr,recurring,1,1,0,3710.0,Cost of operations and maintenance for upgraded and newly constructed roads to accommodate the new bridge.
+,Costs,Uncertainty,rect,3500,4250,0,0,0,0
+,Benefits,New Bridge Indirect Loss Reduction,indirect,3500000.0,Estimated reduction in indirect losses as a result of a seismic event with a 25 year return period.
+,Benefits,Uncertainty,gauss,1050000,0,0,0,0,0
+,Benefits,New Bridge Response and Recovery,res-rec,1000000.0,Estimated reduction in response in recovery costs for a seismic event with a 25 year return period.
+,Benefits,Uncertainty,gauss,300000,0,0,0,0,0
+,Externalities,Greenhous Gas Emissions,recurring,1.0,1.0,0.0,77329.0,The reduction in greenhouse gas emissions incurred due to fewer vehicle-hours in traffic over the year. This assumes that traffic remains at pre-action levels (i.e. a more efficient road network won't attract more motorists).,
+,Externalities,positive,community
+,Externalities,Uncertainty,none,0,0,0,0,0,0
+,Externalities,Water Pollution,recurring,1.0,1.0,0.0,39081.0,The reduction in water pollution incurred due to fewer vehicle-hours in traffic over the year. This assumes that traffic remains at pre-action levels (i.e. a more efficient road network won't attract more motorists).,
+,Externalities,positive,community
+,Externalities,Uncertainty,none,0,0,0,0,0,0
+,Externalities,Better linking of communities,recurring,1.0,1.0,0.0,39799.0,More efficient traffic flow and the inclusion of a pedestrian crossing help strengthen the link between communities on the two sides of the river.,
+,Externalities,positive,community
+,Externalities,Uncertainty,none,0,0,0,0,0,0
+,Non-Disaster Benefits,Reduced Commute Time,recurring,1,1,0,100000.0,Estimated benefit incurred due to the reduction of vehicle-hours in traffic as a result of an additional crossing. This benefit is separate from the externalities which focus on community level environmental and social impacts which are not internalized. Instead represent the value of a reduction in travel time itself internalized into the design process.,
+,Non-Disaster Benefits,Uncertainty,tri,70000,115000,0,0,0,0
+,Fatalities,0.2,Estimated reduction in the number of fatalities due to a seismic event with a 25 year return period.
 END PLAN
 END FILE

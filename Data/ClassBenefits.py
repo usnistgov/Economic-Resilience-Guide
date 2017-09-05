@@ -131,7 +131,7 @@ class Benefits():
 
         # ===== Checking the description field
         if desc in {"", "<enter a description for this benefit>\n"}:
-            desc = ["N/A"]
+            desc = "N/A"
         else:
             desc = desc.replace('\n', '')
             blank = False

@@ -89,7 +89,8 @@ class AnalysisInfo(tk.Frame):
                   font=SMALL_FONT).grid(row=1, column=0, sticky="e",
                                         padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         self.seed_ent = tk.Entry(uncert_group, width=ENTRY_WIDTH, font=SMALL_FONT)
-        self.seed_ent.insert(tk.END, str(random.randrange(sys.maxsize)))
+        self.seed_ent.delete(0, tk.END)
+        self.seed_ent.insert(tk.END, str(random.randrange(4294967295)))
         self.seed_ent.grid(row=1, column=1, sticky="e", padx=FIELDX_PADDING, pady=FIELDY_PADDING)
         ttk.Label(uncert_group, text="Confidence Interval",
                   font=SMALL_FONT).grid(row=2, column=0, sticky="e",
@@ -169,6 +170,9 @@ class AnalysisInfo(tk.Frame):
         elif uncert == "uncert":
             try:
                 seed = int(self.seed_ent.get())
+                if (0 > seed) or (2**32 - 1 < seed):
+                    valid = False
+                    messagebox.showerror("Error", "Input seed must be greater than zero and less than 4294967295.")
             except ValueError:
                 valid = False
                 messagebox.showerror("Error", "Input seed must be an integer value.")
@@ -224,6 +228,9 @@ class AnalysisInfo(tk.Frame):
         elif uncert == "uncert":
             try:
                 seed = int(self.seed_ent.get())
+                if (0 > seed) or (2**32 - 1 < seed):
+                    valid = False
+                    messagebox.showerror("Error", "Input seed must be greater than zero and less than 4294967295.")
             except ValueError:
                 valid = False
                 messagebox.showerror("Error", "Input seed must be an integer value.")
@@ -281,6 +288,9 @@ class AnalysisInfo(tk.Frame):
         elif uncert == "uncert":
             try:
                 seed = int(self.seed_ent.get())
+                if (0 > seed) or (2**32 - 1 < seed):
+                    valid = False
+                    messagebox.showerror("Error", "Input seed must be greater than zero and less than 4294967295.")
             except ValueError:
                 valid = False
                 messagebox.showerror("Error", "Input seed must be an integer value.")
@@ -339,6 +349,9 @@ class AnalysisInfo(tk.Frame):
         elif uncert == "uncert":
             try:
                 seed = int(self.seed_ent.get())
+                if (0 > seed) or (2**32 - 1 < seed):
+                    valid = False
+                    messagebox.showerror("Error", "Input seed must be greater than zero and less than 4294967295.")
             except ValueError:
                 valid = False
                 messagebox.showerror("Error", "Input seed must be an integer value.")

@@ -106,11 +106,12 @@ class Costs():
             blank = False
             field_dict['amount'] = float(amount)
         except ValueError:
+            err_messages += "Dollar value must be a number."
             valid = False
 
         # ===== Checking the description field
         if desc in {"", "<enter a description for this cost>\n"}:
-            desc = ["N/A"]
+            desc = "N/A"
         else:
             desc = desc.replace('\n', '')
             blank = False
