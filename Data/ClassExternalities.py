@@ -91,6 +91,8 @@ class Externalities():
         """ Saves the fields if possible and returns applicable error messages if not."""
         field_dict = {}
 
+        valid = True
+
         # ===== Checking the title field
         if title in {"", "<enter a title for this externality>"}:
             err_messages += "Title field has been left empty!\n\n"

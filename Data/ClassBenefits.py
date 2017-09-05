@@ -94,6 +94,8 @@ class Benefits():
             If no plan is chosen, blank must be set to True."""
         field_dict = {}
 
+        valid = True
+
         # ===== Checking the title field
         if title == "" or title == "<enter a title for this benefit>":
             err_messages += "Title field has been left empty!\n\n"

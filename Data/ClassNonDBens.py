@@ -76,6 +76,8 @@ class NonDBens():
         """ Attempts to save a benefit."""
         field_dict = {}
 
+        valid = True
+
         # ===== Checking the title field
         if title == "" or title == "<enter a title for this benefit>":
             err_messages += "Title field has been left empty!\n\n"
