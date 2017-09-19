@@ -143,8 +143,8 @@ class Simulation():
             plan.net_ext_totals = []
             irr_totals = []
             irr_ext_totals = []
-            sir_totals = []
-            sir_ext_totals = []
+            bcr_totals = []
+            bcr_ext_totals = []
             roi_totals = []
             roi_ext_totals = []
             nond_roi_totals = []
@@ -198,8 +198,8 @@ class Simulation():
                         irr_ext_totals.append(-2)
                     else:
                         irr_ext_totals.append(new_sim.irr(w_ext=True))
-                    sim_list = [[sir_totals, new_sim.sir()],
-                                [sir_ext_totals, new_sim.sir(w_ext=True)],
+                    sim_list = [[bcr_totals, new_sim.bcr()],
+                                [bcr_ext_totals, new_sim.bcr(w_ext=True)],
                                 [roi_totals, new_sim.roi()],
                                 [roi_ext_totals, new_sim.roi(w_ext=True)],
                                 [nond_roi_totals, new_sim.non_d_roi()],
@@ -209,10 +209,10 @@ class Simulation():
                             item[0].append(-1)
                         else:
                             item[0].append(item[1])
-                    #if isinstance(new_sim.sir(), str):
-                    #    sir_totals.append(-1)
+                    #if isinstance(new_sim.bcr(), str):
+                    #    bcr_totals.append(-1)
                     #else:
-                    #    sir_totals.append(new_sim.sir())
+                    #    bcr_totals.append(new_sim.bcr())
                     #if isinstance(new_sim.roi(), str):
                     #    roi_totals.append(-1)
                     #else:
@@ -279,8 +279,8 @@ class Simulation():
             ext_totals.sort()
             irr_totals.sort()
             irr_ext_totals.sort()
-            sir_totals.sort()
-            sir_ext_totals.sort()
+            bcr_totals.sort()
+            bcr_ext_totals.sort()
             roi_totals.sort()
             roi_ext_totals.sort()
             nond_roi_totals.sort()
@@ -310,8 +310,8 @@ class Simulation():
             plan.ext_range = [ext_totals[first_num], ext_totals[last_num]]
             plan.irr_range = [irr_totals[first_num], irr_totals[last_num]]
             plan.irr_ext_range = [irr_ext_totals[first_num], irr_ext_totals[last_num]]
-            plan.sir_range = [sir_totals[first_num], sir_totals[last_num]]
-            plan.sir_ext_range = [sir_ext_totals[first_num], sir_ext_totals[last_num]]
+            plan.bcr_range = [bcr_totals[first_num], bcr_totals[last_num]]
+            plan.bcr_ext_range = [bcr_ext_totals[first_num], bcr_ext_totals[last_num]]
             plan.roi_range = [roi_totals[first_num], roi_totals[last_num]]
             plan.roi_ext_range = [roi_ext_totals[first_num], roi_ext_totals[last_num]]
             plan.nond_roi_range = [nond_roi_totals[first_num], nond_roi_totals[last_num]]
@@ -334,9 +334,9 @@ class Simulation():
                 plan.irr_ext_range[1] = '---'
             elif plan.irr_ext_range[1] == -2:
                 plan.irr_ext_range[1] = 'No Valid IRR'
-            sim_list = [[plan.sir_range, 'No Valid SIR'], [plan.roi_range, 'No Valid ROI'],
+            sim_list = [[plan.bcr_range, 'No Valid BCR'], [plan.roi_range, 'No Valid ROI'],
                         [plan.nond_roi_range, 'No Valid ROI'],
-                        [plan.sir_ext_range, 'No Valid SIR'],
+                        [plan.bcr_ext_range, 'No Valid BCR'],
                         [plan.roi_ext_range, 'No Valid ROI'],
                         [plan.nond_roi_ext_range, 'No Valid ROI']]
             for item in sim_list:
@@ -344,10 +344,10 @@ class Simulation():
                     item[0][0] = item[1]
                 if item[0][1] == -1:
                     item[0][1] = item[1]
-            #if plan.sir_range[0] < 0:
-            #    plan.sir_range[0] = 'No Valid SIR'
-            #if plan.sir_range[1] < 0:
-            #    plan.sir_range[1] = 'No Valid SIR'
+            #if plan.bcr_range[0] < 0:
+            #    plan.bcr_range[0] = 'No Valid BCR'
+            #if plan.bcr_range[1] < 0:
+            #    plan.bcr_range[1] = 'No Valid BCR'
             #if plan.roi_range[0] < 0:
             #    plan.roi_range[0] = 'No Valid ROI'
             #if plan.roi_range[1] < 0:
@@ -754,17 +754,19 @@ class Plan():
         self.net = self.total_bens - self.total_costs
         self.net_w_ext = self.total_bens + self.exts.total_p - self.total_costs - self.exts.total_n
 
-    def sir(self, w_ext=False):
-        """Equation for the Savings-to-Investment Ratio"""
-        up_front = self.costs.d_sum + self.costs.i_sum
+    def bcr(self, w_ext=False):
+        """Equation for the Benefit-to-Cost Ratio"""
+        top_wo_ext = (self.bens.d_sum + self.bens.i_sum + self.bens.r_sum
+                      + self.fat.stat_value_averted + self.nond_bens.total)
+        bottom = self.costs.total
 
-        if up_front == 0:
-            return 'No Valid SIR'
+        if bottom == 0:
+            return 'No Valid BCR'
 
         if w_ext:
-            return self.net_w_ext / up_front
+            return (top_wo_ext + self.exts.total_p - self.exts.total_n) / bottom
         else:
-            return self.net / up_front
+            return top_wo_ext / bottom
 
     def irr(self, w_ext=False):
         """Equation for the Internal Rate of Return"""

@@ -161,7 +161,7 @@ def run_main_page(data):
                           font=BOLD_FONT).grid(row=32, **title_opts)
                 ttk.Label(group0, text=my_tab + "Net with Externalities",
                           font=BOLD_FONT).grid(row=33, **title_opts)
-                ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio with Externalities",
+                ttk.Label(group0, text=my_tab + "Benefit-to-Cost Ratio with Externalities",
                           font=SMALL_FONT).grid(row=34, **title_opts)
                 ttk.Label(group0, text=my_tab + "Internal Rate of Return with Externalities",
                           font=SMALL_FONT).grid(row=35, **title_opts)
@@ -172,7 +172,7 @@ def run_main_page(data):
 
             ttk.Label(group0, text=my_tab + "Net",
                       font=BOLD_FONT).grid(row=38, **title_opts)
-            ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio",
+            ttk.Label(group0, text=my_tab + "Benefit-to-Cost Ratio",
                       font=SMALL_FONT).grid(row=39, **title_opts)
             ttk.Label(group0, text=my_tab + "Internal Rate of Return",
                       font=SMALL_FONT).grid(row=40, **title_opts)
@@ -273,7 +273,7 @@ def run_main_page(data):
                         ttk.Label(group0,
                                   text='(' + '${:,.0f}'.format(plan.net_w_ext) + ')',
                                   font=BOLD_FONT).grid(row=33, column=(i + 1), **field_opts)
-                    ttk.Label(group0, text=write_pct(plan.sir(w_ext=True), w_pct=False),
+                    ttk.Label(group0, text=write_pct(plan.bcr(w_ext=True), w_pct=False),
                               font=SMALL_FONT).grid(row=34, column=(i+1), **field_opts)
                     ttk.Label(group0, text=write_pct(plan.irr(w_ext=True)),
                               font=SMALL_FONT).grid(row=35, column=(i+1), **field_opts)
@@ -290,7 +290,7 @@ def run_main_page(data):
                               text='(' + '${:,.0f}'.format(plan.net) + ')',
                               font=BOLD_FONT).grid(row=38, column=(i + 1), **field_opts)
 
-                ttk.Label(group0, text=write_pct(plan.sir(), w_pct=False),
+                ttk.Label(group0, text=write_pct(plan.bcr(), w_pct=False),
                           font=SMALL_FONT).grid(row=39, column=(i+1), **field_opts)
                 ttk.Label(group0, text=write_pct(plan.irr()),
                           font=SMALL_FONT).grid(row=40, column=(i+1), **field_opts)
@@ -342,21 +342,21 @@ def run_main_page(data):
         def info(self):
             """Provides information to the user"""
             messagebox.showinfo("More Information",
-                                "For information regrading any of the particular benefits or "
+                                "For information regarding any of the particular benefits or "
                                 "costs, please refer back to the previous pages of the particular"
                                 " benefit or cost. The corresponding pages contain specific "
                                 "information to their related benefit or cost.\n\n"
                                 "The following terms are defined:\n\n"
-                                "    Savings-to-Investment Ratio:\n"
+                                "    Benefit-to-Cost Ratio:\n"
                                 "            Used to determine whether the potential savings of a "
-                                "project justifies the inital investment and following maintenance"
+                                "project justifies the initial investment and following maintenance"
                                 " costs. The higher the ratio, the greater the savings; this "
                                 "number can also be negative.\n\n"
                                 "    Internal Rate of Return:\n"
                                 "            This is the discount rate that makes the Net Present "
                                 "Value of all net cash flows of a project equal zero. It measures "
                                 "the profitability of potential investments. Generally speaking, "
-                                "the higher this number, the more desirable the project.\n\n"
+                                "the higher this number, the more debcrable the project.\n\n"
                                 "    Return on Investment:\n"
                                 "            Measures the amount of return on an investment "
                                 " relative to the investment's cost. The annual benefit is divided"

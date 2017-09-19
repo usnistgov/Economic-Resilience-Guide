@@ -309,7 +309,7 @@ def run_u_main_page(data):
                           font=BOLD_FONT).grid(row=tot_idx+16, column=0, sticky="w", **pad_opts)
                 ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
                           font=SMALL_FONT).grid(row=tot_idx+17, column=0, sticky="w", **pad_opts)
-                ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio with Externalities",
+                ttk.Label(group0, text=my_tab + "Benefit-to-Cost Ratio with Externalities",
                           font=BOLD_FONT).grid(row=tot_idx+18, column=0, sticky="w", **pad_opts)
                 ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
                           font=SMALL_FONT).grid(row=tot_idx+19, column=0, sticky="w", **pad_opts)
@@ -350,7 +350,7 @@ def run_u_main_page(data):
                       font=BOLD_FONT).grid(row=post_ext + 2, column=0, sticky="w", **pad_opts)
             ttk.Label(group0, text=my_tab + my_tab + "Upper Bound",
                       font=SMALL_FONT).grid(row=post_ext + 3, column=0, sticky="w", **pad_opts)
-            ttk.Label(group0, text=my_tab + "Savings-to-Investment Ratio",
+            ttk.Label(group0, text=my_tab + "Benefit-to-Cost Ratio",
                       font=BOLD_FONT).grid(row=post_ext + 4, column=0, sticky="w", **pad_opts)
             ttk.Label(group0, text=my_tab + my_tab + "Lower Bound",
                       font=SMALL_FONT).grid(row=post_ext + 5, column=0, sticky="w", **pad_opts)
@@ -612,14 +612,14 @@ def run_u_main_page(data):
                                   font=SMALL_FONT).grid(row=tot_idx+17, column=i+1,
                                                         sticky="e", **pad_opts)
                     ttk.Label(group0,
-                              text=write_pct(plan.sir_ext_range[0], w_pct=False),
+                              text=write_pct(plan.bcr_ext_range[0], w_pct=False),
                               font=SMALL_FONT).grid(row=tot_idx+19, column=i+1,
                                                     sticky="e", **pad_opts)
-                    ttk.Label(group0, text=write_pct(plan.sir(w_ext=True), w_pct=False),
+                    ttk.Label(group0, text=write_pct(plan.bcr(w_ext=True), w_pct=False),
                               font=BOLD_FONT).grid(row=tot_idx+20, column=i+1,
                                                    sticky="e", **pad_opts)
                     ttk.Label(group0,
-                              text=write_pct(plan.sir_ext_range[1], w_pct=False),
+                              text=write_pct(plan.bcr_ext_range[1], w_pct=False),
                               font=SMALL_FONT).grid(row=tot_idx+21, column=i+1,
                                                     sticky="e", **pad_opts)
 
@@ -680,12 +680,12 @@ def run_u_main_page(data):
                                                     sticky="e", **pad_opts)
 
                 ttk.Label(group0,
-                          text=write_pct(plan.sir_range[0], w_pct=False),
+                          text=write_pct(plan.bcr_range[0], w_pct=False),
                           font=SMALL_FONT).grid(row=post_ext+5, column=i+1, sticky="e", **pad_opts)
-                ttk.Label(group0, text=write_pct(plan.sir(), w_pct=False),
+                ttk.Label(group0, text=write_pct(plan.bcr(), w_pct=False),
                           font=BOLD_FONT).grid(row=post_ext+6, column=i+1, sticky="e", **pad_opts)
                 ttk.Label(group0,
-                          text=write_pct(plan.sir_range[1], w_pct=False),
+                          text=write_pct(plan.bcr_range[1], w_pct=False),
                           font=SMALL_FONT).grid(row=post_ext+7, column=i+1, sticky="e", **pad_opts)
 
                 ttk.Label(group0, text=write_pct(plan.irr_range[0]),
@@ -766,7 +766,7 @@ def run_u_main_page(data):
                             " benefit or cost. The corresponding pages contain specific "
                             "information to their related benefit or cost.\n\n"
                             "The following terms are defined:\n\n"
-                            "    Savings-to-Investment Ratio:\n"
+                            "   Benefit-to-Cost Ratio:\n"
                             "            Used to determine whether the potential savings of a "
                             "project justifies the inital investment and following maintenance"
                             " costs. The higher the ratio, the greater the savings; this "
@@ -775,7 +775,7 @@ def run_u_main_page(data):
                             "            This is the discount rate that makes the Net Present "
                             "Value of all net cash flows of a project equal zero. It measures "
                             "the profitability of potential investments. Generally speaking, "
-                            "the higher this number, the more desirable the project.\n\n"
+                            "the higher this number, the more debcrable the project.\n\n"
                             "    Return on Investment:\n"
                             "            Measures the amount of return on an investment "
                             " relative to the investment's cost. The annual benefit is divided"
