@@ -795,10 +795,10 @@ class Plan():
         """Equation for the Return on Investment"""
         try:
             if w_ext:
-                annual_savings = (self.total_bens + self.exts.total_p) / float(self.horizon)
+                annual_savings = (self.total_bens + self.exts.total_p - self.total_costs - self.exts.total_n) / float(self.horizon)
                 simple_payback = annual_savings / (self.total_costs + self.exts.total_n)
             else:
-                annual_savings = self.total_bens / float(self.horizon)
+                annual_savings = (self.total_bens - self.total_costs) / float(self.horizon)
                 simple_payback = annual_savings / self.total_costs
             return simple_payback * 100
         except ZeroDivisionError:
