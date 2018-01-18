@@ -12,6 +12,8 @@ from GUI.Constants import SMALL_FONT, LARGE_FONT, NORM_FONT, BOLD_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 
 from Data.Exports import csv_export, word_export, write_pct
+from VertScroll import AutoScrollbar
+
 
 def run_main_page(data):
     """Only creates a new window called "MainPage" once all calculations are finished"""
@@ -32,7 +34,8 @@ def run_main_page(data):
             hscrollbar.grid(row=1, column=0, sticky="ew")
 
             canvas = tk.Canvas(self.container,
-                               yscrollcommand=vscrollbar.set, xscrollcommand=hscrollbar.set)
+                               yscrollcommand=vscrollbar.set,
+                               xscrollcommand=hscrollbar.set)
             canvas.grid(row=0, column=0, sticky="nsew")
 
             vscrollbar.config(command=canvas.yview)
@@ -374,19 +377,3 @@ def run_main_page(data):
     root = MainPage(data)
     root.mainloop()
 
-class AutoScrollbar(tk.Scrollbar):
-    """ A scrollbar that hides itself if it's not needed.
-     Only works if you use the grid geometry manager!"""
-    def set(self, lo, hi):
-        if float(lo) <= 0.0 and float(hi) >= 1.0:
-            # grid_remove is currently missing from Tkinter!
-            self.tk.call("grid", "remove", self)
-        else:
-            self.grid()
-        tk.Scrollbar.set(self, lo, hi)
-    def pack(self, **_kw):
-        """ I don't know what this does. """
-        raise tk.TclError("cannot use pack with this widget")
-    def place(self, **_kw):
-        """ I don't know what this does. """
-        raise tk.TclError("cannot use place with this widget")

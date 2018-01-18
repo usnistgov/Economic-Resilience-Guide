@@ -13,6 +13,7 @@ from tkinter import ttk     #for pretty buttons/labels
 from GUI.Constants import SMALL_FONT, LARGE_FONT
 from GUI.Constants import FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 
+
 class DirectoryPage(tk.Frame):
     """
     GUI for the Directory.

@@ -2,14 +2,32 @@
    File:          VertScroll.py
    Author:        Username Gonzo on stackOverflow,
                   Shannon Grubb
-   Description:   Gives a scrollbar to all pages, especially for use in long ones. Note that
-                  I made several notable changes, however a majority of the code is copied
-                  directly from that given by Gonzo in the following question on Stack Overflow.
+   Description:   Gives a scrollbar to all pages, especially for use in long
+                  ones. Note that I made several notable changes, however a
+                  majority of the code is copied directly from that given by
+                  Gonzo in the following question on Stack Overflow.
    http://stackoverflow.com/questions/16188420/python-tkinter-scrollbar-for-frame/16198198#16198198
 """
 
 from tkinter import Scrollbar, Canvas, Frame
 from tkinter import VERTICAL, NW, RIGHT, FALSE, BOTH, TRUE, Y, LEFT
+class AutoScrollbar(Scrollbar):
+    # a scrollbar that hides itself if it's not needed.  only
+    # works if you use the grid geometry manager.
+    def set(self, lo, hi):
+        if float(lo) <= 0.0 and float(hi) >= 1.0:
+            # grid_remove is currently missing from Tkinter!
+            self.tk.call("grid", "remove", self)
+        else:
+            self.grid()
+        Scrollbar.set(self, lo, hi)
+
+    def pack(self, **kw):
+        raise TclError("cannot use pack with this widget")
+
+    def place(self, **kw):
+        raise TclError("cannot use place with this widget")
+
 
 class VerticalScrolledFrame(Frame):
     """A pure Tkinter scrollable frame that actually works!
@@ -22,11 +40,11 @@ class VerticalScrolledFrame(Frame):
         Frame.__init__(self, parent, *args, **kw)
 
         # create a canvas object and a vertical scrollbar for scrolling it
-        vscrollbar = Scrollbar(self, orient=VERTICAL)
         vscrollbar.grid(sticky="e", row=0)
         vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
         self.canvas = Canvas(self, bd=0, highlightthickness=0,
                         yscrollcommand=vscrollbar.set)
+        vscrollbar = AutoScrollbar(self)
 
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
         vscrollbar.config(command=self.canvas.yview)

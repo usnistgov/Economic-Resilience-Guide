@@ -7,7 +7,7 @@
 
 import tkinter as tk
 from tkinter import messagebox
-from tkinter import ttk     #for pretty buttons/labels
+from tkinter import ttk
 
 from GUI.Constants import SMALL_FONT, ENTRY_WIDTH
 from GUI.Constants import BASE_PADDING, FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING
@@ -28,6 +28,7 @@ matplotlib.use("TkAgg")
 ############################################# InfoPage #############################################
 #
 #
+
 
 class InfoPage(tk.Frame):
     """ Allows the user to input the basic information about their options."""
