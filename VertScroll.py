@@ -42,9 +42,9 @@ class VerticalScrolledFrame(Frame):
         # create a canvas object and a vertical scrollbar for scrolling it
         vscrollbar.grid(sticky="e", row=0)
         vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
-        self.canvas = Canvas(self, bd=0, highlightthickness=0,
-                        yscrollcommand=vscrollbar.set)
         vscrollbar = AutoScrollbar(self)
+        self.canvas = Canvas(
+            self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
 
         self.canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
         vscrollbar.config(command=self.canvas.yview)
@@ -55,8 +55,8 @@ class VerticalScrolledFrame(Frame):
 
         # create a frame inside the canvas which will be scrolled with it
         self.interior = interior = Frame(self.canvas)
-        interior_id = self.canvas.create_window(0, 0, window=interior,
-                                           anchor=NW)
+        interior_id = \
+            self.canvas.create_window(0, 0, anchor=NW, window=interior)
 
         # track changes to the canvas and frame width and sync them,
         # also updating the scrollbar
@@ -69,12 +69,12 @@ class VerticalScrolledFrame(Frame):
                 # update the canvas's width to fit the inner frame
                 self.canvas.config(width=interior.winfo_reqwidth())
             new_height = max(default_height, parent.winfo_height())
-            #print(new_height)
             self.canvas.config(height=new_height)
         interior.bind('<Configure>', _configure_interior)
 
         def _configure_canvas(event):
             if interior.winfo_reqwidth() != self.canvas.winfo_width():
                 # update the inner frame's width to fill the canvas
-                self.canvas.itemconfigure(interior_id, width=self.canvas.winfo_width())
+                self.canvas.itemconfigure(
+                    interior_id, width=self.canvas.winfo_width())
         self.canvas.bind('<Configure>', _configure_canvas)

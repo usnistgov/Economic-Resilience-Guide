@@ -67,8 +67,7 @@ class Application(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.container = VerticalScrolledFrame(self)
-
-        self.container.grid(sticky="nsew")
+        self.container.grid(sticky="NSEW")
 
         tk.Tk.wm_title(self, "NIST Economic Decision Guide")
 
@@ -91,18 +90,22 @@ class Application(tk.Tk):
 
     def show_frame(self, cont_string):
         """ Brings to the forefront the frame described by cont_string."""
-        frame_dict = {'StartPage': StartPage, 'DirectoryPage': DirectoryPage, 'InfoPage': InfoPage,
-                      'CostPage': CostPage,
-                      'CostsUncertaintiesPage': CostsUncertaintiesPage,
-                      'ExternalitiesPage': ExternalitiesPage,
-                      'ExternalitiesUncertaintiesPage': ExternalitiesUncertaintiesPage,
-                      'BenefitsPage': BenefitsPage,
-                      'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
-                      'FatalitiesPage': FatalitiesPage,
-                      'NonDBensPage': NonDBensPage,
-                      'NonDBensUncertaintiesPage': NonDBensUncertaintiesPage,
-                      'AnalysisInfo': AnalysisInfo}#,
-                      #'HistogramPage': HistogramPage}
+        frame_dict = {
+            'StartPage': StartPage,
+            'DirectoryPage': DirectoryPage,
+            'InfoPage': InfoPage,
+            'CostPage': CostPage,
+            'CostsUncertaintiesPage': CostsUncertaintiesPage,
+            'ExternalitiesPage': ExternalitiesPage,
+            'ExternalitiesUncertaintiesPage': ExternalitiesUncertaintiesPage,
+            'BenefitsPage': BenefitsPage,
+            'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
+            'FatalitiesPage': FatalitiesPage,
+            'NonDBensPage': NonDBensPage,
+            'NonDBensUncertaintiesPage': NonDBensUncertaintiesPage,
+            'AnalysisInfo': AnalysisInfo
+            # 'HistogramPage': HistogramPage,
+        }
         cont = frame_dict[cont_string]
         frame = self.frames[cont]
         frame.on_trace_change("", "", "")
@@ -121,9 +124,12 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         self.controller = controller
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text="Welcome to the NIST Economic Decision Guide Tool",
-                          font=LARGE_FONT)
-        label.grid(pady=BASE_PADDING, padx=BASE_PADDING)  # places padding for neatness
+        label = ttk.Label(
+            self, text="Welcome to the NIST Economic Decision Guide Tool",
+            font=LARGE_FONT)
+        label.grid(
+            pady=BASE_PADDING,
+            padx=BASE_PADDING)  # places padding for neatness
         self.create_widgets(controller)
 
     def create_widgets(self, controller):
@@ -140,14 +146,18 @@ class StartPage(tk.Frame):
 
         self.choice = tk.StringVar()
         self.choice.set("1")  # makes so that radio buttons aren't chosen yet
-        tk.Radiobutton(self, text="Start new analysis", variable=self.choice, value="new"
-                      ).grid(row=3, column=0, sticky='W')
-        tk.Radiobutton(self, text="Open existing analysis", variable=self.choice, value="open"
-                      ).grid(row=4, column=0, sticky='W')
-        self.ok_button = ttk.Button(self, text="OK", command=lambda: self.select(controller)
-                                   ).grid(row=3, column=0, sticky="e")
-        self.exit_button = ttk.Button(self, text="Exit", command=sys.exit
-                                     ).grid(row=4, column=0, sticky="e")
+        ttk.Radiobutton(
+            self, text="Start new analysis", variable=self.choice,
+            value="new").grid(row=3, column=0, sticky='W')
+        ttk.Radiobutton(
+            self, text="Open existing analysis", variable=self.choice,
+            value="open").grid(row=4, column=0, sticky='W')
+        self.ok_button = ttk.Button(
+            self, text="OK", command=lambda: self.select(controller)).grid(
+                row=3, column=0, sticky="E")
+        self.exit_button = ttk.Button(
+            self, text="Exit", command=sys.exit).grid(
+                row=4, column=0, sticky="E")
 
         tk.Label(self, text="").grid(row=5)
 
@@ -167,15 +177,17 @@ class StartPage(tk.Frame):
             controller.data_cont = Simulation()
             controller.cont_list = [controller.data_cont]
 
-            for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
-                         ExternalitiesPage, ExternalitiesUncertaintiesPage,
-                         BenefitsPage, BenefitsUncertaintiesPage,
-                         FatalitiesPage, NonDBensPage,
-                         NonDBensUncertaintiesPage, AnalysisInfo):#,
-                         #HistogramPage):
-                frame = page(controller.container.interior, controller, controller.cont_list)
+            for page in (
+                DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
+                ExternalitiesPage, ExternalitiesUncertaintiesPage,
+                BenefitsPage, BenefitsUncertaintiesPage, FatalitiesPage,
+                NonDBensPage, NonDBensUncertaintiesPage, AnalysisInfo,
+                # HistogramPage
+            ):
+                frame = page(controller.container.interior, controller,
+                             controller.cont_list)
                 controller.frames[page] = frame
-                frame.grid(row=0, column=0, sticky="nsew")
+                frame.grid(row=0, column=0, sticky="NSEW")
             # ===== transitions to InfoPage
             controller.show_frame('InfoPage')
         elif self.choice.get() == "open":
@@ -184,33 +196,38 @@ class StartPage(tk.Frame):
             if filename == "":
                 pass
             elif filename[-4:] != ".csv":
-                tk.messagebox.showerror('File Read Error', 'The file selected was not a .csv file '
-                                                           'and thus could not be a save file. '
-                                                           'Please select a different file.')
+                tk.messagebox.showerror(
+                    'File Read Error',
+                    'The file selected was not a .csv file '
+                    'and thus could not be a save file. '
+                    'Please select a different file.')
             else:
                 try:
                     controller.data_cont = Simulation()
                     controller.data_cont.file_read(file_name=filename)
                     controller.cont_list = [controller.data_cont]
-                    for page in (DirectoryPage, InfoPage, CostPage, CostsUncertaintiesPage,
-                                 ExternalitiesPage, ExternalitiesUncertaintiesPage,
-                                 BenefitsPage, BenefitsUncertaintiesPage,
-                                 FatalitiesPage, NonDBensPage,
-                                 NonDBensUncertaintiesPage, AnalysisInfo):#,
-                                 #HistogramPage):
+                    for page in (DirectoryPage, InfoPage, CostPage,
+                                 CostsUncertaintiesPage, ExternalitiesPage,
+                                 ExternalitiesUncertaintiesPage, BenefitsPage,
+                                 BenefitsUncertaintiesPage, FatalitiesPage,
+                                 NonDBensPage, NonDBensUncertaintiesPage,
+                                 AnalysisInfo):
+                        # HistogramPage):
                         frame = page(controller.container.interior, controller,
                                      controller.cont_list)
                         controller.frames[page] = frame
-                        frame.grid(row=0, column=0, sticky="nsew")
+                        frame.grid(row=0, column=0, sticky="NSEW")
 
                     # Changes these fields so that the .trace methods are
                     # envoked and the respective widgets are altered
                     controller.frames[InfoPage].num_plans_ent.insert(
                         tk.END, controller.data_cont.num_plans - 1)
                     for i in range(1, controller.data_cont.num_plans):
-                        controller.frames[InfoPage].name_ents[i-1].delete(0, tk.END)
+                        controller.frames[InfoPage].name_ents[i - 1].delete(
+                            0, tk.END)
                         name = controller.data_cont.plan_list[i].name
-                        controller.frames[InfoPage].name_ents[i-1].insert(tk.END, name)
+                        controller.frames[InfoPage].name_ents[i - 1].insert(
+                            tk.END, name)
 
                     # Global variables part of infopage
                     page = controller.frames[InfoPage]
@@ -219,17 +236,23 @@ class StartPage(tk.Frame):
                     page.hor_ent.delete(0, tk.END)
                     page.hor_ent.insert(tk.END, controller.data_cont.horizon)
                     page.dis_ent.delete(0, tk.END)
-                    page.dis_ent.insert(tk.END, controller.data_cont.discount_rate)
-                    controller.frames[FatalitiesPage].life_ent.delete(0, tk.END)
-                    controller.frames[FatalitiesPage].life_ent.insert(tk.END,
-                                                                      controller.data_cont.stat_life)
+                    page.dis_ent.insert(
+                        tk.END, controller.data_cont.discount_rate)
+                    controller.frames[FatalitiesPage].life_ent.delete(
+                        0, tk.END)
+                    controller.frames[FatalitiesPage].life_ent.insert(
+                        tk.END, controller.data_cont.stat_life)
                     first = controller.data_cont.plan_list[0]
                     for entry in page.recur_range:
                         entry.delete(0, tk.END)
-                        entry.insert(tk.END, first.recurr_range[page.recur_range.index(entry)])
+                        entry.insert(
+                            tk.END,
+                            first.recurr_range[page.recur_range.index(entry)])
                     for entry in page.mag_range:
                         entry.delete(0, tk.END)
-                        entry.insert(tk.END, first.mag_range[page.mag_range.index(entry)])
+                        entry.insert(
+                            tk.END,
+                            first.mag_range[page.mag_range.index(entry)])
 
                     page.recur_choice.set(first.recurr_dist)
 
@@ -239,10 +262,11 @@ class StartPage(tk.Frame):
 
                     # ===== Transitions to DirectoryPage
                     controller.show_frame('DirectoryPage')
-                except ValueError: #Exception: #IndexError:
-                    tk.messagebox.showerror('File Read Error', 'The save file chosen is '
-                                                               'improperly formatted. Please '
-                                                               'choose a different file.')
+                except ValueError:  # Exception: #IndexError:
+                    tk.messagebox.showerror('File Read Error',
+                                            'The save file chosen is '
+                                            'improperly formatted. Please '
+                                            'choose a different file.')
         else:
             return
 
