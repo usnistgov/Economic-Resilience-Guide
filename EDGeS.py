@@ -260,5 +260,9 @@ class StartPage(tk.Frame):
 # NonDBens Page
 
 # ===== Runs the actual program
-APP = Application()
-APP.mainloop()
+app = Application()
+
+# Place window at screen center
+app.eval('tk::PlaceWindow %s center' % app.winfo_pathname(app.winfo_id()))
+
+app.mainloop()
