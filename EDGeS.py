@@ -71,8 +71,9 @@ class Application(tk.Tk):
 
         tk.Tk.wm_title(self, "NIST Economic Decision Guide")
 
-        self.container.grid_rowconfigure(0, weight=1, minsize=50)
-        self.container.grid_columnconfigure(0, weight=1, minsize=50)
+        # Make canvas expandable
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
 
@@ -80,7 +81,7 @@ class Application(tk.Tk):
         # possible to transition between each
         frame = StartPage(self.container.interior, self)
         self.frames[StartPage] = frame
-        frame.grid()
+        frame.grid(row=0, column=0, sticky="NSEW")
 
         # Has any text boxes select all when clicked on for ease of entering
         # new information
