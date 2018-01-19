@@ -49,6 +49,10 @@ class VerticalScrolledFrame(Frame):
             self, bd=0, highlightthickness=0, yscrollcommand=vscrollbar.set)
         self.canvas.grid(row=0, column=0, sticky='NSEW')
 
+        # Make canvas expandable
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
         vscrollbar.config(command=self.canvas.yview)
 
         # reset the view

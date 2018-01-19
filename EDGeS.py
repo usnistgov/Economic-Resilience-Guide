@@ -71,7 +71,7 @@ class Application(tk.Tk):
 
         tk.Tk.wm_title(self, "NIST Economic Decision Guide")
 
-        # Make canvas expandable
+        # Make container expandable
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
@@ -138,9 +138,6 @@ class StartPage(tk.Frame):
 
         photo = tk.PhotoImage(file="Edges_logo.png")
         photo = photo.subsample(8, 8)
-        # photo = tk.PhotoImage(file="CR_Logo.png")
-        # photo = photo.subsample(5, 5)
-        # photo = tk.PhotoImage(file="el_logo_small.gif")
         pic = ttk.Label(self, image=photo)
         pic.image = photo
         pic.grid(row=2)
@@ -286,8 +283,7 @@ class StartPage(tk.Frame):
 
 # ===== Runs the actual program
 app = Application()
-
 # Place window at screen center
 app.eval('tk::PlaceWindow %s center' % app.winfo_pathname(app.winfo_id()))
-
 app.mainloop()
+
