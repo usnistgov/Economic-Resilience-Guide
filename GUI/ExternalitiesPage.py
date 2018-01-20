@@ -7,13 +7,13 @@
 
 import tkinter as tk
 from tkinter import messagebox
-from tkinter import ttk     #for pretty buttons/labels
-
-from GUI.InfoPage import InfoPage
+from tkinter import ttk 
 
 from GUI.Constants import SMALL_FONT, LARGE_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 from GUI.Constants import ENTRY_WIDTH
+
+InfoPage = 'InfoPage'
 
 #
 #

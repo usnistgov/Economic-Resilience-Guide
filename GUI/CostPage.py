@@ -7,19 +7,13 @@
 
 import tkinter as tk
 from tkinter import messagebox
-from tkinter import ttk     #for pretty buttons/labels
-
-from GUI.InfoPage import InfoPage
+from tkinter import ttk
 
 from GUI.Constants import SMALL_FONT, LARGE_FONT
 from GUI.Constants import FRAME_PADDING, FIELDX_PADDING, FIELDY_PADDING, BASE_PADDING
 from GUI.Constants import ENTRY_WIDTH
 
-#
-#
-########################################### Costs Class ###########################################
-#
-#
+
 class CostPage(tk.Frame):
     """
     GUI for the input of all Costs.
@@ -42,7 +36,6 @@ class CostPage(tk.Frame):
         cost_lbl.grid(row=2, sticky="w")
 
         self.create_widgets(controller)
-
 
     def create_widgets(self, controller):
         """
@@ -98,13 +91,14 @@ class CostPage(tk.Frame):
         self.plan6.grid(padx=FIELDX_PADDING, pady=FIELDY_PADDING, sticky="w")
 
         # ===== Detects if a change occurs in the name fields on 'InfoPage'
-        controller.frames[InfoPage].traces[0].trace("w", self.on_trace_change)
-        controller.frames[InfoPage].traces[1].trace("w", self.on_trace_change)
-        controller.frames[InfoPage].traces[2].trace("w", self.on_trace_change)
-        controller.frames[InfoPage].traces[3].trace("w", self.on_trace_change)
-        controller.frames[InfoPage].traces[4].trace("w", self.on_trace_change)
-        controller.frames[InfoPage].traces[5].trace("w", self.on_trace_change)
-        #controller.frames[InfoPage].choice_var.trace("w", self.on_trace_change)
+        infopage = controller.frames['InfoPage']
+        infopage.traces[0].trace("w", self.on_trace_change)
+        infopage.traces[1].trace("w", self.on_trace_change)
+        infopage.traces[2].trace("w", self.on_trace_change)
+        infopage.traces[3].trace("w", self.on_trace_change)
+        infopage.traces[4].trace("w", self.on_trace_change)
+        infopage.traces[5].trace("w", self.on_trace_change)
+        # infopage.choice_var.trace("w", self.on_trace_change)
 
         # ===== Cost type widgets
         group3 = ttk.LabelFrame(self, text="Cost Type")
@@ -535,12 +529,11 @@ class CostPage(tk.Frame):
         self.choice.set("1")
         self.omr_selection.set("1")
 
-
     def on_trace_change(self, _name, _index, _mode):
         """Updates checkbox fields if names are changed in 'InfoPage'"""
 
         # ===== Hides the widget until .grid() is called again
-        #self.plan1.configure(text=self.controller.frames[InfoPage].name_ents[0].get()+" (Plan 1)")
+        #self.plan1.configure(text=infopage.name_ents[0].get()+" (Plan 1)")
         self.plan1.grid_remove()
         self.plan2.grid_remove()
         self.plan3.grid_remove()
@@ -548,30 +541,31 @@ class CostPage(tk.Frame):
         self.plan5.grid_remove()
         self.plan6.grid_remove()
 
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 0:
-            self.plan1.configure(text=self.controller.frames[InfoPage].name_ents[0].get()
-                                 +" (Plan 1)")
+        infopage = self.controller.frames['InfoPage']
+        if int(infopage.num_plans_ent.get()) > 0:
+            self.plan1.configure(
+                text=infopage.name_ents[0].get() + " (Plan 1)")
             self.plan1.grid()
 
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 1:
-            self.plan2.configure(text=self.controller.frames[InfoPage].name_ents[1].get()
-                                 +" (Plan 2)")
+        if int(infopage.num_plans_ent.get()) > 1:
+            self.plan2.configure(
+                text=infopage.name_ents[1].get() + " (Plan 2)")
             self.plan2.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 2:
-            self.plan3.configure(text=self.controller.frames[InfoPage].name_ents[2].get()
-                                 +" (Plan 3)")
+        if int(infopage.num_plans_ent.get()) > 2:
+            self.plan3.configure(
+                text=infopage.name_ents[2].get() + " (Plan 3)")
             self.plan3.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 3:
-            self.plan4.configure(text=self.controller.frames[InfoPage].name_ents[3].get()
-                                 +" (Plan 4)")
+        if int(infopage.num_plans_ent.get()) > 3:
+            self.plan4.configure(
+                text=infopage.name_ents[3].get() + " (Plan 4)")
             self.plan4.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 4:
-            self.plan5.configure(text=self.controller.frames[InfoPage].name_ents[4].get()
-                                 +" (Plan 5)")
+        if int(infopage.num_plans_ent.get()) > 4:
+            self.plan5.configure(
+                text=infopage.name_ents[4].get() + " (Plan 5)")
             self.plan5.grid()
-        if int(self.controller.frames[InfoPage].num_plans_ent.get()) > 5:
-            self.plan6.configure(text=self.controller.frames[InfoPage].name_ents[5].get()
-                                 +" (Plan 6)")
+        if int(infopage.num_plans_ent.get()) > 5:
+            self.plan6.configure(
+                text=infopage.name_ents[5].get() + " (Plan 6)")
             self.plan6.grid()
 
         if self.choice.get() == "omr":

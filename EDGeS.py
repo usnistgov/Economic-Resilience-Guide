@@ -5,7 +5,10 @@
    Description:   Starts up the application
 """
 
+import os
 import sys
+import platform
+
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
@@ -24,13 +27,14 @@ from GUI.FatalitiesPage import FatalitiesPage
 from GUI.NonDBensPage import NonDBensPage
 from GUI.NonDBensUncertainties import NonDBensUncertaintiesPage
 from GUI.AnalysisInfo import AnalysisInfo
-
-# from GUI.Histograms import HistogramPage
-
 from GUI.Constants import LARGE_FONT, NORM_FONT
 from GUI.Constants import BASE_PADDING
-
 from VertScroll import VerticalScrolledFrame
+
+# fix the working directory when running on Mac
+if platform.system() == 'Darwin' and hasattr(sys, 'frozen'):
+    WDIR = os.path.abspath(os.path.dirname(sys.executable))
+    os.chdir(WDIR)
 
 
 DISCLAIMER = (
@@ -80,7 +84,7 @@ class Application(tk.Tk):
         # A list of all pages (classes) used in this program.  Makes it
         # possible to transition between each
         frame = StartPage(self.container.interior, self)
-        self.frames[StartPage] = frame
+        self.frames['StartPage'] = frame
         frame.grid(row=0, column=0, sticky="NSEW")
 
         # Has any text boxes select all when clicked on for ease of entering
@@ -91,24 +95,7 @@ class Application(tk.Tk):
 
     def show_frame(self, cont_string):
         """ Brings to the forefront the frame described by cont_string."""
-        frame_dict = {
-            'StartPage': StartPage,
-            'DirectoryPage': DirectoryPage,
-            'InfoPage': InfoPage,
-            'CostPage': CostPage,
-            'CostsUncertaintiesPage': CostsUncertaintiesPage,
-            'ExternalitiesPage': ExternalitiesPage,
-            'ExternalitiesUncertaintiesPage': ExternalitiesUncertaintiesPage,
-            'BenefitsPage': BenefitsPage,
-            'BenefitsUncertaintiesPage': BenefitsUncertaintiesPage,
-            'FatalitiesPage': FatalitiesPage,
-            'NonDBensPage': NonDBensPage,
-            'NonDBensUncertaintiesPage': NonDBensUncertaintiesPage,
-            'AnalysisInfo': AnalysisInfo
-            # 'HistogramPage': HistogramPage,
-        }
-        cont = frame_dict[cont_string]
-        frame = self.frames[cont]
+        frame = self.frames[cont_string]
         frame.on_trace_change("", "", "")
         self.container.canvas.xview_moveto(0)
         self.container.canvas.yview_moveto(0)
@@ -184,7 +171,7 @@ class StartPage(tk.Frame):
             ):
                 frame = page(controller.container.interior, controller,
                              controller.cont_list)
-                controller.frames[page] = frame
+                controller.frames[page.__name__] = frame
                 frame.grid(row=0, column=0, sticky="NSEW")
             # ===== transitions to InfoPage
             controller.show_frame('InfoPage')
@@ -213,22 +200,22 @@ class StartPage(tk.Frame):
                         # HistogramPage):
                         frame = page(controller.container.interior, controller,
                                      controller.cont_list)
-                        controller.frames[page] = frame
+                        controller.frames[page.__name__] = frame
                         frame.grid(row=0, column=0, sticky="NSEW")
 
                     # Changes these fields so that the .trace methods are
                     # envoked and the respective widgets are altered
-                    controller.frames[InfoPage].num_plans_ent.insert(
+                    controller.frames['InfoPage'].num_plans_ent.insert(
                         tk.END, controller.data_cont.num_plans - 1)
                     for i in range(1, controller.data_cont.num_plans):
-                        controller.frames[InfoPage].name_ents[i - 1].delete(
+                        controller.frames['InfoPage'].name_ents[i - 1].delete(
                             0, tk.END)
                         name = controller.data_cont.plan_list[i].name
-                        controller.frames[InfoPage].name_ents[i - 1].insert(
+                        controller.frames['InfoPage'].name_ents[i - 1].insert(
                             tk.END, name)
 
                     # Global variables part of infopage
-                    page = controller.frames[InfoPage]
+                    page = controller.frames['InfoPage']
                     page.name_ent.delete(0, tk.END)
                     page.name_ent.insert(tk.END, controller.data_cont.title)
                     page.hor_ent.delete(0, tk.END)
@@ -236,9 +223,9 @@ class StartPage(tk.Frame):
                     page.dis_ent.delete(0, tk.END)
                     page.dis_ent.insert(
                         tk.END, controller.data_cont.discount_rate)
-                    controller.frames[FatalitiesPage].life_ent.delete(
+                    controller.frames['FatalitiesPage'].life_ent.delete(
                         0, tk.END)
-                    controller.frames[FatalitiesPage].life_ent.insert(
+                    controller.frames['FatalitiesPage'].life_ent.insert(
                         tk.END, controller.data_cont.stat_life)
                     first = controller.data_cont.plan_list[0]
                     for entry in page.recur_range:
@@ -282,8 +269,9 @@ class StartPage(tk.Frame):
 # NonDBens Page
 
 # ===== Runs the actual program
-app = Application()
-# Place window at screen center
-app.eval('tk::PlaceWindow %s center' % app.winfo_pathname(app.winfo_id()))
-app.mainloop()
+if __name__ == '__main__':
+    app = Application()
+    # Place window at screen center
+    app.eval('tk::PlaceWindow %s center' % app.winfo_pathname(app.winfo_id()))
+    app.mainloop()
 
