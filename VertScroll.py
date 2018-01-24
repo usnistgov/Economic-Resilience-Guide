@@ -10,7 +10,7 @@
 """
 
 from tkinter import Scrollbar, Canvas, Frame, TclError
-from tkinter import HORIZONTAL, NW
+from tkinter import NW
 
 
 class AutoScrollbar(Scrollbar):
@@ -70,15 +70,17 @@ class VerticalScrolledFrame(Frame):
         def _configure_interior(event):
             # update the scrollbars to match the size of the inner frame
             default_height = 717
-            self.canvas.config(scrollregion=self.canvas.bbox("all"))
+            self.canvas.update_idletasks()
             if interior.winfo_reqwidth() != self.canvas.winfo_width():
                 # update the canvas's width to fit the inner frame
                 self.canvas.config(width=interior.winfo_reqwidth())
             new_height = max(default_height, parent.winfo_height())
             self.canvas.config(height=new_height)
+            self.canvas.config(scrollregion=self.canvas.bbox("all"))
         interior.bind('<Configure>', _configure_interior)
 
         def _configure_canvas(event):
+            self.canvas.update_idletasks()
             if interior.winfo_reqwidth() != self.canvas.winfo_width():
                 # update the inner frame's width to fill the canvas
                 self.canvas.itemconfigure(
